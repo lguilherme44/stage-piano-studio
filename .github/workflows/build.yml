@@ -37,7 +37,8 @@ jobs:
           sudo apt-get install -y \
             libasound2-dev \
             libjack-jackd2-dev \
-            libfreetype-dev \
+            libfreetype6-dev \
+            libfontconfig1-dev \
             libx11-dev \
             libxinerama-dev \
             libxrandr-dev \
@@ -55,11 +56,11 @@ jobs:
       - name: Package macOS Artifact
         if: runner.os == 'macOS'
         run: |
-          cd build/gui/StagePianoStudio_artefacts
-          if [ -d "Release/Stage Piano Studio.app" ]; then
-            cd Release
+          APP_PATH=$(find build -name "Stage Piano Studio.app" -type d | head -n 1)
+          if [ -n "$APP_PATH" ]; then
+            cd "$(dirname "$APP_PATH")"
+            zip -r "$GITHUB_WORKSPACE/StagePianoStudio-macOS.zip" "Stage Piano Studio.app"
           fi
-          zip -r ../../../StagePianoStudio-macOS.zip "Stage Piano Studio.app"
 
       - name: Package Windows Artifact
         if: runner.os == 'Windows'
@@ -67,16 +68,16 @@ jobs:
         run: |
           $binDir = "build/gui/StagePianoStudio_artefacts/Release"
           if (-not (Test-Path $binDir)) { $binDir = "build/gui/StagePianoStudio_artefacts" }
-          Compress-Archive -Path "$binDir/Stage Piano Studio.exe" -DestinationPath StagePianoStudio-Windows.zip
+          Compress-Archive -Path "$binDir/Stage Piano Studio.exe" -DestinationPath "$env:GITHUB_WORKSPACE/StagePianoStudio-Windows.zip"
 
       - name: Package Linux Artifact
         if: runner.os == 'Linux'
         run: |
-          cd build/gui/StagePianoStudio_artefacts
-          if [ -d "Release" ]; then
-            cd Release
+          BIN_PATH=$(find build -name "Stage Piano Studio" -type f | head -n 1)
+          if [ -n "$BIN_PATH" ]; then
+            cd "$(dirname "$BIN_PATH")"
+            tar -czvf "$GITHUB_WORKSPACE/StagePianoStudio-Linux.tar.gz" "Stage Piano Studio"
           fi
-          tar -czvf ../../../StagePianoStudio-Linux.tar.gz "Stage Piano Studio"
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4

@@ -37,6 +37,7 @@ cmake-build-*/
 # IDE & Editor files
 .vscode/
 .idea/
+.engram/
 *.sln
 *.vcxproj
 *.vcxproj.*
