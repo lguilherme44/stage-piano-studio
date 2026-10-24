@@ -1,0 +1,471 @@
+{
+  "name": "NS3_Damper_Upright",
+  "sample_rate": 44100,
+  "channels": 2,
+  "notes": {
+    "21": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_021_127.wav"
+      }
+    ],
+    "24": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_024_127.wav"
+      }
+    ],
+    "25": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_025_127.wav"
+      }
+    ],
+    "26": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_026_127.wav"
+      }
+    ],
+    "27": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_027_127.wav"
+      }
+    ],
+    "28": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_028_127.wav"
+      }
+    ],
+    "30": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_030_127.wav"
+      }
+    ],
+    "31": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_031_127.wav"
+      }
+    ],
+    "33": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_033_127.wav"
+      }
+    ],
+    "35": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_035_127.wav"
+      }
+    ],
+    "36": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_036_127.wav"
+      }
+    ],
+    "38": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_038_127.wav"
+      }
+    ],
+    "40": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_040_127.wav"
+      }
+    ],
+    "41": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_041_127.wav"
+      }
+    ],
+    "42": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_042_127.wav"
+      }
+    ],
+    "43": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_043_127.wav"
+      }
+    ],
+    "45": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_045_127.wav"
+      }
+    ],
+    "46": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_046_127.wav"
+      }
+    ],
+    "47": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_047_127.wav"
+      }
+    ],
+    "48": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_048_127.wav"
+      }
+    ],
+    "50": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_050_127.wav"
+      }
+    ],
+    "52": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_052_127.wav"
+      }
+    ],
+    "53": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_053_127.wav"
+      }
+    ],
+    "55": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_055_127.wav"
+      }
+    ],
+    "57": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_057_127.wav"
+      }
+    ],
+    "59": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_059_127.wav"
+      }
+    ],
+    "61": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_061_127.wav"
+      }
+    ],
+    "64": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_064_127.wav"
+      }
+    ],
+    "65": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_065_127.wav"
+      }
+    ],
+    "67": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_067_127.wav"
+      }
+    ],
+    "69": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_069_127.wav"
+      }
+    ],
+    "70": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_070_127.wav"
+      }
+    ],
+    "71": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_071_127.wav"
+      }
+    ],
+    "73": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_073_127.wav"
+      }
+    ],
+    "74": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_074_127.wav"
+      }
+    ],
+    "76": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_076_127.wav"
+      }
+    ],
+    "78": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_078_127.wav"
+      }
+    ],
+    "79": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_079_127.wav"
+      }
+    ],
+    "80": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_080_127.wav"
+      }
+    ],
+    "81": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_081_127.wav"
+      }
+    ],
+    "82": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_082_127.wav"
+      }
+    ],
+    "83": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_083_127.wav"
+      }
+    ],
+    "85": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_085_127.wav"
+      }
+    ],
+    "86": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_086_127.wav"
+      }
+    ],
+    "88": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_088_127.wav"
+      }
+    ],
+    "90": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_090_127.wav"
+      }
+    ],
+    "91": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_091_127.wav"
+      }
+    ],
+    "93": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_093_127.wav"
+      }
+    ],
+    "94": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_094_127.wav"
+      }
+    ],
+    "96": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_096_127.wav"
+      }
+    ],
+    "97": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_097_127.wav"
+      }
+    ],
+    "99": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_099_127.wav"
+      }
+    ],
+    "101": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_101_127.wav"
+      }
+    ],
+    "102": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_102_127.wav"
+      }
+    ],
+    "103": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_103_127.wav"
+      }
+    ],
+    "104": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_104_127.wav"
+      }
+    ],
+    "106": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_106_127.wav"
+      }
+    ],
+    "107": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Damper_Upright_107_127.wav"
+      }
+    ]
+  }
+}

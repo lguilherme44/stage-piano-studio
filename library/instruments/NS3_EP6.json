@@ -1,0 +1,1321 @@
+{
+  "name": "NS3_EP6",
+  "sample_rate": 44100,
+  "channels": 2,
+  "notes": {
+    "28": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_EP6_028_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_EP6_028_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_EP6_028_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_EP6_028_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_028_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_028_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_028_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_028_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_028_127.wav"
+      }
+    ],
+    "30": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 53,
+        "target_velocity": 53,
+        "file": "NS3_EP6_030_053.wav"
+      },
+      {
+        "min_velocity": 54,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_EP6_030_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_EP6_030_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_EP6_030_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_EP6_030_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_EP6_030_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_030_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_030_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_030_127.wav"
+      }
+    ],
+    "33": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_EP6_033_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_EP6_033_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_EP6_033_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_EP6_033_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_033_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_033_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_033_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_033_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_033_127.wav"
+      }
+    ],
+    "36": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_EP6_036_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_EP6_036_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_EP6_036_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_036_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_036_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_036_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_036_127.wav"
+      }
+    ],
+    "39": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_EP6_039_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_EP6_039_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_EP6_039_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_EP6_039_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_EP6_039_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_EP6_039_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_039_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_039_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_039_127.wav"
+      }
+    ],
+    "41": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_EP6_041_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_EP6_041_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_EP6_041_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_041_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_041_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_041_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_041_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_041_127.wav"
+      }
+    ],
+    "43": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_EP6_043_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_EP6_043_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_EP6_043_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_EP6_043_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_EP6_043_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_043_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_043_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_043_127.wav"
+      }
+    ],
+    "46": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_EP6_046_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_EP6_046_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_EP6_046_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_EP6_046_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_046_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_046_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_EP6_046_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_046_127.wav"
+      }
+    ],
+    "48": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_EP6_048_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_EP6_048_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_EP6_048_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_EP6_048_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_EP6_048_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_048_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_048_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_048_127.wav"
+      }
+    ],
+    "50": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_EP6_050_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_EP6_050_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_EP6_050_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_050_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_EP6_050_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_050_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_050_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_050_127.wav"
+      }
+    ],
+    "52": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_EP6_052_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_EP6_052_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_EP6_052_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_EP6_052_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_EP6_052_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_052_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_052_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_052_127.wav"
+      }
+    ],
+    "54": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_EP6_054_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_EP6_054_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_EP6_054_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_EP6_054_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_EP6_054_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_054_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_054_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_054_127.wav"
+      }
+    ],
+    "56": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_EP6_056_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_EP6_056_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_EP6_056_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_056_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_056_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_EP6_056_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_056_127.wav"
+      }
+    ],
+    "58": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_EP6_058_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_EP6_058_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_EP6_058_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_EP6_058_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_058_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_058_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_058_127.wav"
+      }
+    ],
+    "61": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_EP6_061_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_EP6_061_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_EP6_061_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_EP6_061_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_EP6_061_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_061_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_061_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_061_127.wav"
+      }
+    ],
+    "63": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_EP6_063_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_EP6_063_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_EP6_063_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_EP6_063_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_EP6_063_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_063_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_063_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_063_127.wav"
+      }
+    ],
+    "67": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_EP6_067_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_EP6_067_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_EP6_067_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_EP6_067_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_EP6_067_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_067_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_067_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_067_127.wav"
+      }
+    ],
+    "69": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_EP6_069_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_EP6_069_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_EP6_069_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_EP6_069_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_EP6_069_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_069_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_069_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_069_127.wav"
+      }
+    ],
+    "72": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_EP6_072_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_EP6_072_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_EP6_072_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_072_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_072_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_EP6_072_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_072_127.wav"
+      }
+    ],
+    "75": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_EP6_075_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_EP6_075_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_EP6_075_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_EP6_075_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_075_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_075_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_075_127.wav"
+      }
+    ],
+    "78": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_EP6_078_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_EP6_078_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_078_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_078_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_078_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_078_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_078_127.wav"
+      }
+    ],
+    "81": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_EP6_081_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_EP6_081_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_081_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_081_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_081_127.wav"
+      }
+    ],
+    "83": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_EP6_083_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_EP6_083_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_EP6_083_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_083_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_083_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_083_127.wav"
+      }
+    ],
+    "85": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_EP6_085_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_EP6_085_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_EP6_085_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_EP6_085_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_085_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_085_127.wav"
+      }
+    ],
+    "88": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_EP6_088_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_EP6_088_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_088_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_088_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_088_127.wav"
+      }
+    ],
+    "91": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_EP6_091_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_091_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_091_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_091_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_091_127.wav"
+      }
+    ],
+    "94": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_EP6_094_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_094_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_094_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_094_127.wav"
+      }
+    ],
+    "96": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_EP6_096_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_EP6_096_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_EP6_096_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_096_127.wav"
+      }
+    ],
+    "98": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_098_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_098_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_098_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_098_127.wav"
+      }
+    ],
+    "102": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_EP6_102_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_EP6_102_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_EP6_102_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_EP6_102_127.wav"
+      }
+    ]
+  }
+}

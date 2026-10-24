@@ -1,0 +1,763 @@
+{
+  "name": "NS3_DX_FullTines",
+  "sample_rate": 44100,
+  "channels": 2,
+  "notes": {
+    "21": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_FullTines_021_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_FullTines_021_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DX_FullTines_021_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_FullTines_021_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_FullTines_021_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_FullTines_021_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_021_127.wav"
+      }
+    ],
+    "23": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_FullTines_023_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_FullTines_023_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DX_FullTines_023_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_FullTines_023_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_FullTines_023_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_FullTines_023_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_023_127.wav"
+      }
+    ],
+    "28": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_FullTines_028_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_FullTines_028_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DX_FullTines_028_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_FullTines_028_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_FullTines_028_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_FullTines_028_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_028_127.wav"
+      }
+    ],
+    "33": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_FullTines_033_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DX_FullTines_033_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_033_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_FullTines_033_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_033_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_FullTines_033_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_033_127.wav"
+      }
+    ],
+    "38": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_FullTines_038_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DX_FullTines_038_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_038_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_FullTines_038_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_038_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_FullTines_038_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_038_127.wav"
+      }
+    ],
+    "43": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_DX_FullTines_043_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DX_FullTines_043_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_043_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_FullTines_043_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_043_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_FullTines_043_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_043_127.wav"
+      }
+    ],
+    "48": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_DX_FullTines_048_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DX_FullTines_048_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_048_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_FullTines_048_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_048_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_FullTines_048_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_048_127.wav"
+      }
+    ],
+    "53": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_FullTines_053_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DX_FullTines_053_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_053_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_FullTines_053_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_053_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_FullTines_053_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_053_127.wav"
+      }
+    ],
+    "58": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_DX_FullTines_058_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DX_FullTines_058_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_058_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_FullTines_058_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_058_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_FullTines_058_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_058_127.wav"
+      }
+    ],
+    "63": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_FullTines_063_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DX_FullTines_063_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_063_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_FullTines_063_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_063_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_FullTines_063_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_063_127.wav"
+      }
+    ],
+    "68": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_DX_FullTines_068_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DX_FullTines_068_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_068_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_FullTines_068_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_068_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_FullTines_068_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_068_127.wav"
+      }
+    ],
+    "73": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_DX_FullTines_073_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DX_FullTines_073_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_FullTines_073_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DX_FullTines_073_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_FullTines_073_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_FullTines_073_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_073_127.wav"
+      }
+    ],
+    "78": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DX_FullTines_078_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DX_FullTines_078_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DX_FullTines_078_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_FullTines_078_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_078_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_FullTines_078_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_078_127.wav"
+      }
+    ],
+    "83": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_FullTines_083_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DX_FullTines_083_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_083_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_FullTines_083_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_083_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_FullTines_083_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_083_127.wav"
+      }
+    ],
+    "88": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_FullTines_088_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DX_FullTines_088_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_FullTines_088_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_FullTines_088_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_FullTines_088_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_088_127.wav"
+      }
+    ],
+    "93": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DX_FullTines_093_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_093_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DX_FullTines_093_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DX_FullTines_093_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_FullTines_093_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_093_127.wav"
+      }
+    ],
+    "98": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DX_FullTines_098_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_098_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DX_FullTines_098_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_098_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_FullTines_098_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_098_127.wav"
+      }
+    ],
+    "103": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_FullTines_103_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_FullTines_103_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_FullTines_103_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_FullTines_103_127.wav"
+      }
+    ]
+  }
+}

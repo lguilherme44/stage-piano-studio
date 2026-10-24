@@ -1,0 +1,36 @@
+{
+  "name": "Punchy Vintage Rhodes",
+  "base_instrument": "NS3_EP1",
+  "filter": {
+    "cutoff_hz": 9500.000,
+    "resonance": 0.150
+  },
+  "envelope": {
+    "attack_ms": 3.000,
+    "decay_ms": 300.000,
+    "sustain_level": 0.900,
+    "release_ms": 700.000
+  },
+  "equalizer": {
+    "enabled": true,
+    "low_gain_db": 3.000,
+    "low_freq_hz": 120.000,
+    "mid_gain_db": 3.500,
+    "mid_freq_hz": 1800.000,
+    "mid_q": 1.200,
+    "high_gain_db": -1.500,
+    "high_freq_hz": 7000.000
+  },
+  "compressor": {
+    "enabled": true,
+    "threshold_db": -16.000,
+    "ratio": 4.000,
+    "attack_ms": 10.000,
+    "release_ms": 120.000,
+    "makeup_db": 3.000,
+    "knee_db": 6.000
+  },
+  "master": {
+    "volume": 1.050
+  }
+}

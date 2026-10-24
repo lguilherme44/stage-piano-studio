@@ -1,0 +1,61 @@
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Tools binaries
+tools/nkx_extractor
+tools/nkx_extractor.exe
+
+# Build Artifacts
+build/
+gui/build/
+engine/bin/
+engine/build/
+bin/
+*.o
+*.d
+*.obj
+*.lib
+*.a
+*.exe
+*.app/
+*.vst3/
+*.component/
+*.dylib
+*.so
+*.pdb
+*.ilk
+*.exp
+cmake-build-*/
+.cache/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.sln
+*.vcxproj
+*.vcxproj.*
+*.user
+
+# Local JUCE repository clone (handled via FetchContent or workflow)
+JUCE/
+
+# Audio Samples (Proprietary Waveform Recordings - Do NOT distribute)
+library/samples/
+*.wav
+*.ncw
+*.nkx
+*.nkc
+*.nkr
+*.nka
+*.nki
+*.nkm
+
+# Crash / Temporary files
+/tmp/
+*.log

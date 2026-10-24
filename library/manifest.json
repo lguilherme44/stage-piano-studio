@@ -1,0 +1,48 @@
+{
+  "name": "Ultimate Stage Pianos HD (Studio Edition)",
+  "version": "1.0.0",
+  "author": "StagePianoStudio",
+  "format": "sps-bank",
+  "instruments": [
+    {
+      "id": "bright_grand",
+      "name": "Nord Bright Grand",
+      "category": "Acoustic Grand",
+      "definition": "instruments/NS3_Bright_Grand.json",
+      "default_gain": 1.0,
+      "release_time_ms": 350
+    },
+    {
+      "id": "grand_upright",
+      "name": "Nord Grand Upright",
+      "category": "Upright Piano",
+      "definition": "instruments/NS3_Grand_Upright.json",
+      "default_gain": 1.0,
+      "release_time_ms": 300
+    },
+    {
+      "id": "cp80_electric_grand",
+      "name": "CP-80 Electric Grand",
+      "category": "Electric Grand",
+      "definition": "instruments/NS3_Electric_Grand_CP80.json",
+      "default_gain": 0.95,
+      "release_time_ms": 400
+    },
+    {
+      "id": "rhodes_stage_ep1",
+      "name": "Rhodes Stage Mark I",
+      "category": "Electric Piano",
+      "definition": "instruments/NS3_EP1.json",
+      "default_gain": 1.0,
+      "release_time_ms": 450
+    },
+    {
+      "id": "dx_full_tines",
+      "name": "DX7 Full Tines",
+      "category": "Digital FM",
+      "definition": "instruments/NS3_DX_FullTines.json",
+      "default_gain": 0.9,
+      "release_time_ms": 500
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "name": "DeepSea",
+  "sample_rate": 44100,
+  "channels": 2,
+  "notes": {
+    "24": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "DeepSea_C1_127.wav"
+      }
+    ],
+    "31": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "DeepSea_G1_127.wav"
+      }
+    ],
+    "38": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "DeepSea_D2_127.wav"
+      }
+    ],
+    "45": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "DeepSea_A2_127.wav"
+      }
+    ],
+    "52": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "DeepSea_E3_127.wav"
+      }
+    ],
+    "59": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "DeepSea_B3_127.wav"
+      }
+    ],
+    "66": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "DeepSea_F#4_127.wav"
+      }
+    ],
+    "73": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "DeepSea_C#5_127.wav"
+      }
+    ],
+    "80": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "DeepSea_G#5_127.wav"
+      }
+    ]
+  }
+}

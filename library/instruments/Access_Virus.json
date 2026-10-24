@@ -1,0 +1,95 @@
+{
+  "name": "Access_Virus",
+  "sample_rate": 44100,
+  "channels": 2,
+  "notes": {
+    "24": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_C1_127.wav"
+      }
+    ],
+    "30": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_F#1_127.wav"
+      }
+    ],
+    "36": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_C2_127.wav"
+      }
+    ],
+    "42": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_F#2_127.wav"
+      }
+    ],
+    "48": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_C3_127.wav"
+      }
+    ],
+    "54": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_F#3_127.wav"
+      }
+    ],
+    "60": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_C4_127.wav"
+      }
+    ],
+    "66": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_F#4_127.wav"
+      }
+    ],
+    "72": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_C5_127.wav"
+      }
+    ],
+    "78": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_F#5_127.wav"
+      }
+    ],
+    "83": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "Access_Virus_B5_127.wav"
+      }
+    ]
+  }
+}

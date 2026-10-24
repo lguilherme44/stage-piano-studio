@@ -1,0 +1,749 @@
+{
+  "name": "NS3_DX_Rubba_Rhodes",
+  "sample_rate": 44100,
+  "channels": 2,
+  "notes": {
+    "24": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_DX_Rubba_Rhodes_024_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_Rubba_Rhodes_024_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DX_Rubba_Rhodes_024_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DX_Rubba_Rhodes_024_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DX_Rubba_Rhodes_024_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_Rubba_Rhodes_024_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_024_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_024_127.wav"
+      }
+    ],
+    "28": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_DX_Rubba_Rhodes_028_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DX_Rubba_Rhodes_028_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DX_Rubba_Rhodes_028_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_Rubba_Rhodes_028_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_Rubba_Rhodes_028_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_028_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_028_127.wav"
+      }
+    ],
+    "33": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_DX_Rubba_Rhodes_033_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DX_Rubba_Rhodes_033_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DX_Rubba_Rhodes_033_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_Rubba_Rhodes_033_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_Rubba_Rhodes_033_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_033_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_033_127.wav"
+      }
+    ],
+    "38": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_DX_Rubba_Rhodes_038_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DX_Rubba_Rhodes_038_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_Rubba_Rhodes_038_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_Rubba_Rhodes_038_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_Rubba_Rhodes_038_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_Rubba_Rhodes_038_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_Rubba_Rhodes_038_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_038_127.wav"
+      }
+    ],
+    "43": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_DX_Rubba_Rhodes_043_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DX_Rubba_Rhodes_043_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_Rubba_Rhodes_043_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_Rubba_Rhodes_043_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DX_Rubba_Rhodes_043_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_Rubba_Rhodes_043_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_043_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_043_127.wav"
+      }
+    ],
+    "48": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_DX_Rubba_Rhodes_048_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DX_Rubba_Rhodes_048_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_Rubba_Rhodes_048_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_Rubba_Rhodes_048_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DX_Rubba_Rhodes_048_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_Rubba_Rhodes_048_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_048_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_048_127.wav"
+      }
+    ],
+    "53": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_DX_Rubba_Rhodes_053_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_Rubba_Rhodes_053_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DX_Rubba_Rhodes_053_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_Rubba_Rhodes_053_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_Rubba_Rhodes_053_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_Rubba_Rhodes_053_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_053_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_053_127.wav"
+      }
+    ],
+    "58": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_DX_Rubba_Rhodes_058_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_Rubba_Rhodes_058_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DX_Rubba_Rhodes_058_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DX_Rubba_Rhodes_058_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_Rubba_Rhodes_058_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_Rubba_Rhodes_058_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_Rubba_Rhodes_058_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_058_127.wav"
+      }
+    ],
+    "63": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_DX_Rubba_Rhodes_063_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_Rubba_Rhodes_063_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DX_Rubba_Rhodes_063_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DX_Rubba_Rhodes_063_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_Rubba_Rhodes_063_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_Rubba_Rhodes_063_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_063_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_063_127.wav"
+      }
+    ],
+    "68": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_DX_Rubba_Rhodes_068_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DX_Rubba_Rhodes_068_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DX_Rubba_Rhodes_068_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_Rubba_Rhodes_068_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DX_Rubba_Rhodes_068_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_Rubba_Rhodes_068_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_068_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_068_127.wav"
+      }
+    ],
+    "73": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_DX_Rubba_Rhodes_073_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DX_Rubba_Rhodes_073_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DX_Rubba_Rhodes_073_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_Rubba_Rhodes_073_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_Rubba_Rhodes_073_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_073_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_Rubba_Rhodes_073_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_073_127.wav"
+      }
+    ],
+    "78": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_DX_Rubba_Rhodes_078_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DX_Rubba_Rhodes_078_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_Rubba_Rhodes_078_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_Rubba_Rhodes_078_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DX_Rubba_Rhodes_078_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_Rubba_Rhodes_078_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_Rubba_Rhodes_078_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_078_127.wav"
+      }
+    ],
+    "83": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DX_Rubba_Rhodes_083_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_Rubba_Rhodes_083_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DX_Rubba_Rhodes_083_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_Rubba_Rhodes_083_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_083_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_083_127.wav"
+      }
+    ],
+    "88": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_Rubba_Rhodes_088_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_Rubba_Rhodes_088_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DX_Rubba_Rhodes_088_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DX_Rubba_Rhodes_088_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_088_127.wav"
+      }
+    ],
+    "93": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_Rubba_Rhodes_093_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_Rubba_Rhodes_093_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_Rubba_Rhodes_093_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DX_Rubba_Rhodes_093_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_093_127.wav"
+      }
+    ],
+    "98": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_Rubba_Rhodes_098_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_Rubba_Rhodes_098_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_Rubba_Rhodes_098_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_098_127.wav"
+      }
+    ],
+    "103": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DX_Rubba_Rhodes_103_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DX_Rubba_Rhodes_103_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DX_Rubba_Rhodes_103_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DX_Rubba_Rhodes_103_127.wav"
+      }
+    ]
+  }
+}

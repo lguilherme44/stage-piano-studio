@@ -1,0 +1,36 @@
+{
+  "name": "Concert Grand Studio",
+  "base_instrument": "NS3_Bright_Grand",
+  "filter": {
+    "cutoff_hz": 20000.000,
+    "resonance": 0.000
+  },
+  "envelope": {
+    "attack_ms": 2.000,
+    "decay_ms": 250.000,
+    "sustain_level": 1.000,
+    "release_ms": 600.000
+  },
+  "equalizer": {
+    "enabled": true,
+    "low_gain_db": 1.500,
+    "low_freq_hz": 90.000,
+    "mid_gain_db": -1.000,
+    "mid_freq_hz": 1000.000,
+    "mid_q": 0.707,
+    "high_gain_db": 2.000,
+    "high_freq_hz": 10000.000
+  },
+  "compressor": {
+    "enabled": true,
+    "threshold_db": -14.000,
+    "ratio": 2.500,
+    "attack_ms": 20.000,
+    "release_ms": 180.000,
+    "makeup_db": 1.500,
+    "knee_db": 4.000
+  },
+  "master": {
+    "volume": 1.000
+  }
+}

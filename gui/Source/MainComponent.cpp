@@ -1,0 +1,622 @@
+#include "MainComponent.h"
+#include <chrono>
+
+MainComponent::MainComponent() {
+    setLookAndFeel(&m_lookAndFeel);
+
+    // Dynamic cross-platform library discovery (macOS, Windows, Linux)
+    juce::File currentExe = juce::File::getSpecialLocation(juce::File::currentExecutableFile);
+    juce::File cand1 = currentExe.getParentDirectory().getChildFile("library");
+    juce::File cand2 = currentExe.getParentDirectory().getParentDirectory().getChildFile("library");
+    juce::File cand3 = currentExe.getParentDirectory().getParentDirectory().getParentDirectory().getChildFile("library");
+    juce::File cand4 = currentExe.getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getChildFile("library");
+    juce::File candMac = juce::File("/Volumes/SSD-EXT/StagePianoStudio/library");
+    juce::File candWin = juce::File("C:/Users/lguil/wk/StagePianoStudio/library");
+
+    if (cand1.isDirectory()) m_libDir = cand1.getFullPathName().toStdString();
+    else if (cand2.isDirectory()) m_libDir = cand2.getFullPathName().toStdString();
+    else if (cand3.isDirectory()) m_libDir = cand3.getFullPathName().toStdString();
+    else if (cand4.isDirectory()) m_libDir = cand4.getFullPathName().toStdString();
+    else if (candMac.isDirectory()) m_libDir = candMac.getFullPathName().toStdString();
+    else if (candWin.isDirectory()) m_libDir = candWin.getFullPathName().toStdString();
+    else m_libDir = cand1.getFullPathName().toStdString();
+
+    // Initialize Multi-Layer Host
+    m_host = std::make_shared<StagePianoHost>(44100.0f, m_libDir);
+
+    setupUI();
+    initAudioAndMidi();
+
+    m_deviceManager.addChangeListener(this);
+    m_keyboardState.addListener(this);
+
+    // Setup Virtual Piano Keyboard (61 keys from C2 to C7)
+    m_keyboardComponent.setAvailableRange(36, 96);
+    m_keyboardComponent.setScrollButtonsVisible(false);
+    m_keyboardComponent.setColour(juce::MidiKeyboardComponent::whiteNoteColourId, juce::Colour(0xfff8fafc));
+    m_keyboardComponent.setColour(juce::MidiKeyboardComponent::blackNoteColourId, juce::Colour(0xff181a20));
+    m_keyboardComponent.setColour(juce::MidiKeyboardComponent::keySeparatorLineColourId, juce::Colour(0xff272a33));
+    m_keyboardComponent.setColour(juce::MidiKeyboardComponent::mouseOverKeyOverlayColourId, juce::Colour(0x33f59e0b));
+    m_keyboardComponent.setColour(juce::MidiKeyboardComponent::keyDownOverlayColourId, juce::Colour(0xfff59e0b));
+    m_keyboardComponent.setColour(juce::MidiKeyboardComponent::textLabelColourId, juce::Colour(0xff64748b));
+    m_keyboardComponent.setColour(juce::MidiKeyboardComponent::shadowColourId, juce::Colours::black.withAlpha(0.6f));
+    addAndMakeVisible(m_keyboardComponent);
+
+    setSize(1140, 770);
+    startTimerHz(30);
+}
+
+MainComponent::~MainComponent() {
+    stopTimer();
+    m_keyboardState.removeListener(this);
+    m_deviceManager.removeChangeListener(this);
+    m_deviceManager.removeAudioCallback(this);
+    m_deviceManager.removeMidiInputDeviceCallback({}, this);
+    setLookAndFeel(nullptr);
+}
+
+void MainComponent::handleNoteOn(juce::MidiKeyboardState* /*source*/, int /*midiChannel*/, int midiNoteNumber, float velocity) {
+    m_host->noteOn(midiNoteNumber, juce::jlimit(1, 127, static_cast<int>(velocity * 127.0f)));
+}
+
+void MainComponent::handleNoteOff(juce::MidiKeyboardState* /*source*/, int /*midiChannel*/, int midiNoteNumber, float /*velocity*/) {
+    m_host->noteOff(midiNoteNumber);
+}
+
+void MainComponent::openAudioSettings() {
+    auto* selector = new juce::AudioDeviceSelectorComponent(
+        m_deviceManager,
+        0, 0, // 0 inputs
+        1, 2, // 1 to 2 outputs (Stereo)
+        true, // Show MIDI inputs!
+        false,// Hide MIDI outputs
+        true, // Stereo pairs
+        false // Standard options
+    );
+    selector->setSize(520, 480);
+
+    juce::DialogWindow::LaunchOptions opt;
+    opt.content.setOwned(selector);
+    opt.dialogTitle = "Audio & MIDI Settings";
+    opt.dialogBackgroundColour = StagePianoLookAndFeel::bgPanel;
+    opt.escapeKeyTriggersCloseButton = true;
+    opt.useNativeTitleBar = true;
+    opt.resizable = false;
+    opt.launchAsync();
+}
+
+void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source) {
+    if (source == &m_deviceManager) {
+        auto midiInputs = juce::MidiInput::getAvailableDevices();
+        juce::String activeList;
+        for (const auto& dev : midiInputs) {
+            if (m_deviceManager.isMidiInputDeviceEnabled(dev.identifier)) {
+                m_deviceManager.addMidiInputDeviceCallback(dev.identifier, this);
+                if (activeList.isNotEmpty()) activeList += ", ";
+                activeList += dev.name;
+            }
+        }
+        if (activeList.isNotEmpty()) {
+            m_activeMidiDevice = activeList.toStdString();
+        } else {
+            m_activeMidiDevice = "No MIDI input active (click CONFIG)";
+        }
+        repaint();
+    }
+}
+
+void MainComponent::initAudioAndMidi() {
+    juce::AudioDeviceManager::AudioDeviceSetup setup;
+    setup.sampleRate = 44100.0;
+    setup.bufferSize = 256;
+    setup.inputChannels.clear();
+    setup.outputChannels.setRange(0, 2, true);
+
+    m_deviceManager.initialise(0, 2, nullptr, true, {}, &setup);
+    m_deviceManager.addAudioCallback(this);
+
+    auto midiInputs = juce::MidiInput::getAvailableDevices();
+    juce::String activeList;
+    for (const auto& dev : midiInputs) {
+        m_deviceManager.setMidiInputDeviceEnabled(dev.identifier, true);
+        m_deviceManager.addMidiInputDeviceCallback(dev.identifier, this);
+        if (activeList.isNotEmpty()) activeList += ", ";
+        activeList += dev.name;
+    }
+
+    if (activeList.isNotEmpty()) {
+        m_activeMidiDevice = activeList.toStdString();
+    } else {
+        m_activeMidiDevice = "No MIDI input active (click CONFIG)";
+    }
+}
+
+void MainComponent::setupUI() {
+    auto setupRotary = [this](juce::Slider& s, const juce::String& suffix, double min, double max, double def) {
+        s.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+        s.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 55, 14);
+        s.setTextValueSuffix(suffix);
+        s.setRange(min, max, (max - min) > 100.0 ? 1.0 : 0.05);
+        s.setValue(def, juce::dontSendNotification);
+        s.setColour(juce::Slider::textBoxTextColourId, StagePianoLookAndFeel::accentAmber);
+        s.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::transparentBlack);
+        addAndMakeVisible(s);
+    };
+
+    // 1. Piano Slot (Slot A)
+    struct InstChoice { const char* label; const char* id; };
+    static const InstChoice pianoList[] = {
+        // Grands
+        {"Nord Bright Grand", "NS3_Bright_Grand"},
+        {"Grand Imperial", "NS3_Grand_Imperial"},
+        {"Italian Grand", "NS3_Italian_Grand"},
+        {"Royal Grand 3D", "NS3_Royal_Grand_3D"},
+        {"Silver Grand", "NS3_Silver_Grand"},
+        {"Velvet Grand", "NS3_Velvet_Grand"},
+        {"Concert Grand Ambient", "NS3_Concert_Grand_Ambient"},
+        {"Concert Grand Close", "NS3_Concert_Grand_Close"},
+        {"Grand Lady D", "NS3_Grand_Lady_D"},
+        {"Studio Grand 1", "NS3_Studio_Grand_1"},
+        {"Studio Grand 2", "NS3_Studio_Grand_2"},
+        {"Damper Grand", "NS3_Damper_Grand"},
+        // Uprights
+        {"Nord Grand Upright", "NS3_Grand_Upright"},
+        {"Amber Upright", "NS3_Amber_Upright"},
+        {"Baby Upright", "NS3_Baby_Upright"},
+        {"Bambino Upright", "NS3_Bambino_Upright"},
+        {"Black Upright", "NS3_Black_Upright"},
+        {"Blue Swede Upright", "NS3_Blue_Swede"},
+        {"Honky Tonk Upright", "NS3_HonkyTonky_Upright"},
+        {"Mellow Upright", "NS3_Mellow_Upright"},
+        {"Queen Upright", "NS3_Queen_Upright"},
+        {"Rain Piano (Warm)", "NS3_Rain_Piano"},
+        {"Romantic Upright", "NS3_Romantic_Upright"},
+        {"Saloon Upright", "NS3_Saloon_Upright"},
+        {"Damper Upright", "NS3_Damper_Upright"},
+        // Electric Pianos & Rhodes
+        {"Rhodes Stage Mark I (EP1)", "NS3_EP1"},
+        {"Rhodes Mark I Deep (EP2)", "NS3_EP2"},
+        {"Rhodes Mark II (EP3)", "NS3_EP3"},
+        {"Rhodes Mark V (EP4)", "NS3_EP4"},
+        {"Rhodes Bright (EP5)", "NS3_EP5"},
+        {"Rhodes Sparkle Top (EP6)", "NS3_EP6"},
+        {"Rhodes Dyno My Piano (EP7)", "NS3_EP7"},
+        {"Rhodes Suitcase (EP8)", "NS3_EP8"},
+        {"Ballad EP 1", "NS3_Ballad_EP1"},
+        {"Ballad EP 2", "NS3_Ballad_EP2"},
+        {"Hybrid EP", "NS3_Hybrid_EP"},
+        {"Silver EP", "NS3_Silver_EP"},
+        // Wurlitzers & CP-80
+        {"Wurlitzer 1", "NS3_Wurlitzer1"},
+        {"Wurlitzer 2", "NS3_Wurlitzer2"},
+        {"CP-80 Electric Grand", "NS3_Electric_Grand_CP80"},
+        {"CP-80 Amped", "NS3_Electric_Grand_Amped"},
+        {"CP-80 Gerbstedt", "NS3_Electric_Grand_Gerbstedt"},
+        // Digital & FM
+        {"DX7 Full Tines FM", "NS3_DX_FullTines"},
+        {"DX7 Rubba Rhodes", "NS3_DX_Rubba_Rhodes"},
+        {"DigiGrand 1", "NS3_DigiGrand1"},
+        {"DigiGrand 2", "NS3_DigiGrand2"}
+    };
+
+    addAndMakeVisible(m_comboPiano);
+    for (size_t i = 0; i < sizeof(pianoList)/sizeof(pianoList[0]); ++i) {
+        m_comboPiano.addItem(pianoList[i].label, static_cast<int>(i + 1));
+    }
+    m_comboPiano.setSelectedId(1, juce::dontSendNotification);
+    m_comboPiano.onChange = [this] {
+        int idx = m_comboPiano.getSelectedId() - 1;
+        if (idx >= 0 && idx < static_cast<int>(sizeof(pianoList)/sizeof(pianoList[0]))) {
+            m_host->loadPiano(pianoList[idx].id);
+        }
+    };
+
+    addAndMakeVisible(m_togglePiano);
+    m_togglePiano.setToggleState(true, juce::dontSendNotification);
+    m_togglePiano.onClick = [this] { m_host->setPianoEnabled(m_togglePiano.getToggleState()); };
+
+    setupRotary(m_sliderPianoVol, "", 0.0, 1.5, 1.0);
+    m_sliderPianoVol.onValueChange = [this] { m_host->setPianoVolume(static_cast<float>(m_sliderPianoVol.getValue())); };
+
+    // 2. Synth Slot (Slot B)
+    static const InstChoice synthList[] = {
+        {"Warm and Soft Pad", "Warm_and_Soft"},
+        {"ChillPad 1", "ChillPad1"},
+        {"Cloud Shimmer Pad", "Cloud_Shimmer"},
+        {"Deep Sea Ambient", "DeepSea"},
+        {"Huge Ambient 2", "HugeAmbient2"},
+        {"Misty Vox Pad", "Misty_Vox"},
+        {"Voicepad Ambient", "Voicepad"},
+        {"Watergate Pad", "Watergate"},
+        {"String Choir", "StringChoir"},
+        {"Silver Rain", "Silver_Rain"},
+        {"Access Virus Lead", "Access_Virus"},
+        {"Crystal Saw Synth", "CrystalSaw"},
+        {"Formanta Soviet Synth", "Formanta"},
+        {"Munich Synth", "Munich"},
+        {"Trance Saw Synth", "TranceSaw"},
+        {"Unicorn Synth", "Unicorn"}
+    };
+
+    addAndMakeVisible(m_comboSynth);
+    for (size_t i = 0; i < sizeof(synthList)/sizeof(synthList[0]); ++i) {
+        m_comboSynth.addItem(synthList[i].label, static_cast<int>(i + 1));
+    }
+    m_comboSynth.setSelectedId(1, juce::dontSendNotification);
+    m_comboSynth.onChange = [this] {
+        int idx = m_comboSynth.getSelectedId() - 1;
+        if (idx >= 0 && idx < static_cast<int>(sizeof(synthList)/sizeof(synthList[0]))) {
+            m_host->loadSynth(synthList[idx].id);
+        }
+    };
+
+    addAndMakeVisible(m_toggleSynth);
+    m_toggleSynth.setToggleState(true, juce::dontSendNotification);
+    m_toggleSynth.onClick = [this] { m_host->setSynthEnabled(m_toggleSynth.getToggleState()); };
+
+    setupRotary(m_sliderSynthVol, "", 0.0, 1.5, 0.65);
+    m_sliderSynthVol.onValueChange = [this] { m_host->setSynthVolume(static_cast<float>(m_sliderSynthVol.getValue())); };
+
+    setupRotary(m_sliderSynthCutoff, " Hz", 300.0, 20000.0, 8500.0);
+    m_sliderSynthCutoff.onValueChange = [this] { m_host->setSynthFilterCutoff(static_cast<float>(m_sliderSynthCutoff.getValue())); };
+
+    // 3. Ambient Continuous Drone Engine
+    addAndMakeVisible(m_btnDroneToggle);
+    m_btnDroneToggle.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
+    m_btnDroneToggle.onClick = [this] {
+        int rootNotes[] = {36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47};
+        int sel = m_comboDroneRoot.getSelectedId() - 1;
+        int root = 36;
+        if (sel >= 0 && sel < 12) root = rootNotes[sel];
+
+        m_host->toggleDrone(root);
+        bool active = m_host->isDroneActive();
+        m_btnDroneToggle.setButtonText(active ? "DRONE LATCH [ACTIVE]" : "DRONE LATCH [OFF]");
+        m_btnDroneToggle.setColour(juce::TextButton::buttonColourId, active ? StagePianoLookAndFeel::accentAmber : juce::Colour(0xff222530));
+        m_btnDroneToggle.setColour(juce::TextButton::textColourOffId, active ? juce::Colours::black : StagePianoLookAndFeel::textLight);
+    };
+
+    addAndMakeVisible(m_comboDroneRoot);
+    const char* rootNames[] = {
+        "Root: C", "Root: C# / Db", "Root: D", "Root: D# / Eb", "Root: E", "Root: F",
+        "Root: F# / Gb", "Root: G", "Root: G# / Ab", "Root: A", "Root: A# / Bb", "Root: B"
+    };
+    for (int i = 0; i < 12; ++i) {
+        m_comboDroneRoot.addItem(rootNames[i], i + 1);
+    }
+    m_comboDroneRoot.setSelectedId(1, juce::dontSendNotification);
+    m_comboDroneRoot.onChange = [this] {
+        if (m_host->isDroneActive()) {
+            int rootNotes[] = {36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47};
+            int sel = m_comboDroneRoot.getSelectedId() - 1;
+            if (sel >= 0 && sel < 12) {
+                m_host->triggerDroneKey(rootNotes[sel]);
+            }
+        }
+    };
+
+    addAndMakeVisible(m_comboDroneSound);
+    static const InstChoice droneSounds[] = {
+        {"Warm and Soft (Drone)", "Warm_and_Soft"},
+        {"ChillPad 1 (Drone)", "ChillPad1"},
+        {"Cloud Shimmer (Drone)", "Cloud_Shimmer"},
+        {"Deep Sea Ambient (Drone)", "DeepSea"},
+        {"Huge Ambient 2 (Drone)", "HugeAmbient2"},
+        {"Misty Vox Pad (Drone)", "Misty_Vox"},
+        {"Voicepad Ambient (Drone)", "Voicepad"},
+        {"Watergate Pad (Drone)", "Watergate"},
+        {"String Choir (Drone)", "StringChoir"},
+        {"Silver Rain (Drone)", "Silver_Rain"},
+        {"Formanta Drone", "Formanta"},
+        {"Access Virus Drone", "Access_Virus"}
+    };
+    for (size_t i = 0; i < sizeof(droneSounds)/sizeof(droneSounds[0]); ++i) {
+        m_comboDroneSound.addItem(droneSounds[i].label, static_cast<int>(i + 1));
+    }
+    m_comboDroneSound.setSelectedId(1, juce::dontSendNotification);
+    m_comboDroneSound.onChange = [this] {
+        int idx = m_comboDroneSound.getSelectedId() - 1;
+        if (idx >= 0 && idx < static_cast<int>(sizeof(droneSounds)/sizeof(droneSounds[0]))) {
+            m_host->loadDrone(droneSounds[idx].id);
+        }
+    };
+
+    setupRotary(m_sliderDroneVol, "", 0.0, 1.5, 0.70);
+    m_sliderDroneVol.onValueChange = [this] { m_host->setDroneVolume(static_cast<float>(m_sliderDroneVol.getValue())); };
+
+    // 4. Effects: EQ, Chorus, Delay, Reverb, Compressor
+    setupRotary(m_sliderEqLow, " dB", -12.0, 12.0, 3.0);
+    m_sliderEqLow.onValueChange = [this] { m_host->getEqualizer().setLowGain(static_cast<float>(m_sliderEqLow.getValue())); };
+
+    setupRotary(m_sliderEqMid, " dB", -12.0, 12.0, -2.0);
+    m_sliderEqMid.onValueChange = [this] { m_host->getEqualizer().setMidGain(static_cast<float>(m_sliderEqMid.getValue())); };
+
+    setupRotary(m_sliderEqHigh, " dB", -12.0, 12.0, 4.0);
+    m_sliderEqHigh.onValueChange = [this] { m_host->getEqualizer().setHighGain(static_cast<float>(m_sliderEqHigh.getValue())); };
+
+    addAndMakeVisible(m_toggleChorus);
+    m_toggleChorus.setToggleState(false, juce::dontSendNotification);
+    m_toggleChorus.onClick = [this] { m_host->getChorus().setEnabled(m_toggleChorus.getToggleState()); };
+    setupRotary(m_sliderChorusMix, "%", 0.0, 100.0, 35.0);
+    m_sliderChorusMix.onValueChange = [this] { m_host->getChorus().setMix(static_cast<float>(m_sliderChorusMix.getValue()) * 0.01f); };
+
+    addAndMakeVisible(m_toggleDelay);
+    m_toggleDelay.setToggleState(false, juce::dontSendNotification);
+    m_toggleDelay.onClick = [this] { m_host->getDelay().setEnabled(m_toggleDelay.getToggleState()); };
+    setupRotary(m_sliderDelayMix, "%", 0.0, 100.0, 25.0);
+    m_sliderDelayMix.onValueChange = [this] { m_host->getDelay().setMix(static_cast<float>(m_sliderDelayMix.getValue()) * 0.01f); };
+
+    addAndMakeVisible(m_toggleReverb);
+    m_toggleReverb.setToggleState(true, juce::dontSendNotification);
+    m_toggleReverb.onClick = [this] { m_host->getReverb().setEnabled(m_toggleReverb.getToggleState()); };
+    setupRotary(m_sliderReverbMix, "%", 0.0, 100.0, 26.0);
+    m_sliderReverbMix.onValueChange = [this] { m_host->getReverb().setMix(static_cast<float>(m_sliderReverbMix.getValue()) * 0.01f); };
+
+    setupRotary(m_sliderCompThresh, " dB", -40.0, 0.0, -15.0);
+    m_sliderCompThresh.onValueChange = [this] { m_host->getCompressor().setThreshold(static_cast<float>(m_sliderCompThresh.getValue())); };
+
+    setupRotary(m_sliderCompMakeup, " dB", 0.0, 15.0, 2.5);
+    m_sliderCompMakeup.onValueChange = [this] { m_host->getCompressor().setMakeupGain(static_cast<float>(m_sliderCompMakeup.getValue())); };
+
+    // Header buttons
+    addAndMakeVisible(m_btnPrevPreset);
+    addAndMakeVisible(m_btnNextPreset);
+    addAndMakeVisible(m_btnSavePreset);
+    m_btnSavePreset.setColour(juce::TextButton::buttonColourId, StagePianoLookAndFeel::accentNord);
+
+    addAndMakeVisible(m_btnSettings);
+    m_btnSettings.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff2a2c38));
+    m_btnSettings.onClick = [this] { openAudioSettings(); };
+
+    // Footer Config Button
+    addAndMakeVisible(m_btnFooterConfig);
+    m_btnFooterConfig.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
+    m_btnFooterConfig.onClick = [this] { openAudioSettings(); };
+}
+
+void MainComponent::audioDeviceIOCallbackWithContext(const float* const* /*inputChannelData*/,
+                                                     int /*numInputChannels*/,
+                                                     float* const* outputChannelData,
+                                                     int numOutputChannels,
+                                                     int numSamples,
+                                                     const juce::AudioIODeviceCallbackContext& /*context*/) {
+    if (numOutputChannels == 0 || numSamples == 0) return;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    for (int ch = 0; ch < numOutputChannels; ++ch) {
+        juce::FloatVectorOperations::clear(outputChannelData[ch], numSamples);
+    }
+
+    std::vector<float> interleaved(numSamples * 2, 0.0f);
+    m_host->render(interleaved.data(), static_cast<uint32_t>(numSamples), 2);
+
+    for (int s = 0; s < numSamples; ++s) {
+        if (numOutputChannels >= 1) outputChannelData[0][s] = interleaved[s * 2];
+        if (numOutputChannels >= 2) outputChannelData[1][s] = interleaved[s * 2 + 1];
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    double renderUs = std::chrono::duration<double, std::micro>(end - start).count();
+    double budgetUs = (numSamples / 44100.0) * 1e6;
+    m_dspLoad.store(static_cast<float>((renderUs / budgetUs) * 100.0));
+}
+
+void MainComponent::audioDeviceAboutToStart(juce::AudioIODevice* /*device*/) {}
+void MainComponent::audioDeviceStopped() {}
+
+void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message) {
+    if (source != nullptr) {
+        m_activeMidiDevice = source->getName().toStdString();
+    }
+
+    m_keyboardState.processNextMidiEvent(message);
+
+    if (message.isController() && message.getControllerNumber() == 64) {
+        bool down = (message.getControllerValue() >= 64);
+        m_sustainDown = down;
+        m_host->setSustainPedal(down);
+    }
+}
+
+void MainComponent::timerCallback() {
+    repaint();
+}
+
+void MainComponent::paint(juce::Graphics& g) {
+    g.fillAll(StagePianoLookAndFeel::bgChassis);
+
+    auto bounds = getLocalBounds();
+
+    // 1. Header Bar
+    auto headerBounds = bounds.removeFromTop(80);
+    g.setColour(juce::Colour(0xff181920));
+    g.fillRect(headerBounds);
+    g.setColour(StagePianoLookAndFeel::borderPanel);
+    g.drawHorizontalLine(headerBounds.getBottom() - 1, 0.0f, static_cast<float>(getWidth()));
+
+    // Brand Label
+    g.setColour(StagePianoLookAndFeel::accentNord);
+    g.fillRoundedRectangle(20.0f, 22.0f, 8.0f, 36.0f, 2.0f);
+
+    g.setColour(juce::Colours::white);
+    g.setFont(juce::FontOptions(17.0f, juce::Font::bold));
+    g.drawText("STAGE PIANO STUDIO", 36, 22, 220, 20, juce::Justification::left);
+    g.setColour(StagePianoLookAndFeel::textDim);
+    g.setFont(juce::FontOptions(11.0f));
+    g.drawText("DUAL-LAYER + CONTINUOUS DRONE HOST", 36, 42, 240, 16, juce::Justification::left);
+
+    // OLED Screen Box
+    auto oledRect = juce::Rectangle<int>(290, 14, 410, 52);
+    g.setColour(juce::Colour(0xff090a0d));
+    g.fillRoundedRectangle(oledRect.toFloat(), 6.0f);
+    g.setColour(juce::Colour(0xff222530));
+    g.drawRoundedRectangle(oledRect.toFloat(), 6.0f, 1.5f);
+
+    g.setColour(StagePianoLookAndFeel::accentAmber);
+    g.setFont(juce::FontOptions(10.0f, juce::Font::bold));
+    g.drawText("DUAL-LAYER LIVE SETUP", 305, 20, 180, 12, juce::Justification::left);
+
+    g.setColour(juce::Colour(0xfffbbf24));
+    g.setFont(juce::FontOptions(14.0f, juce::Font::bold));
+    juce::String layerStr = m_host->getPianoName() + " + " + m_host->getSynthName();
+    g.drawText(layerStr, 305, 36, 230, 20, juce::Justification::left);
+
+    g.setColour(StagePianoLookAndFeel::textDim);
+    g.setFont(juce::FontOptions(10.0f));
+    juce::String telemetry = "DSP: " + juce::String(m_dspLoad.load(), 1) + "% | VOICES: " + juce::String(m_host->getTotalActiveVoices());
+    g.drawText(telemetry, 470, 28, 220, 20, juce::Justification::right);
+
+    // 2. Footer Strip
+    auto footerBounds = bounds.removeFromBottom(50);
+    g.setColour(juce::Colour(0xff15161c));
+    g.fillRect(footerBounds);
+    g.setColour(StagePianoLookAndFeel::borderPanel);
+    g.drawHorizontalLine(footerBounds.getY(), 0.0f, static_cast<float>(getWidth()));
+
+    bool hasMidi = (m_activeMidiDevice != "No MIDI input active (click CONFIG)");
+    g.setColour(hasMidi ? juce::Colour(0xff10b981) : juce::Colour(0xffef4444));
+    g.fillEllipse(24.0f, footerBounds.getY() + 20.0f, 8.0f, 8.0f);
+    g.setColour(StagePianoLookAndFeel::textLight);
+    g.setFont(juce::FontOptions(12.0f, juce::Font::bold));
+    g.drawText("MIDI: " + juce::String(m_activeMidiDevice), 40, footerBounds.getY() + 15, 420, 18, juce::Justification::left);
+
+    g.setColour(m_sustainDown ? StagePianoLookAndFeel::accentAmber : StagePianoLookAndFeel::textDim);
+    g.drawText(m_sustainDown ? "SUSTAIN: [DOWN]" : "SUSTAIN: [UP]", 480, footerBounds.getY() + 15, 130, 18, juce::Justification::left);
+
+    // 3. Four Main Cards
+    auto contentBounds = bounds.removeFromTop(385).reduced(16, 8);
+    int colWidth = (contentBounds.getWidth() - 36) / 4;
+
+    auto r1 = contentBounds.removeFromLeft(colWidth);
+    contentBounds.removeFromLeft(12);
+    auto r2 = contentBounds.removeFromLeft(colWidth);
+    contentBounds.removeFromLeft(12);
+    auto r3 = contentBounds.removeFromLeft(colWidth);
+    contentBounds.removeFromLeft(12);
+    auto r4 = contentBounds;
+
+    auto drawCard = [&g](juce::Rectangle<int> r, const juce::String& title, const juce::String& tag) {
+        g.setColour(StagePianoLookAndFeel::bgPanel);
+        g.fillRoundedRectangle(r.toFloat(), 8.0f);
+        g.setColour(StagePianoLookAndFeel::borderPanel);
+        g.drawRoundedRectangle(r.toFloat(), 8.0f, 1.0f);
+
+        g.setColour(StagePianoLookAndFeel::textLight);
+        g.setFont(juce::FontOptions(11.0f, juce::Font::bold));
+        g.drawText(title, r.getX() + 14, r.getY() + 12, 180, 16, juce::Justification::left);
+
+        g.setColour(StagePianoLookAndFeel::textDim);
+        g.setFont(juce::FontOptions(9.0f));
+        g.drawText(tag, r.getRight() - 95, r.getY() + 12, 80, 16, juce::Justification::right);
+
+        g.setColour(StagePianoLookAndFeel::borderPanel);
+        g.drawHorizontalLine(r.getY() + 34, static_cast<float>(r.getX() + 14), static_cast<float>(r.getRight() - 14));
+    };
+
+    drawCard(r1, "PIANO & SYNTH LAYER", "DUAL SLOT");
+    drawCard(r2, "AMBIENT DRONE ENGINE", "KEY LATCH");
+    drawCard(r3, "EQ & MODULATION", "3-BAND / CHORUS");
+    drawCard(r4, "REVERB & COMPRESSOR", "STUDIO FX");
+
+    // Slot labels
+    g.setColour(StagePianoLookAndFeel::textDim);
+    g.setFont(juce::FontOptions(10.0f, juce::Font::bold));
+    g.drawText("SLOT A: PIANO", r1.getX() + 14, r1.getY() + 42, 150, 14, juce::Justification::left);
+    g.drawText("SLOT B: SYNTH PAD", r1.getX() + 14, r1.getY() + 147, 150, 14, juce::Justification::left);
+
+    g.drawText("DRONE HARMONIC ROOT", r2.getX() + 14, r2.getY() + 42, 180, 14, juce::Justification::left);
+    g.drawText("DRONE AMBIENT SOUND", r2.getX() + 14, r2.getY() + 117, 180, 14, juce::Justification::left);
+
+    // Gain Reduction Meter in Card 4
+    auto meterBox = juce::Rectangle<int>(r4.getX() + 14, r4.getY() + 175, r4.getWidth() - 28, 26);
+    g.setColour(juce::Colour(0xff090a0d));
+    g.fillRoundedRectangle(meterBox.toFloat(), 4.0f);
+    float gr = m_host->getCompressor().getGainReductionDb();
+    g.setColour(StagePianoLookAndFeel::textDim);
+    g.setFont(juce::FontOptions(9.0f, juce::Font::bold));
+    g.drawText("GR: -" + juce::String(gr, 1) + " dB", meterBox.getX() + 6, meterBox.getY() + 3, 100, 10, juce::Justification::left);
+
+    int numLeds = 12;
+    int litLeds = juce::jlimit(0, numLeds, static_cast<int>(gr * 0.8f));
+    int ledW = (meterBox.getWidth() - 12 - (numLeds * 2)) / numLeds;
+    for (int i = 0; i < numLeds; ++i) {
+        int lx = meterBox.getX() + 6 + i * (ledW + 2);
+        int ly = meterBox.getY() + 13;
+        bool lit = (i < litLeds);
+        g.setColour(lit ? (i > 8 ? juce::Colour(0xffef4444) : StagePianoLookAndFeel::accentAmber) : juce::Colour(0xff222530));
+        g.fillRect(lx, ly, ledW, 8);
+    }
+
+    // Keyboard chassis frame
+    g.setColour(StagePianoLookAndFeel::borderPanel);
+    g.drawRoundedRectangle(15.0f, 480.0f, static_cast<float>(getWidth() - 30), 226.0f, 6.0f, 1.5f);
+}
+
+void MainComponent::resized() {
+    auto bounds = getLocalBounds();
+    bounds.removeFromTop(80);
+    auto footerArea = bounds.removeFromBottom(50);
+    auto cardArea = bounds.removeFromTop(385);
+    auto contentBounds = cardArea.reduced(16, 8);
+
+    int colWidth = (contentBounds.getWidth() - 36) / 4;
+    auto r1 = contentBounds.removeFromLeft(colWidth);
+    contentBounds.removeFromLeft(12);
+    auto r2 = contentBounds.removeFromLeft(colWidth);
+    contentBounds.removeFromLeft(12);
+    auto r3 = contentBounds.removeFromLeft(colWidth);
+    contentBounds.removeFromLeft(12);
+    auto r4 = contentBounds;
+
+    // Header buttons
+    m_btnPrevPreset.setBounds(715, 22, 60, 36);
+    m_btnNextPreset.setBounds(780, 22, 60, 36);
+    m_btnSavePreset.setBounds(845, 22, 100, 36);
+    m_btnSettings.setBounds(955, 22, 165, 36);
+
+    // Footer config button
+    m_btnFooterConfig.setBounds(footerArea.getRight() - 150, footerArea.getY() + 10, 130, 30);
+
+    // Card 1: Slot A & Slot B
+    m_comboPiano.setBounds(r1.getX() + 14, r1.getY() + 60, r1.getWidth() - 28, 28);
+    m_togglePiano.setBounds(r1.getX() + 14, r1.getY() + 95, 110, 24);
+    m_sliderPianoVol.setBounds(r1.getX() + 130, r1.getY() + 90, 65, 50);
+
+    m_comboSynth.setBounds(r1.getX() + 14, r1.getY() + 165, r1.getWidth() - 28, 28);
+    m_toggleSynth.setBounds(r1.getX() + 14, r1.getY() + 200, 110, 24);
+    m_sliderSynthVol.setBounds(r1.getX() + 130, r1.getY() + 195, 65, 50);
+    m_sliderSynthCutoff.setBounds(r1.getX() + 20, r1.getY() + 255, 75, 80);
+
+    // Card 2: Ambient Drone Engine
+    m_comboDroneRoot.setBounds(r2.getX() + 14, r2.getY() + 60, r2.getWidth() - 28, 28);
+    m_comboDroneSound.setBounds(r2.getX() + 14, r2.getY() + 135, r2.getWidth() - 28, 28);
+    m_btnDroneToggle.setBounds(r2.getX() + 14, r2.getY() + 185, r2.getWidth() - 28, 42);
+    m_sliderDroneVol.setBounds(r2.getCentreX() - 35, r2.getY() + 240, 70, 80);
+
+    // Card 3: EQ & Modulation
+    m_sliderEqLow.setBounds(r3.getX() + 10, r3.getY() + 45, 65, 80);
+    m_sliderEqMid.setBounds(r3.getX() + 80, r3.getY() + 45, 65, 80);
+    m_sliderEqHigh.setBounds(r3.getX() + 150, r3.getY() + 45, 65, 80);
+
+    m_toggleChorus.setBounds(r3.getX() + 14, r3.getY() + 140, 90, 24);
+    m_sliderChorusMix.setBounds(r3.getX() + 110, r3.getY() + 130, 65, 50);
+
+    m_toggleDelay.setBounds(r3.getX() + 14, r3.getY() + 200, 90, 24);
+    m_sliderDelayMix.setBounds(r3.getX() + 110, r3.getY() + 190, 65, 50);
+
+    // Card 4: Reverb & Compressor
+    m_toggleReverb.setBounds(r4.getX() + 14, r4.getY() + 45, 90, 24);
+    m_sliderReverbMix.setBounds(r4.getX() + 110, r4.getY() + 40, 65, 50);
+
+    m_sliderCompThresh.setBounds(r4.getX() + 15, r4.getY() + 100, 70, 70);
+    m_sliderCompMakeup.setBounds(r4.getX() + 95, r4.getY() + 100, 70, 70);
+
+    // Virtual Piano Keyboard (61 keys from C2 to C7 = 36 white keys)
+    int kbX = 18;
+    int kbY = 483;
+    int kbW = getWidth() - 36;
+    int kbH = 220;
+    m_keyboardComponent.setBounds(kbX, kbY, kbW, kbH);
+    m_keyboardComponent.setKeyWidth(static_cast<float>(kbW) / 36.0f);
+}

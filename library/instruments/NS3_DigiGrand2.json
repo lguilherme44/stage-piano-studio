@@ -1,0 +1,769 @@
+{
+  "name": "NS3_DigiGrand2",
+  "sample_rate": 44100,
+  "channels": 2,
+  "notes": {
+    "21": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DigiGrand2_021_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DigiGrand2_021_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DigiGrand2_021_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DigiGrand2_021_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_021_127.wav"
+      }
+    ],
+    "24": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DigiGrand2_024_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DigiGrand2_024_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DigiGrand2_024_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DigiGrand2_024_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_024_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_024_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_024_127.wav"
+      }
+    ],
+    "32": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DigiGrand2_032_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DigiGrand2_032_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DigiGrand2_032_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_032_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_032_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DigiGrand2_032_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_032_127.wav"
+      }
+    ],
+    "41": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DigiGrand2_041_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DigiGrand2_041_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DigiGrand2_041_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_041_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DigiGrand2_041_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_041_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DigiGrand2_041_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_041_127.wav"
+      }
+    ],
+    "43": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DigiGrand2_043_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DigiGrand2_043_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DigiGrand2_043_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DigiGrand2_043_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_043_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_043_127.wav"
+      }
+    ],
+    "50": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DigiGrand2_050_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DigiGrand2_050_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DigiGrand2_050_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DigiGrand2_050_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_050_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DigiGrand2_050_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_050_127.wav"
+      }
+    ],
+    "55": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DigiGrand2_055_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DigiGrand2_055_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DigiGrand2_055_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_055_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_055_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DigiGrand2_055_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DigiGrand2_055_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_055_127.wav"
+      }
+    ],
+    "61": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DigiGrand2_061_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DigiGrand2_061_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DigiGrand2_061_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DigiGrand2_061_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_061_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DigiGrand2_061_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_061_127.wav"
+      }
+    ],
+    "65": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DigiGrand2_065_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DigiGrand2_065_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DigiGrand2_065_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_065_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DigiGrand2_065_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DigiGrand2_065_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_065_127.wav"
+      }
+    ],
+    "70": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DigiGrand2_070_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DigiGrand2_070_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DigiGrand2_070_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_070_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_070_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DigiGrand2_070_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_070_127.wav"
+      }
+    ],
+    "77": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_DigiGrand2_077_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DigiGrand2_077_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DigiGrand2_077_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_077_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DigiGrand2_077_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DigiGrand2_077_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_077_127.wav"
+      }
+    ],
+    "81": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DigiGrand2_081_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DigiGrand2_081_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_081_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DigiGrand2_081_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DigiGrand2_081_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_081_127.wav"
+      }
+    ],
+    "84": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DigiGrand2_084_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DigiGrand2_084_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_084_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_084_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 112,
+        "target_velocity": 112,
+        "file": "NS3_DigiGrand2_084_112.wav"
+      },
+      {
+        "min_velocity": 113,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_084_127.wav"
+      }
+    ],
+    "87": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DigiGrand2_087_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_DigiGrand2_087_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_DigiGrand2_087_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_087_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DigiGrand2_087_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DigiGrand2_087_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_087_127.wav"
+      }
+    ],
+    "92": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_DigiGrand2_092_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DigiGrand2_092_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_092_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_DigiGrand2_092_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_DigiGrand2_092_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DigiGrand2_092_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_092_127.wav"
+      }
+    ],
+    "95": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_DigiGrand2_095_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DigiGrand2_095_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DigiGrand2_095_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DigiGrand2_095_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DigiGrand2_095_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DigiGrand2_095_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_095_127.wav"
+      }
+    ],
+    "99": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_DigiGrand2_099_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_DigiGrand2_099_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_DigiGrand2_099_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DigiGrand2_099_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DigiGrand2_099_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_099_127.wav"
+      }
+    ],
+    "103": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_DigiGrand2_103_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_DigiGrand2_103_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_DigiGrand2_103_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_DigiGrand2_103_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 116,
+        "target_velocity": 116,
+        "file": "NS3_DigiGrand2_103_116.wav"
+      },
+      {
+        "min_velocity": 117,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_DigiGrand2_103_127.wav"
+      }
+    ]
+  }
+}

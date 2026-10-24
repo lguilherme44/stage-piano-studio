@@ -1,0 +1,79 @@
+{
+  "name": "HugeAmbient2",
+  "sample_rate": 44100,
+  "channels": 2,
+  "notes": {
+    "24": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "HugeAmbient2_C1_127.wav"
+      }
+    ],
+    "31": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "HugeAmbient2_G1_127.wav"
+      }
+    ],
+    "38": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "HugeAmbient2_D2_127.wav"
+      }
+    ],
+    "45": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "HugeAmbient2_A2_127.wav"
+      }
+    ],
+    "52": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "HugeAmbient2_E3_127.wav"
+      }
+    ],
+    "59": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "HugeAmbient2_B3_127.wav"
+      }
+    ],
+    "66": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "HugeAmbient2_F#4_127.wav"
+      }
+    ],
+    "73": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "HugeAmbient2_C#5_127.wav"
+      }
+    ],
+    "80": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "HugeAmbient2_G#5_127.wav"
+      }
+    ]
+  }
+}

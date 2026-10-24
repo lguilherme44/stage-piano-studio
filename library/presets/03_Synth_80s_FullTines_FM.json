@@ -1,0 +1,36 @@
+{
+  "name": "Synth 80s Full Tines FM",
+  "base_instrument": "NS3_DX_FullTines",
+  "filter": {
+    "cutoff_hz": 18000.000,
+    "resonance": 0.300
+  },
+  "envelope": {
+    "attack_ms": 1.000,
+    "decay_ms": 400.000,
+    "sustain_level": 0.800,
+    "release_ms": 900.000
+  },
+  "equalizer": {
+    "enabled": true,
+    "low_gain_db": 1.000,
+    "low_freq_hz": 100.000,
+    "mid_gain_db": 2.000,
+    "mid_freq_hz": 2400.000,
+    "mid_q": 0.900,
+    "high_gain_db": 4.000,
+    "high_freq_hz": 11000.000
+  },
+  "compressor": {
+    "enabled": true,
+    "threshold_db": -12.000,
+    "ratio": 3.000,
+    "attack_ms": 15.000,
+    "release_ms": 200.000,
+    "makeup_db": 2.000,
+    "knee_db": 3.000
+  },
+  "master": {
+    "volume": 0.950
+  }
+}

@@ -1,0 +1,1005 @@
+{
+  "name": "NS3_Concert_Grand_Ambient",
+  "sample_rate": 44100,
+  "channels": 2,
+  "notes": {
+    "21": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 53,
+        "target_velocity": 53,
+        "file": "NS3_Concert_Grand_Ambient_021_053.wav"
+      },
+      {
+        "min_velocity": 54,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_Concert_Grand_Ambient_021_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_Concert_Grand_Ambient_021_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_021_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_Concert_Grand_Ambient_021_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_021_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_021_127.wav"
+      }
+    ],
+    "25": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 51,
+        "target_velocity": 51,
+        "file": "NS3_Concert_Grand_Ambient_025_051.wav"
+      },
+      {
+        "min_velocity": 52,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_Concert_Grand_Ambient_025_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_Concert_Grand_Ambient_025_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_Concert_Grand_Ambient_025_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_Concert_Grand_Ambient_025_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_Concert_Grand_Ambient_025_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_025_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_025_127.wav"
+      }
+    ],
+    "28": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 53,
+        "target_velocity": 53,
+        "file": "NS3_Concert_Grand_Ambient_028_053.wav"
+      },
+      {
+        "min_velocity": 54,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_Concert_Grand_Ambient_028_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_Concert_Grand_Ambient_028_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_Concert_Grand_Ambient_028_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_028_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_Concert_Grand_Ambient_028_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_028_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_028_127.wav"
+      }
+    ],
+    "33": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 47,
+        "target_velocity": 47,
+        "file": "NS3_Concert_Grand_Ambient_033_047.wav"
+      },
+      {
+        "min_velocity": 48,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_Concert_Grand_Ambient_033_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_Concert_Grand_Ambient_033_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_Concert_Grand_Ambient_033_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_Concert_Grand_Ambient_033_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_Concert_Grand_Ambient_033_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_Concert_Grand_Ambient_033_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_033_127.wav"
+      }
+    ],
+    "37": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 46,
+        "target_velocity": 46,
+        "file": "NS3_Concert_Grand_Ambient_037_046.wav"
+      },
+      {
+        "min_velocity": 47,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_Concert_Grand_Ambient_037_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_Concert_Grand_Ambient_037_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_Concert_Grand_Ambient_037_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_Concert_Grand_Ambient_037_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_037_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_Concert_Grand_Ambient_037_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_Concert_Grand_Ambient_037_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_037_127.wav"
+      }
+    ],
+    "40": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 51,
+        "target_velocity": 51,
+        "file": "NS3_Concert_Grand_Ambient_040_051.wav"
+      },
+      {
+        "min_velocity": 52,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_Concert_Grand_Ambient_040_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_Concert_Grand_Ambient_040_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_Concert_Grand_Ambient_040_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_040_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_Concert_Grand_Ambient_040_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_040_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_040_127.wav"
+      }
+    ],
+    "44": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 47,
+        "target_velocity": 47,
+        "file": "NS3_Concert_Grand_Ambient_044_047.wav"
+      },
+      {
+        "min_velocity": 48,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_Concert_Grand_Ambient_044_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_Concert_Grand_Ambient_044_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_Concert_Grand_Ambient_044_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_Concert_Grand_Ambient_044_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_044_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_Concert_Grand_Ambient_044_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_044_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_044_127.wav"
+      }
+    ],
+    "50": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 44,
+        "target_velocity": 44,
+        "file": "NS3_Concert_Grand_Ambient_050_044.wav"
+      },
+      {
+        "min_velocity": 45,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_Concert_Grand_Ambient_050_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_Concert_Grand_Ambient_050_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_Concert_Grand_Ambient_050_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_Concert_Grand_Ambient_050_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_Concert_Grand_Ambient_050_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_Concert_Grand_Ambient_050_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_050_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_050_127.wav"
+      }
+    ],
+    "54": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 44,
+        "target_velocity": 44,
+        "file": "NS3_Concert_Grand_Ambient_054_044.wav"
+      },
+      {
+        "min_velocity": 45,
+        "max_velocity": 51,
+        "target_velocity": 51,
+        "file": "NS3_Concert_Grand_Ambient_054_051.wav"
+      },
+      {
+        "min_velocity": 52,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_Concert_Grand_Ambient_054_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_Concert_Grand_Ambient_054_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_Concert_Grand_Ambient_054_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_Concert_Grand_Ambient_054_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_054_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_054_127.wav"
+      }
+    ],
+    "57": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 46,
+        "target_velocity": 46,
+        "file": "NS3_Concert_Grand_Ambient_057_046.wav"
+      },
+      {
+        "min_velocity": 47,
+        "max_velocity": 53,
+        "target_velocity": 53,
+        "file": "NS3_Concert_Grand_Ambient_057_053.wav"
+      },
+      {
+        "min_velocity": 54,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_Concert_Grand_Ambient_057_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_Concert_Grand_Ambient_057_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_Concert_Grand_Ambient_057_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_Concert_Grand_Ambient_057_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_Concert_Grand_Ambient_057_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_Concert_Grand_Ambient_057_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_057_127.wav"
+      }
+    ],
+    "62": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 49,
+        "target_velocity": 49,
+        "file": "NS3_Concert_Grand_Ambient_062_049.wav"
+      },
+      {
+        "min_velocity": 50,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_Concert_Grand_Ambient_062_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 63,
+        "target_velocity": 63,
+        "file": "NS3_Concert_Grand_Ambient_062_063.wav"
+      },
+      {
+        "min_velocity": 64,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_Concert_Grand_Ambient_062_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_Concert_Grand_Ambient_062_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_062_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_Concert_Grand_Ambient_062_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_062_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_062_127.wav"
+      }
+    ],
+    "66": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 47,
+        "target_velocity": 47,
+        "file": "NS3_Concert_Grand_Ambient_066_047.wav"
+      },
+      {
+        "min_velocity": 48,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_Concert_Grand_Ambient_066_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_Concert_Grand_Ambient_066_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 71,
+        "target_velocity": 71,
+        "file": "NS3_Concert_Grand_Ambient_066_071.wav"
+      },
+      {
+        "min_velocity": 72,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_Concert_Grand_Ambient_066_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_066_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_Concert_Grand_Ambient_066_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_066_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_066_127.wav"
+      }
+    ],
+    "71": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_Concert_Grand_Ambient_071_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_Concert_Grand_Ambient_071_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_071_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_Concert_Grand_Ambient_071_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_Concert_Grand_Ambient_071_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_Concert_Grand_Ambient_071_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_071_127.wav"
+      }
+    ],
+    "76": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 47,
+        "target_velocity": 47,
+        "file": "NS3_Concert_Grand_Ambient_076_047.wav"
+      },
+      {
+        "min_velocity": 48,
+        "max_velocity": 56,
+        "target_velocity": 56,
+        "file": "NS3_Concert_Grand_Ambient_076_056.wav"
+      },
+      {
+        "min_velocity": 57,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_Concert_Grand_Ambient_076_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_Concert_Grand_Ambient_076_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 89,
+        "target_velocity": 89,
+        "file": "NS3_Concert_Grand_Ambient_076_089.wav"
+      },
+      {
+        "min_velocity": 90,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_Concert_Grand_Ambient_076_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_076_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_076_127.wav"
+      }
+    ],
+    "81": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_Concert_Grand_Ambient_081_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_Concert_Grand_Ambient_081_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_Concert_Grand_Ambient_081_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_Concert_Grand_Ambient_081_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 97,
+        "target_velocity": 97,
+        "file": "NS3_Concert_Grand_Ambient_081_097.wav"
+      },
+      {
+        "min_velocity": 98,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_Concert_Grand_Ambient_081_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_Concert_Grand_Ambient_081_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_081_127.wav"
+      }
+    ],
+    "85": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 58,
+        "target_velocity": 58,
+        "file": "NS3_Concert_Grand_Ambient_085_058.wav"
+      },
+      {
+        "min_velocity": 59,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_Concert_Grand_Ambient_085_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 79,
+        "target_velocity": 79,
+        "file": "NS3_Concert_Grand_Ambient_085_079.wav"
+      },
+      {
+        "min_velocity": 80,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_085_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_Concert_Grand_Ambient_085_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_085_127.wav"
+      }
+    ],
+    "88": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 61,
+        "target_velocity": 61,
+        "file": "NS3_Concert_Grand_Ambient_088_061.wav"
+      },
+      {
+        "min_velocity": 62,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_Concert_Grand_Ambient_088_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_Concert_Grand_Ambient_088_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_088_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 102,
+        "target_velocity": 102,
+        "file": "NS3_Concert_Grand_Ambient_088_102.wav"
+      },
+      {
+        "min_velocity": 103,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_Concert_Grand_Ambient_088_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_088_127.wav"
+      }
+    ],
+    "91": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 67,
+        "target_velocity": 67,
+        "file": "NS3_Concert_Grand_Ambient_091_067.wav"
+      },
+      {
+        "min_velocity": 68,
+        "max_velocity": 83,
+        "target_velocity": 83,
+        "file": "NS3_Concert_Grand_Ambient_091_083.wav"
+      },
+      {
+        "min_velocity": 84,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_Concert_Grand_Ambient_091_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_091_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_091_127.wav"
+      }
+    ],
+    "95": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_Concert_Grand_Ambient_095_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_Concert_Grand_Ambient_095_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 98,
+        "target_velocity": 98,
+        "file": "NS3_Concert_Grand_Ambient_095_098.wav"
+      },
+      {
+        "min_velocity": 99,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_095_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_095_127.wav"
+      }
+    ],
+    "98": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 75,
+        "target_velocity": 75,
+        "file": "NS3_Concert_Grand_Ambient_098_075.wav"
+      },
+      {
+        "min_velocity": 76,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_098_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 105,
+        "target_velocity": 105,
+        "file": "NS3_Concert_Grand_Ambient_098_105.wav"
+      },
+      {
+        "min_velocity": 106,
+        "max_velocity": 113,
+        "target_velocity": 113,
+        "file": "NS3_Concert_Grand_Ambient_098_113.wav"
+      },
+      {
+        "min_velocity": 114,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_098_127.wav"
+      }
+    ],
+    "102": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 68,
+        "target_velocity": 68,
+        "file": "NS3_Concert_Grand_Ambient_102_068.wav"
+      },
+      {
+        "min_velocity": 69,
+        "max_velocity": 85,
+        "target_velocity": 85,
+        "file": "NS3_Concert_Grand_Ambient_102_085.wav"
+      },
+      {
+        "min_velocity": 86,
+        "max_velocity": 108,
+        "target_velocity": 108,
+        "file": "NS3_Concert_Grand_Ambient_102_108.wav"
+      },
+      {
+        "min_velocity": 109,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_102_127.wav"
+      }
+    ],
+    "105": [
+      {
+        "min_velocity": 1,
+        "max_velocity": 93,
+        "target_velocity": 93,
+        "file": "NS3_Concert_Grand_Ambient_105_093.wav"
+      },
+      {
+        "min_velocity": 94,
+        "max_velocity": 110,
+        "target_velocity": 110,
+        "file": "NS3_Concert_Grand_Ambient_105_110.wav"
+      },
+      {
+        "min_velocity": 111,
+        "max_velocity": 127,
+        "target_velocity": 127,
+        "file": "NS3_Concert_Grand_Ambient_105_127.wav"
+      }
+    ]
+  }
+}

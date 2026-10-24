@@ -1,0 +1,36 @@
+{
+  "name": "Warm Cinematic Felt Grand",
+  "base_instrument": "NS3_Grand_Upright",
+  "filter": {
+    "cutoff_hz": 1800.000,
+    "resonance": 0.500
+  },
+  "envelope": {
+    "attack_ms": 35.000,
+    "decay_ms": 500.000,
+    "sustain_level": 0.850,
+    "release_ms": 1400.000
+  },
+  "equalizer": {
+    "enabled": true,
+    "low_gain_db": 4.500,
+    "low_freq_hz": 80.000,
+    "mid_gain_db": -3.000,
+    "mid_freq_hz": 1500.000,
+    "mid_q": 0.800,
+    "high_gain_db": -5.000,
+    "high_freq_hz": 6000.000
+  },
+  "compressor": {
+    "enabled": true,
+    "threshold_db": -20.000,
+    "ratio": 4.500,
+    "attack_ms": 25.000,
+    "release_ms": 350.000,
+    "makeup_db": 4.000,
+    "knee_db": 8.000
+  },
+  "master": {
+    "volume": 1.100
+  }
+}

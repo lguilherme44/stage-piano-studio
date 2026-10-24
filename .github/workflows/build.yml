@@ -1,0 +1,88 @@
+name: Cross-Platform Build (macOS, Windows, Linux)
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS
+            os: macos-latest
+            artifact_name: StagePianoStudio-macOS
+          - name: Windows
+            os: windows-latest
+            artifact_name: StagePianoStudio-Windows
+          - name: Linux
+            os: ubuntu-24.04
+            artifact_name: StagePianoStudio-Linux
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Linux audio dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libasound2-dev \
+            libjack-jackd2-dev \
+            libfreetype-dev \
+            libx11-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            libxcursor-dev \
+            libgl1-mesa-dev
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Application (Release)
+        run: |
+          cmake --build build --config Release --parallel
+
+      - name: Package macOS Artifact
+        if: runner.os == 'macOS'
+        run: |
+          cd build/gui/StagePianoStudio_artefacts
+          if [ -d "Release/Stage Piano Studio.app" ]; then
+            cd Release
+          fi
+          zip -r ../../../StagePianoStudio-macOS.zip "Stage Piano Studio.app"
+
+      - name: Package Windows Artifact
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $binDir = "build/gui/StagePianoStudio_artefacts/Release"
+          if (-not (Test-Path $binDir)) { $binDir = "build/gui/StagePianoStudio_artefacts" }
+          Compress-Archive -Path "$binDir/Stage Piano Studio.exe" -DestinationPath StagePianoStudio-Windows.zip
+
+      - name: Package Linux Artifact
+        if: runner.os == 'Linux'
+        run: |
+          cd build/gui/StagePianoStudio_artefacts
+          if [ -d "Release" ]; then
+            cd Release
+          fi
+          tar -czvf ../../../StagePianoStudio-Linux.tar.gz "Stage Piano Studio"
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: |
+            *.zip
+            *.tar.gz
+          if-no-files-found: error

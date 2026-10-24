@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StagePianoStudio - Visual Mockup & Design Direction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-chassis: #121317;
+      --bg-panel: #181a20;
+      --bg-panel-dark: #0e0f12;
+      --border-panel: #272a33;
+      --border-glow: #383c48;
+      
+      --accent-nord: #d02b2b;
+      --accent-amber: #f59e0b;
+      --accent-amber-glow: rgba(245, 158, 11, 0.25);
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      
+      --text-main: #f1f5f9;
+      --text-dim: #94a3b8;
+      --text-muted: #64748b;
+      
+      --knob-bg: #21242c;
+      --knob-border: #333742;
+      --knob-indicator: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 20%, #1f232d 0%, #0b0c0f 100%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* Rack Chassis */
+    .chassis {
+      width: 100%;
+      max-width: 1140px;
+      background: linear-gradient(180deg, #18191f 0%, #111216 100%);
+      border: 1px solid #2a2d38;
+      border-radius: 12px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Header with OLED Display & Status */
+    .header-bar {
+      background: linear-gradient(180deg, #1e2029 0%, #15161c 100%);
+      border-bottom: 1px solid var(--border-panel);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 10px;
+      height: 28px;
+      background: var(--accent-nord);
+      border-radius: 2px;
+      box-shadow: 0 0 12px rgba(208, 43, 43, 0.6);
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Central OLED Screen */
+    .oled-screen {
+      background: #08090b;
+      border: 2px solid #1a1c22;
+      border-radius: 6px;
+      padding: 10px 18px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(245, 158, 11, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .oled-main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .oled-preset-num {
+      font-size: 10px;
+      color: var(--accent-amber);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .oled-preset-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fbbf24;
+      text-shadow: 0 0 8px var(--accent-amber-glow);
+    }
+
+    .oled-telemetry {
+      display: flex;
+      gap: 14px;
+      border-left: 1px solid #1e2129;
+      padding-left: 14px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .oled-stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      color: #475569;
+      text-transform: uppercase;
+    }
+
+    .stat-val {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    /* Header Actions */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-preset {
+      background: #20232c;
+      border: 1px solid #323644;
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-preset:hover {
+      background: #2a2e3a;
+      border-color: #43495b;
+      transform: translateY(-1px);
+    }
+
+    .btn-preset.primary {
+      background: linear-gradient(180deg, #d02b2b 0%, #9e1f1f 100%);
+      border-color: #e23b3b;
+      color: white;
+    }
+
+    /* Main Rack Sections Grid */
+    .rack-grid {
+      display: grid;
+      grid-template-columns: 240px 1fr 1fr 230px;
+      gap: 1px;
+      background: var(--border-panel);
+      padding: 1px 0;
+    }
+
+    .rack-card {
+      background: var(--bg-panel);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 6px;
+    }
+
+    .card-title .badge {
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #222631;
+      color: #94a3b8;
+    }
+
+    /* Instrument Selector Buttons */
+    .inst-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .inst-btn {
+      background: #1e2129;
+      border: 1px solid #2d313d;
+      border-radius: 6px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .inst-btn:hover {
+      background: #262a34;
+      border-color: #3f4454;
+    }
+
+    .inst-btn.active {
+      background: linear-gradient(90deg, rgba(208, 43, 43, 0.2) 0%, rgba(208, 43, 43, 0.05) 100%);
+      border-color: var(--accent-nord);
+    }
+
+    .inst-btn.active .inst-name {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .inst-btn.active .inst-led {
+      background: var(--accent-nord);
+      box-shadow: 0 0 8px var(--accent-nord);
+    }
+
+    .inst-name {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .inst-led {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2c303c;
+    }
+
+    /* Knobs & Controls */
+    .knobs-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .knob-control {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .knob-wheel {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #2a2e39 0%, #171920 100%);
+      border: 2px solid #363b49;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 2px 3px rgba(255, 255, 255, 0.1);
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.05s ease;
+    }
+
+    .knob-wheel::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      width: 3px;
+      height: 14px;
+      background: var(--accent-amber);
+      border-radius: 2px;
+      box-shadow: 0 0 6px var(--accent-amber);
+      transform-origin: center 21px;
+    }
+
+    .knob-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .knob-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--accent-amber);
+    }
+
+    /* EQ Visualizer Canvas */
+    .eq-curve-box {
+      width: 100%;
+      height: 90px;
+      background: #090a0d;
+      border: 1px solid #232630;
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas#eqCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Compressor Gain Reduction Meter */
+    .meter-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #0a0b0e;
+      border: 1px solid #1f222a;
+      border-radius: 6px;
+      padding: 12px;
+    }
+
+    .meter-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .meter-bar {
+      height: 12px;
+      background: #171920;
+      border-radius: 3px;
+      display: flex;
+      gap: 2px;
+      padding: 2px;
+    }
+
+    .meter-led {
+      flex: 1;
+      height: 100%;
+      background: #252833;
+      border-radius: 1px;
+      transition: background 0.1s ease;
+    }
+
+    .meter-led.active-amber {
+      background: #f59e0b;
+      box-shadow: 0 0 6px #f59e0b;
+    }
+
+    .meter-led.active-red {
+      background: #ef4444;
+      box-shadow: 0 0 6px #ef4444;
+    }
+
+    /* Keyboard Strip Footer */
+    .keyboard-strip {
+      background: #15171d;
+      border-top: 1px solid var(--border-panel);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .keys-container {
+      display: flex;
+      height: 60px;
+      background: #08090b;
+      padding: 3px;
+      border-radius: 4px;
+      border: 1px solid #252833;
+      overflow-x: auto;
+    }
+
+    .white-key {
+      width: 14px;
+      height: 100%;
+      background: #e2e8f0;
+      border: 1px solid #000;
+      border-radius: 0 0 3px 3px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.05s ease;
+    }
+
+    .white-key:hover, .white-key.active {
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
+    }
+
+    .black-key {
+      width: 9px;
+      height: 62%;
+      background: #1e2129;
+      margin-left: -5px;
+      margin-right: -4px;
+      z-index: 2;
+      border-radius: 0 0 2px 2px;
+      cursor: pointer;
+      transition: background 0.05s ease;
+    }
+
+    .black-key:hover, .black-key.active {
+      background: #d02b2b;
+      box-shadow: 0 0 8px #d02b2b;
+    }
+
+    .hardware-status {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #1e222b;
+      padding: 5px 10px;
+      border-radius: 20px;
+      border: 1px solid #2c313e;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 6px var(--accent-green);
+    }
+
+    .dot.amber {
+      background: var(--accent-amber);
+      box-shadow: 0 0 6px var(--accent-amber);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chassis">
+    <!-- Header -->
+    <div class="header-bar">
+      <div class="brand-group">
+        <div class="brand-badge"></div>
+        <div>
+          <div class="brand-title">Stage Piano Studio</div>
+          <div class="brand-subtitle">Standalone Pro-Audio Host</div>
+        </div>
+      </div>
+
+      <!-- OLED Screen -->
+      <div class="oled-screen">
+        <div class="oled-main">
+          <span class="oled-preset-num">PRESET 01 / FACTORY</span>
+          <span class="oled-preset-name" id="currentPresetTitle">Nord Bright Grand</span>
+        </div>
+        <div class="oled-telemetry">
+          <div class="oled-stat">
+            <span class="stat-label">Latency</span>
+            <span class="stat-val">5.8 ms</span>
+          </div>
+          <div class="oled-stat">
+            <span class="stat-label">Buffer</span>
+            <span class="stat-val">256 f</span>
+          </div>
+          <div class="oled-stat">
+            <span class="stat-label">DSP Load</span>
+            <span class="stat-val">0.85%</span>
+          </div>
+          <div class="oled-stat">
+            <span class="stat-label">Voices</span>
+            <span class="stat-val" id="voiceCountDisplay">0 / 128</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="header-actions">
+        <button class="btn-preset" onclick="cyclePreset(-1)">◀ Prev</button>
+        <button class="btn-preset" onclick="cyclePreset(1)">Next ▶</button>
+        <button class="btn-preset primary" onclick="saveCurrentConfig()">💾 Save Preset</button>
+      </div>
+    </div>
+
+    <!-- Main Controls Grid -->
+    <div class="rack-grid">
+      
+      <!-- Section 1: Instrument -->
+      <div class="rack-card">
+        <div class="card-title">
+          <span>Instrument</span>
+          <span class="badge">PCM Multi-Layer</span>
+        </div>
+        <div class="inst-list">
+          <div class="inst-btn active" onclick="selectInstrument(0, 'Nord Bright Grand')">
+            <span class="inst-name">1. Nord Bright Grand</span>
+            <div class="inst-led"></div>
+          </div>
+          <div class="inst-btn" onclick="selectInstrument(1, 'Nord Grand Upright')">
+            <span class="inst-name">2. Nord Grand Upright</span>
+            <div class="inst-led"></div>
+          </div>
+          <div class="inst-btn" onclick="selectInstrument(2, 'CP-80 Electric Grand')">
+            <span class="inst-name">3. CP-80 Electric Grand</span>
+            <div class="inst-led"></div>
+          </div>
+          <div class="inst-btn" onclick="selectInstrument(3, 'Rhodes Stage Mark I')">
+            <span class="inst-name">4. Rhodes Stage Mark I</span>
+            <div class="inst-led"></div>
+          </div>
+          <div class="inst-btn" onclick="selectInstrument(4, 'DX7 Full Tines FM')">
+            <span class="inst-name">5. DX7 Full Tines FM</span>
+            <div class="inst-led"></div>
+          </div>
+        </div>
+
+        <div class="knobs-row" style="margin-top: auto;">
+          <div class="knob-control">
+            <div class="knob-wheel" id="knobVol" style="transform: rotate(20deg);"></div>
+            <span class="knob-label">Master Vol</span>
+            <span class="knob-val">0.0 dB</span>
+          </div>
+          <div class="knob-control">
+            <div class="knob-wheel" style="transform: rotate(-10deg);"></div>
+            <span class="knob-label">Velocity Sens</span>
+            <span class="knob-val">Mid</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Timbre & ADSR Envelope -->
+      <div class="rack-card">
+        <div class="card-title">
+          <span>Timbre & Envelope</span>
+          <span class="badge">Synth Resonant / ADSR</span>
+        </div>
+
+        <div class="knobs-row">
+          <div class="knob-control">
+            <div class="knob-wheel" id="knobCutoff" style="transform: rotate(60deg);"></div>
+            <span class="knob-label">Cutoff</span>
+            <span class="knob-val" id="valCutoff">18.5 kHz</span>
+          </div>
+          <div class="knob-control">
+            <div class="knob-wheel" id="knobRes" style="transform: rotate(-70deg);"></div>
+            <span class="knob-label">Resonance</span>
+            <span class="knob-val" id="valRes">0.15</span>
+          </div>
+        </div>
+
+        <div class="card-title" style="margin-top: 6px;">
+          <span>ADSR Envelope</span>
+          <span class="badge">Per-Voice</span>
+        </div>
+
+        <div class="knobs-row">
+          <div class="knob-control">
+            <div class="knob-wheel" style="transform: rotate(-80deg);"></div>
+            <span class="knob-label">Attack</span>
+            <span class="knob-val">4 ms</span>
+          </div>
+          <div class="knob-control">
+            <div class="knob-wheel" style="transform: rotate(-20deg);"></div>
+            <span class="knob-label">Decay</span>
+            <span class="knob-val">280 ms</span>
+          </div>
+          <div class="knob-control">
+            <div class="knob-wheel" style="transform: rotate(50deg);"></div>
+            <span class="knob-label">Sustain</span>
+            <span class="knob-val">90%</span>
+          </div>
+          <div class="knob-control">
+            <div class="knob-wheel" style="transform: rotate(10deg);"></div>
+            <span class="knob-label">Release</span>
+            <span class="knob-val">650 ms</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: 3-Band Equalizer -->
+      <div class="rack-card">
+        <div class="card-title">
+          <span>3-Band Equalizer</span>
+          <span class="badge">RBJ Biquad Form II</span>
+        </div>
+
+        <!-- Realtime Biquad Curve -->
+        <div class="eq-curve-box">
+          <canvas id="eqCanvas" width="260" height="90"></canvas>
+        </div>
+
+        <div class="knobs-row">
+          <div class="knob-control">
+            <div class="knob-wheel" id="knobLow" style="transform: rotate(15deg);"></div>
+            <span class="knob-label">Grave</span>
+            <span class="knob-val" id="valLow">+3.0 dB</span>
+          </div>
+          <div class="knob-control">
+            <div class="knob-wheel" id="knobMid" style="transform: rotate(-10deg);"></div>
+            <span class="knob-label">Médio</span>
+            <span class="knob-val" id="valMid">-2.0 dB</span>
+          </div>
+          <div class="knob-control">
+            <div class="knob-wheel" id="knobHigh" style="transform: rotate(20deg);"></div>
+            <span class="knob-label">Agudo</span>
+            <span class="knob-val" id="valHigh">+4.0 dB</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Studio Compressor & Dynamics -->
+      <div class="rack-card">
+        <div class="card-title">
+          <span>Studio Compressor</span>
+          <span class="badge" style="color: #10b981;">Active</span>
+        </div>
+
+        <div class="meter-box">
+          <div class="meter-label">
+            <span>Gain Reduction</span>
+            <span id="grMeterVal">-4.2 dB</span>
+          </div>
+          <div class="meter-bar">
+            <div class="meter-led active-amber"></div>
+            <div class="meter-led active-amber"></div>
+            <div class="meter-led active-amber"></div>
+            <div class="meter-led active-amber"></div>
+            <div class="meter-led active-amber"></div>
+            <div class="meter-led active-amber"></div>
+            <div class="meter-led active-red"></div>
+            <div class="meter-led"></div>
+            <div class="meter-led"></div>
+            <div class="meter-led"></div>
+            <div class="meter-led"></div>
+            <div class="meter-led"></div>
+          </div>
+        </div>
+
+        <div class="knobs-row">
+          <div class="knob-control">
+            <div class="knob-wheel" style="transform: rotate(-30deg);"></div>
+            <span class="knob-label">Threshold</span>
+            <span class="knob-val">-16 dB</span>
+          </div>
+          <div class="knob-control">
+            <div class="knob-wheel" style="transform: rotate(10deg);"></div>
+            <span class="knob-label">Ratio</span>
+            <span class="knob-val">3.5:1</span>
+          </div>
+          <div class="knob-control">
+            <div class="knob-wheel" style="transform: rotate(20deg);"></div>
+            <span class="knob-label">Makeup</span>
+            <span class="knob-val">+2.5 dB</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Keyboard & Status Strip -->
+    <div class="keyboard-strip">
+      <div class="hardware-status">
+        <div class="status-pill">
+          <div class="dot"></div>
+          <span>Roland XPS-10: <strong>Connected (USB MIDI)</strong></span>
+        </div>
+        <div class="status-pill">
+          <div class="dot amber"></div>
+          <span>Sustain Pedal: <strong>UP</strong></span>
+        </div>
+      </div>
+
+      <!-- Mini Virtual Keyboard Preview -->
+      <div class="keys-container" id="pianoKeyboard">
+        <!-- Rendered via script -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Draw Interactive EQ Curve
+    const canvas = document.getElementById('eqCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let lowGain = 3.0;
+    let midGain = -2.0;
+    let highGain = 4.0;
+
+    function drawEqCurve() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Grid Lines
+      ctx.strokeStyle = '#1a1d24';
+      ctx.lineWidth = 1;
+      for (let x = 30; x < canvas.width; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height / 2);
+      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.stroke();
+
+      // Frequency Response Curve
+      ctx.beginPath();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#38bdf8';
+      ctx.shadowColor = 'rgba(56, 189, 248, 0.4)';
+      ctx.shadowBlur = 8;
+
+      const midY = canvas.height / 2;
+      for (let x = 0; x <= canvas.width; x++) {
+        const normX = x / canvas.width;
+        // Low Shelf (left)
+        const lowEffect = (1.0 - Math.min(1.0, normX * 3.0)) * (lowGain * 3.0);
+        // Mid Peak (center)
+        const midDist = (normX - 0.5) * 4.0;
+        const midEffect = Math.exp(-midDist * midDist) * (midGain * 3.0);
+        // High Shelf (right)
+        const highEffect = Math.max(0.0, (normX - 0.6) * 2.5) * (highGain * 3.0);
+
+        const y = midY - (lowEffect + midEffect + highEffect);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+
+    drawEqCurve();
+
+    // Render Virtual Piano Keys
+    const kb = document.getElementById('pianoKeyboard');
+    const isBlack = [false, true, false, true, false, false, true, false, true, false, true, false];
+    for (let i = 0; i < 28; i++) {
+      const black = isBlack[i % 12];
+      const key = document.createElement('div');
+      key.className = black ? 'black-key' : 'white-key';
+      key.onclick = () => {
+        key.classList.add('active');
+        setTimeout(() => key.classList.remove('active'), 250);
+      };
+      kb.appendChild(key);
+    }
+
+    // Preset Switching
+    const presets = [
+      'Nord Bright Grand',
+      'Nord Grand Upright',
+      'CP-80 Electric Grand',
+      'Rhodes Stage Mark I',
+      'DX7 Full Tines FM'
+    ];
+    let curPresetIdx = 0;
+
+    function selectInstrument(idx, name) {
+      curPresetIdx = idx;
+      document.querySelectorAll('.inst-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === idx);
+      });
+      document.getElementById('currentPresetTitle').innerText = name;
+    }
+
+    function cyclePreset(dir) {
+      curPresetIdx = (curPresetIdx + dir + presets.length) % presets.length;
+      selectInstrument(curPresetIdx, presets[curPresetIdx]);
+    }
+
+    function saveCurrentConfig() {
+      alert('Preset "' + presets[curPresetIdx] + '" salvo com sucesso no arquivo JSON de presets!');
+    }
+  </script>
+</body>
+</html>
