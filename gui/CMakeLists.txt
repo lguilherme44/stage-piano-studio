@@ -39,6 +39,7 @@ target_sources(StagePianoStudio PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Reverb.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/TimbrePreset.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/StagePianoHost.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/SampleImporter.cpp"
 )
 
 target_include_directories(StagePianoStudio PRIVATE

@@ -23,3 +23,15 @@ else()
 endif()
 
 add_subdirectory(gui)
+
+# Unit / Integration Tests
+enable_testing()
+add_executable(test_importer
+    tools/test_importer.cpp
+    engine/src/SampleImporter.cpp
+)
+target_include_directories(test_importer PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/engine/include"
+)
+add_test(NAME TestImporter COMMAND test_importer)
+

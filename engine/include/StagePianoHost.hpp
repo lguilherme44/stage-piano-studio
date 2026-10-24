@@ -24,14 +24,18 @@ public:
     bool loadSynth(const std::string& instrumentName);
     bool loadDrone(const std::string& instrumentName);
 
-    void setPianoEnabled(bool enabled) { m_pianoEnabled = enabled; }
+    void setLibraryDir(const std::string& libraryDir);
+    const std::string& getLibraryDir() const { return m_libDir; }
+    bool isInstrumentInstalled(const std::string& instrumentName) const;
+
+    void setPianoEnabled(bool enabled);
     bool isPianoEnabled() const { return m_pianoEnabled; }
     void setPianoVolume(float vol) { m_pianoVolume = vol; }
     float getPianoVolume() const { return m_pianoVolume; }
     void setPianoOctave(int oct) { m_pianoOctave = oct; }
     int getPianoOctave() const { return m_pianoOctave; }
 
-    void setSynthEnabled(bool enabled) { m_synthEnabled = enabled; }
+    void setSynthEnabled(bool enabled);
     bool isSynthEnabled() const { return m_synthEnabled; }
     void setSynthVolume(float vol) { m_synthVolume = vol; }
     float getSynthVolume() const { return m_synthVolume; }

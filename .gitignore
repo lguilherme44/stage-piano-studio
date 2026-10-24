@@ -10,6 +10,8 @@ Thumbs.db
 # Tools binaries
 tools/nkx_extractor
 tools/nkx_extractor.exe
+tools/test_importer
+tools/test_importer.exe
 
 # Build Artifacts
 build/

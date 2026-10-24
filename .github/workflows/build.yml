@@ -53,6 +53,10 @@ jobs:
         run: |
           cmake --build build --config Release --parallel
 
+      - name: Run Automated Tests
+        run: |
+          ctest --test-dir build -C Release --output-on-failure
+
       - name: Package macOS Artifact
         if: runner.os == 'macOS'
         run: |

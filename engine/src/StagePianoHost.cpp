@@ -1,5 +1,6 @@
 #include "StagePianoHost.hpp"
 #include <iostream>
+#include <fstream>
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -42,6 +43,55 @@ StagePianoHost::StagePianoHost(float sampleRate, const std::string& libraryDir)
 
 StagePianoHost::~StagePianoHost() {
     allNotesOff();
+}
+
+void StagePianoHost::setLibraryDir(const std::string& libraryDir) {
+    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    m_libDir = libraryDir;
+    m_samplesDir = m_libDir + "/samples";
+    m_instDir = m_libDir + "/instruments";
+}
+
+bool StagePianoHost::isInstrumentInstalled(const std::string& instrumentName) const {
+    std::string jsonPath = m_instDir + "/" + instrumentName + ".json";
+    if (!fs::exists(jsonPath)) return false;
+
+    std::ifstream in(jsonPath);
+    if (!in) return false;
+
+    std::string line;
+    while (std::getline(in, line)) {
+        if (line.find("\"file\":") != std::string::npos || line.find("\"filename\":") != std::string::npos) {
+            size_t q1 = line.find('"', line.find(':'));
+            if (q1 != std::string::npos) {
+                size_t start = q1 + 1;
+                size_t end = line.rfind('"');
+                if (end > start) {
+                    std::string sampleFile = line.substr(start, end - start);
+                    if (fs::exists(m_samplesDir + "/" + sampleFile)) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+void StagePianoHost::setPianoEnabled(bool enabled) {
+    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    m_pianoEnabled = enabled;
+    if (!enabled && m_pianoSampler) {
+        m_pianoSampler->allNotesOff();
+    }
+}
+
+void StagePianoHost::setSynthEnabled(bool enabled) {
+    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    m_synthEnabled = enabled;
+    if (!enabled && m_synthSampler) {
+        m_synthSampler->allNotesOff();
+    }
 }
 
 bool StagePianoHost::loadPiano(const std::string& instrumentName) {

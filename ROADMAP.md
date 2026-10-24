@@ -3,9 +3,9 @@
 Funcionalidades planejadas e marcos técnicos para as próximas versões.
 
 ## Fase 1: Importação Expandida de Amostras e Formatos
-- [ ] **Importador Nativo de SoundFont 2 (`.sf2`)**: Leitura e reprodução direta de bancos SF2 clássicos sem necessidade de ferramentas externas ou conversão prévia.
-- [ ] **Leitor de Formato SFZ**: Suporte a definições de texto `.sfz` para mapear multisamples customizados da comunidade.
-- [ ] **Importador Drag & Drop de Pastas de Amostras**: Reconhecimento automático de nomes de arquivos (ex: `Grand_C3_v127.wav`) inferindo nota raiz, faixa de velocity e pontos de loop.
+- [x] **Importador Nativo de SoundFont 2 (`.sf2`)**: Leitura e reprodução direta de bancos SF2 clássicos sem necessidade de ferramentas externas ou conversão prévia.
+- [x] **Leitor de Formato SFZ**: Suporte a definições de texto `.sfz` para mapear multisamples customizados da comunidade.
+- [x] **Importador Drag & Drop de Pastas de Amostras**: Reconhecimento automático de nomes de arquivos (ex: `Grand_C3_v127.wav`) inferindo nota raiz, faixa de velocity e pontos de loop.
 - [ ] **Compactação Lossless da Biblioteca**: Suporte a FLAC ou compactação sem perda em tempo real para reduzir o uso de disco das amostras.
 
 ## Fase 2: Realismo Acústico e Expressividade

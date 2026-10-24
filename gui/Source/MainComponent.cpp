@@ -1,5 +1,7 @@
 #include "MainComponent.h"
+#include "SampleImporter.hpp"
 #include <chrono>
+#include <filesystem>
 
 MainComponent::MainComponent() {
     setLookAndFeel(&m_lookAndFeel);
@@ -85,6 +87,232 @@ void MainComponent::openAudioSettings() {
     opt.launchAsync();
 }
 
+void MainComponent::openImportDialog() {
+    m_fileChooser = std::make_unique<juce::FileChooser>(
+        "Select SoundFont (.sf2), SFZ (.sfz), or Sample Folder to Import...",
+        juce::File::getSpecialLocation(juce::File::userHomeDirectory),
+        "*.sf2;*.sfz"
+    );
+
+    auto flags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::canSelectDirectories;
+    m_fileChooser->launchAsync(flags, [this](const juce::FileChooser& chooser) {
+        auto result = chooser.getResult();
+        if (result.isDirectory()) {
+            std::string path = result.getFullPathName().toStdString();
+            ImportResult res = SampleImporter::importSampleFolder(path, m_libDir);
+            if (res.success) {
+                populateInstrumentCombos();
+                juce::AlertWindow::showMessageBoxAsync(
+                    juce::AlertWindow::InfoIcon,
+                    "Import Successful",
+                    "Imported folder: " + juce::String(res.instrumentName) + "\nSamples: " + juce::String(res.sampleCount)
+                );
+            } else {
+                juce::AlertWindow::showMessageBoxAsync(
+                    juce::AlertWindow::WarningIcon,
+                    "Import Failed",
+                    res.message
+                );
+            }
+        } else if (result.existsAsFile()) {
+            std::string path = result.getFullPathName().toStdString();
+            std::string ext = result.getFileExtension().toLowerCase().toStdString();
+            ImportResult res;
+            if (ext == ".sf2") {
+                res = SampleImporter::importSF2(path, m_libDir);
+            } else if (ext == ".sfz") {
+                res = SampleImporter::importSFZ(path, m_libDir);
+            }
+
+            if (res.success) {
+                populateInstrumentCombos();
+                juce::AlertWindow::showMessageBoxAsync(
+                    juce::AlertWindow::InfoIcon,
+                    "Import Successful",
+                    "Imported: " + juce::String(res.instrumentName) + "\nSamples: " + juce::String(res.sampleCount)
+                );
+            } else {
+                juce::AlertWindow::showMessageBoxAsync(
+                    juce::AlertWindow::WarningIcon,
+                    "Import Failed",
+                    res.message
+                );
+            }
+        }
+    });
+}
+
+void MainComponent::populateInstrumentCombos() {
+    static const InstItem catalogPianos[] = {
+        {"Nord Bright Grand", "NS3_Bright_Grand"},
+        {"Grand Imperial", "NS3_Grand_Imperial"},
+        {"Italian Grand", "NS3_Italian_Grand"},
+        {"Royal Grand 3D", "NS3_Royal_Grand_3D"},
+        {"Silver Grand", "NS3_Silver_Grand"},
+        {"Velvet Grand", "NS3_Velvet_Grand"},
+        {"Concert Grand Ambient", "NS3_Concert_Grand_Ambient"},
+        {"Concert Grand Close", "NS3_Concert_Grand_Close"},
+        {"Grand Lady D", "NS3_Grand_Lady_D"},
+        {"Studio Grand 1", "NS3_Studio_Grand_1"},
+        {"Studio Grand 2", "NS3_Studio_Grand_2"},
+        {"Damper Grand", "NS3_Damper_Grand"},
+        {"Nord Grand Upright", "NS3_Grand_Upright"},
+        {"Amber Upright", "NS3_Amber_Upright"},
+        {"Baby Upright", "NS3_Baby_Upright"},
+        {"Bambino Upright", "NS3_Bambino_Upright"},
+        {"Black Upright", "NS3_Black_Upright"},
+        {"Blue Swede Upright", "NS3_Blue_Swede"},
+        {"Honky Tonk Upright", "NS3_HonkyTonky_Upright"},
+        {"Mellow Upright", "NS3_Mellow_Upright"},
+        {"Queen Upright", "NS3_Queen_Upright"},
+        {"Rain Piano (Warm)", "NS3_Rain_Piano"},
+        {"Romantic Upright", "NS3_Romantic_Upright"},
+        {"Saloon Upright", "NS3_Saloon_Upright"},
+        {"Damper Upright", "NS3_Damper_Upright"},
+        {"Rhodes Stage Mark I (EP1)", "NS3_EP1"},
+        {"Rhodes Mark I Deep (EP2)", "NS3_EP2"},
+        {"Rhodes Mark II (EP3)", "NS3_EP3"},
+        {"Rhodes Mark V (EP4)", "NS3_EP4"},
+        {"Rhodes Bright (EP5)", "NS3_EP5"},
+        {"Rhodes Sparkle Top (EP6)", "NS3_EP6"},
+        {"Rhodes Dyno My Piano (EP7)", "NS3_EP7"},
+        {"Rhodes Suitcase (EP8)", "NS3_EP8"},
+        {"Ballad EP 1", "NS3_Ballad_EP1"},
+        {"Ballad EP 2", "NS3_Ballad_EP2"},
+        {"Hybrid EP", "NS3_Hybrid_EP"},
+        {"Silver EP", "NS3_Silver_EP"},
+        {"Wurlitzer 1", "NS3_Wurlitzer1"},
+        {"Wurlitzer 2", "NS3_Wurlitzer2"},
+        {"CP-80 Electric Grand", "NS3_Electric_Grand_CP80"},
+        {"CP-80 Amped", "NS3_Electric_Grand_Amped"},
+        {"CP-80 Gerbstedt", "NS3_Electric_Grand_Gerbstedt"},
+        {"DX7 Full Tines FM", "NS3_DX_FullTines"},
+        {"DX7 Rubba Rhodes", "NS3_DX_Rubba_Rhodes"},
+        {"DigiGrand 1", "NS3_DigiGrand1"},
+        {"DigiGrand 2", "NS3_DigiGrand2"}
+    };
+
+    static const InstItem catalogSynths[] = {
+        {"Warm and Soft Pad", "Warm_and_Soft"},
+        {"ChillPad 1", "ChillPad1"},
+        {"Cloud Shimmer Pad", "Cloud_Shimmer"},
+        {"Deep Sea Ambient", "DeepSea"},
+        {"Huge Ambient 2", "HugeAmbient2"},
+        {"Misty Vox Pad", "Misty_Vox"},
+        {"Voicepad Ambient", "Voicepad"},
+        {"Watergate Pad", "Watergate"},
+        {"String Choir", "StringChoir"},
+        {"Silver Rain", "Silver_Rain"},
+        {"Access Virus Lead", "Access_Virus"},
+        {"Crystal Saw Synth", "CrystalSaw"},
+        {"Formanta Soviet Synth", "Formanta"},
+        {"Munich Synth", "Munich"},
+        {"Trance Saw Synth", "TranceSaw"},
+        {"Unicorn Synth", "Unicorn"}
+    };
+
+    static const InstItem catalogDrones[] = {
+        {"Warm and Soft (Drone)", "Warm_and_Soft"},
+        {"ChillPad 1 (Drone)", "ChillPad1"},
+        {"Cloud Shimmer (Drone)", "Cloud_Shimmer"},
+        {"Deep Sea Ambient (Drone)", "DeepSea"},
+        {"Huge Ambient 2 (Drone)", "HugeAmbient2"},
+        {"Misty Vox Pad (Drone)", "Misty_Vox"},
+        {"Voicepad Ambient (Drone)", "Voicepad"},
+        {"Watergate Pad (Drone)", "Watergate"},
+        {"String Choir (Drone)", "StringChoir"},
+        {"Silver Rain (Drone)", "Silver_Rain"},
+        {"Formanta Drone", "Formanta"},
+        {"Access Virus Drone", "Access_Virus"}
+    };
+
+    // Scan for dynamic imported SF2 / SFZ in library/instruments
+    std::vector<InstItem> customInstruments;
+    try {
+        juce::File instFolder(m_libDir + "/instruments");
+        if (instFolder.isDirectory()) {
+            auto files = instFolder.findChildFiles(juce::File::findFiles, false, "*.json");
+            for (const auto& f : files) {
+                std::string fname = f.getFileNameWithoutExtension().toStdString();
+                if (fname.rfind("SF2_", 0) == 0 || fname.rfind("SFZ_", 0) == 0) {
+                    customInstruments.push_back({f.getFileNameWithoutExtension(), juce::String(fname)});
+                }
+            }
+        }
+    } catch (...) {}
+
+    // Populate Piano Combo
+    m_availablePianos.clear();
+    m_comboPiano.clear(juce::dontSendNotification);
+    for (const auto& item : catalogPianos) {
+        if (m_host->isInstrumentInstalled(item.id.toStdString())) {
+            m_availablePianos.push_back(item);
+            m_comboPiano.addItem(item.label, static_cast<int>(m_availablePianos.size()));
+        }
+    }
+    for (const auto& item : customInstruments) {
+        if (m_host->isInstrumentInstalled(item.id.toStdString())) {
+            m_availablePianos.push_back(item);
+            m_comboPiano.addItem(item.label, static_cast<int>(m_availablePianos.size()));
+        }
+    }
+    if (m_availablePianos.empty()) {
+        m_comboPiano.addItem("No installed pianos (syncing...)", 1);
+        m_comboPiano.setItemEnabled(1, false);
+    } else {
+        m_comboPiano.setSelectedId(1, juce::dontSendNotification);
+        m_host->loadPiano(m_availablePianos[0].id.toStdString());
+    }
+
+    // Populate Synth Combo
+    m_availableSynths.clear();
+    m_comboSynth.clear(juce::dontSendNotification);
+    for (const auto& item : catalogSynths) {
+        if (m_host->isInstrumentInstalled(item.id.toStdString())) {
+            m_availableSynths.push_back(item);
+            m_comboSynth.addItem(item.label, static_cast<int>(m_availableSynths.size()));
+        }
+    }
+    for (const auto& item : customInstruments) {
+        if (m_host->isInstrumentInstalled(item.id.toStdString())) {
+            m_availableSynths.push_back(item);
+            m_comboSynth.addItem(item.label, static_cast<int>(m_availableSynths.size()));
+        }
+    }
+    if (m_availableSynths.empty()) {
+        m_comboSynth.addItem("No installed synths (syncing...)", 1);
+        m_comboSynth.setItemEnabled(1, false);
+    } else {
+        m_comboSynth.setSelectedId(1, juce::dontSendNotification);
+        m_host->loadSynth(m_availableSynths[0].id.toStdString());
+    }
+
+    // Populate Drone Combo
+    m_availableDrones.clear();
+    m_comboDroneSound.clear(juce::dontSendNotification);
+    for (const auto& item : catalogDrones) {
+        if (m_host->isInstrumentInstalled(item.id.toStdString())) {
+            m_availableDrones.push_back(item);
+            m_comboDroneSound.addItem(item.label, static_cast<int>(m_availableDrones.size()));
+        }
+    }
+    for (const auto& item : customInstruments) {
+        if (m_host->isInstrumentInstalled(item.id.toStdString())) {
+            m_availableDrones.push_back(item);
+            m_comboDroneSound.addItem(item.label, static_cast<int>(m_availableDrones.size()));
+        }
+    }
+    if (m_availableDrones.empty()) {
+        m_comboDroneSound.addItem("No installed drone pads (syncing...)", 1);
+        m_comboDroneSound.setItemEnabled(1, false);
+    } else {
+        m_comboDroneSound.setSelectedId(1, juce::dontSendNotification);
+        m_host->loadDrone(m_availableDrones[0].id.toStdString());
+    }
+
+    repaint();
+}
+
 void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source) {
     if (source == &m_deviceManager) {
         auto midiInputs = juce::MidiInput::getAvailableDevices();
@@ -144,70 +372,11 @@ void MainComponent::setupUI() {
     };
 
     // 1. Piano Slot (Slot A)
-    struct InstChoice { const char* label; const char* id; };
-    static const InstChoice pianoList[] = {
-        // Grands
-        {"Nord Bright Grand", "NS3_Bright_Grand"},
-        {"Grand Imperial", "NS3_Grand_Imperial"},
-        {"Italian Grand", "NS3_Italian_Grand"},
-        {"Royal Grand 3D", "NS3_Royal_Grand_3D"},
-        {"Silver Grand", "NS3_Silver_Grand"},
-        {"Velvet Grand", "NS3_Velvet_Grand"},
-        {"Concert Grand Ambient", "NS3_Concert_Grand_Ambient"},
-        {"Concert Grand Close", "NS3_Concert_Grand_Close"},
-        {"Grand Lady D", "NS3_Grand_Lady_D"},
-        {"Studio Grand 1", "NS3_Studio_Grand_1"},
-        {"Studio Grand 2", "NS3_Studio_Grand_2"},
-        {"Damper Grand", "NS3_Damper_Grand"},
-        // Uprights
-        {"Nord Grand Upright", "NS3_Grand_Upright"},
-        {"Amber Upright", "NS3_Amber_Upright"},
-        {"Baby Upright", "NS3_Baby_Upright"},
-        {"Bambino Upright", "NS3_Bambino_Upright"},
-        {"Black Upright", "NS3_Black_Upright"},
-        {"Blue Swede Upright", "NS3_Blue_Swede"},
-        {"Honky Tonk Upright", "NS3_HonkyTonky_Upright"},
-        {"Mellow Upright", "NS3_Mellow_Upright"},
-        {"Queen Upright", "NS3_Queen_Upright"},
-        {"Rain Piano (Warm)", "NS3_Rain_Piano"},
-        {"Romantic Upright", "NS3_Romantic_Upright"},
-        {"Saloon Upright", "NS3_Saloon_Upright"},
-        {"Damper Upright", "NS3_Damper_Upright"},
-        // Electric Pianos & Rhodes
-        {"Rhodes Stage Mark I (EP1)", "NS3_EP1"},
-        {"Rhodes Mark I Deep (EP2)", "NS3_EP2"},
-        {"Rhodes Mark II (EP3)", "NS3_EP3"},
-        {"Rhodes Mark V (EP4)", "NS3_EP4"},
-        {"Rhodes Bright (EP5)", "NS3_EP5"},
-        {"Rhodes Sparkle Top (EP6)", "NS3_EP6"},
-        {"Rhodes Dyno My Piano (EP7)", "NS3_EP7"},
-        {"Rhodes Suitcase (EP8)", "NS3_EP8"},
-        {"Ballad EP 1", "NS3_Ballad_EP1"},
-        {"Ballad EP 2", "NS3_Ballad_EP2"},
-        {"Hybrid EP", "NS3_Hybrid_EP"},
-        {"Silver EP", "NS3_Silver_EP"},
-        // Wurlitzers & CP-80
-        {"Wurlitzer 1", "NS3_Wurlitzer1"},
-        {"Wurlitzer 2", "NS3_Wurlitzer2"},
-        {"CP-80 Electric Grand", "NS3_Electric_Grand_CP80"},
-        {"CP-80 Amped", "NS3_Electric_Grand_Amped"},
-        {"CP-80 Gerbstedt", "NS3_Electric_Grand_Gerbstedt"},
-        // Digital & FM
-        {"DX7 Full Tines FM", "NS3_DX_FullTines"},
-        {"DX7 Rubba Rhodes", "NS3_DX_Rubba_Rhodes"},
-        {"DigiGrand 1", "NS3_DigiGrand1"},
-        {"DigiGrand 2", "NS3_DigiGrand2"}
-    };
-
     addAndMakeVisible(m_comboPiano);
-    for (size_t i = 0; i < sizeof(pianoList)/sizeof(pianoList[0]); ++i) {
-        m_comboPiano.addItem(pianoList[i].label, static_cast<int>(i + 1));
-    }
-    m_comboPiano.setSelectedId(1, juce::dontSendNotification);
     m_comboPiano.onChange = [this] {
         int idx = m_comboPiano.getSelectedId() - 1;
-        if (idx >= 0 && idx < static_cast<int>(sizeof(pianoList)/sizeof(pianoList[0]))) {
-            m_host->loadPiano(pianoList[idx].id);
+        if (idx >= 0 && idx < static_cast<int>(m_availablePianos.size())) {
+            m_host->loadPiano(m_availablePianos[idx].id.toStdString());
         }
     };
 
@@ -219,34 +388,11 @@ void MainComponent::setupUI() {
     m_sliderPianoVol.onValueChange = [this] { m_host->setPianoVolume(static_cast<float>(m_sliderPianoVol.getValue())); };
 
     // 2. Synth Slot (Slot B)
-    static const InstChoice synthList[] = {
-        {"Warm and Soft Pad", "Warm_and_Soft"},
-        {"ChillPad 1", "ChillPad1"},
-        {"Cloud Shimmer Pad", "Cloud_Shimmer"},
-        {"Deep Sea Ambient", "DeepSea"},
-        {"Huge Ambient 2", "HugeAmbient2"},
-        {"Misty Vox Pad", "Misty_Vox"},
-        {"Voicepad Ambient", "Voicepad"},
-        {"Watergate Pad", "Watergate"},
-        {"String Choir", "StringChoir"},
-        {"Silver Rain", "Silver_Rain"},
-        {"Access Virus Lead", "Access_Virus"},
-        {"Crystal Saw Synth", "CrystalSaw"},
-        {"Formanta Soviet Synth", "Formanta"},
-        {"Munich Synth", "Munich"},
-        {"Trance Saw Synth", "TranceSaw"},
-        {"Unicorn Synth", "Unicorn"}
-    };
-
     addAndMakeVisible(m_comboSynth);
-    for (size_t i = 0; i < sizeof(synthList)/sizeof(synthList[0]); ++i) {
-        m_comboSynth.addItem(synthList[i].label, static_cast<int>(i + 1));
-    }
-    m_comboSynth.setSelectedId(1, juce::dontSendNotification);
     m_comboSynth.onChange = [this] {
         int idx = m_comboSynth.getSelectedId() - 1;
-        if (idx >= 0 && idx < static_cast<int>(sizeof(synthList)/sizeof(synthList[0]))) {
-            m_host->loadSynth(synthList[idx].id);
+        if (idx >= 0 && idx < static_cast<int>(m_availableSynths.size())) {
+            m_host->loadSynth(m_availableSynths[idx].id.toStdString());
         }
     };
 
@@ -296,28 +442,10 @@ void MainComponent::setupUI() {
     };
 
     addAndMakeVisible(m_comboDroneSound);
-    static const InstChoice droneSounds[] = {
-        {"Warm and Soft (Drone)", "Warm_and_Soft"},
-        {"ChillPad 1 (Drone)", "ChillPad1"},
-        {"Cloud Shimmer (Drone)", "Cloud_Shimmer"},
-        {"Deep Sea Ambient (Drone)", "DeepSea"},
-        {"Huge Ambient 2 (Drone)", "HugeAmbient2"},
-        {"Misty Vox Pad (Drone)", "Misty_Vox"},
-        {"Voicepad Ambient (Drone)", "Voicepad"},
-        {"Watergate Pad (Drone)", "Watergate"},
-        {"String Choir (Drone)", "StringChoir"},
-        {"Silver Rain (Drone)", "Silver_Rain"},
-        {"Formanta Drone", "Formanta"},
-        {"Access Virus Drone", "Access_Virus"}
-    };
-    for (size_t i = 0; i < sizeof(droneSounds)/sizeof(droneSounds[0]); ++i) {
-        m_comboDroneSound.addItem(droneSounds[i].label, static_cast<int>(i + 1));
-    }
-    m_comboDroneSound.setSelectedId(1, juce::dontSendNotification);
     m_comboDroneSound.onChange = [this] {
         int idx = m_comboDroneSound.getSelectedId() - 1;
-        if (idx >= 0 && idx < static_cast<int>(sizeof(droneSounds)/sizeof(droneSounds[0]))) {
-            m_host->loadDrone(droneSounds[idx].id);
+        if (idx >= 0 && idx < static_cast<int>(m_availableDrones.size())) {
+            m_host->loadDrone(m_availableDrones[idx].id.toStdString());
         }
     };
 
@@ -360,7 +488,17 @@ void MainComponent::setupUI() {
 
     // Header buttons
     addAndMakeVisible(m_btnPrevPreset);
+    m_btnPrevPreset.onClick = [this] {
+        int cur = m_comboPiano.getSelectedId();
+        if (cur > 1) m_comboPiano.setSelectedId(cur - 1);
+    };
+
     addAndMakeVisible(m_btnNextPreset);
+    m_btnNextPreset.onClick = [this] {
+        int cur = m_comboPiano.getSelectedId();
+        if (cur < m_comboPiano.getNumItems()) m_comboPiano.setSelectedId(cur + 1);
+    };
+
     addAndMakeVisible(m_btnSavePreset);
     m_btnSavePreset.setColour(juce::TextButton::buttonColourId, StagePianoLookAndFeel::accentNord);
 
@@ -368,10 +506,20 @@ void MainComponent::setupUI() {
     m_btnSettings.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff2a2c38));
     m_btnSettings.onClick = [this] { openAudioSettings(); };
 
-    // Footer Config Button
+    // Footer Buttons
     addAndMakeVisible(m_btnFooterConfig);
     m_btnFooterConfig.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
     m_btnFooterConfig.onClick = [this] { openAudioSettings(); };
+
+    addAndMakeVisible(m_btnImport);
+    m_btnImport.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
+    m_btnImport.onClick = [this] { openImportDialog(); };
+
+    addAndMakeVisible(m_btnRefresh);
+    m_btnRefresh.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
+    m_btnRefresh.onClick = [this] { populateInstrumentCombos(); };
+
+    populateInstrumentCombos();
 }
 
 void MainComponent::audioDeviceIOCallbackWithContext(const float* const* /*inputChannelData*/,
@@ -575,8 +723,10 @@ void MainComponent::resized() {
     m_btnSavePreset.setBounds(845, 22, 100, 36);
     m_btnSettings.setBounds(955, 22, 165, 36);
 
-    // Footer config button
-    m_btnFooterConfig.setBounds(footerArea.getRight() - 150, footerArea.getY() + 10, 130, 30);
+    // Footer buttons
+    m_btnFooterConfig.setBounds(footerArea.getRight() - 110, footerArea.getY() + 10, 95, 30);
+    m_btnImport.setBounds(footerArea.getRight() - 280, footerArea.getY() + 10, 160, 30);
+    m_btnRefresh.setBounds(footerArea.getRight() - 380, footerArea.getY() + 10, 90, 30);
 
     // Card 1: Slot A & Slot B
     m_comboPiano.setBounds(r1.getX() + 14, r1.getY() + 60, r1.getWidth() - 28, 28);

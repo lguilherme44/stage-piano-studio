@@ -70,6 +70,20 @@ private:
     juce::TextButton m_btnSavePreset{"Save Preset"};
     juce::TextButton m_btnSettings{"AUDIO / MIDI"};
     juce::TextButton m_btnFooterConfig{"CONFIG"};
+    juce::TextButton m_btnRefresh{"REFRESH"};
+    juce::TextButton m_btnImport{"IMPORT SF2 / SFZ"};
+
+    struct InstItem {
+        juce::String label;
+        juce::String id;
+    };
+    std::vector<InstItem> m_availablePianos;
+    std::vector<InstItem> m_availableSynths;
+    std::vector<InstItem> m_availableDrones;
+
+    void populateInstrumentCombos();
+    void openImportDialog();
+    std::unique_ptr<juce::FileChooser> m_fileChooser;
 
     // Slot A (Piano)
     juce::ComboBox m_comboPiano;
