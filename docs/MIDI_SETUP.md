@@ -1,20 +1,20 @@
-# MIDI Keyboard & Controller Setup
+# Configuração de Teclados & Controladores MIDI
 
-Stage Piano Studio is class-compliant and connects automatically to any USB MIDI keyboard or interface.
+O **Stage Piano Studio** é *class-compliant* e conecta-se automaticamente a qualquer teclado USB MIDI ou interface conectada ao computador.
 
-## Quick Start
+## Início Rápido
 
-1. Plug your MIDI keyboard or USB interface into your computer.
-2. If your keyboard has a driver setting in its menu (e.g. `Vender` vs `Generic`), make sure it is set to **`Generic` / `Class-Compliant`**.
-3. Open Stage Piano Studio.
-4. Click **`AUDIO / MIDI`** (or **`CONFIG`** in the footer) to open settings.
-5. In the **Active MIDI Inputs** list, check your keyboard.
+1. Conecte seu teclado ou interface USB ao computador.
+2. Se o seu teclado tiver uma opção de driver no menu interno (ex: `Vender` vs `Generic`), certifique-se de deixá-la em **`Generic` / `Class-Compliant`**.
+3. Abra o Stage Piano Studio.
+4. Clique no botão **`AUDIO / MIDI`** (ou **`CONFIG`** no rodapé) para abrir as configurações.
+5. Na lista **Active MIDI Inputs**, marque a caixa do seu teclado.
 
 ## macOS
-CoreMIDI detects hotplugged USB keyboards automatically. When a note is played, the footer indicator updates to display your device name.
+O CoreMIDI detecta teclados USB conectados automaticamente sem precisar de driver extra. Ao tocar uma nota, o indicador no rodapé atualiza exibindo o nome do dispositivo.
 
 ## Windows
-Windows MIDI drivers and WASAPI/ASIO audio devices are enumerated in the Audio & MIDI settings panel. Select your low-latency audio driver (ASIO or Windows Audio Exclusive) for minimum buffer delay (~64-128 samples).
+Os drivers MIDI do Windows e interfaces WASAPI/ASIO são listados diretamente no painel de configurações. Escolha o driver de menor latência (ASIO dedicado da interface ou Windows Audio Exclusive) para obter o menor atraso possível (buffer entre 64 e 128 amostras).
 
 ## Linux
-ALSA and JACK MIDI ports are supported. Make sure your user belongs to the `audio` group for realtime permissions.
+Portas ALSA e JACK MIDI são reconhecidas de forma nativa. Certifique-se de que o seu usuário pertence ao grupo `audio` no sistema para permissões de prioridade em tempo real.
