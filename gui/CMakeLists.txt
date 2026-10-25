@@ -53,6 +53,27 @@ target_compile_definitions(StagePianoStudio PRIVATE
     JUCE_VST3_CAN_REPLACE_VST2=0
 )
 
+# Enable native ASIO low-latency driver support on Windows (ASIO4ALL, Focusrite, etc.)
+if(WIN32)
+    include(FetchContent)
+    FetchContent_Declare(
+        asiosdk
+        GIT_REPOSITORY https://github.com/audiosdk/asio.git
+        GIT_TAG master
+        GIT_SHALLOW TRUE
+    )
+    FetchContent_MakeAvailable(asiosdk)
+
+    target_compile_definitions(StagePianoStudio PRIVATE
+        JUCE_ASIO=1
+        JUCE_WASAPI=1
+        JUCE_DIRECTSOUND=1
+    )
+    target_include_directories(StagePianoStudio PRIVATE
+        "${asiosdk_SOURCE_DIR}/common"
+    )
+endif()
+
 target_link_libraries(StagePianoStudio PRIVATE
     juce::juce_core
     juce::juce_events

@@ -11,8 +11,40 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
+#include <functional>
 #include <mutex>
 #include <atomic>
+
+enum class VelocityCurve {
+    Linear = 0,
+    Soft1,
+    Soft2,
+    Hard1,
+    Hard2,
+    Compressed
+};
+
+enum class MidiCCParam {
+    None = 0,
+    PianoVolume,
+    SynthVolume,
+    DroneVolume,
+    SynthCutoff,
+    PianoEqLow,
+    PianoEqMid,
+    PianoEqHigh,
+    SynthEqLow,
+    SynthEqMid,
+    SynthEqHigh,
+    EqLow,
+    EqMid,
+    EqHigh,
+    ChorusMix,
+    DelayMix,
+    ReverbMix,
+    MasterVolume
+};
 
 class StagePianoHost {
 public:
@@ -58,10 +90,26 @@ public:
     void setSustainPedal(bool pressed);
     void allNotesOff();
 
+    // Velocity Curve Profile
+    void setVelocityCurve(VelocityCurve curve) { m_velocityCurve = curve; }
+    VelocityCurve getVelocityCurve() const { return m_velocityCurve; }
+
+    // MIDI CC Router & MIDI Learn
+    void handleMidiCC(int controller, int value);
+    void startMidiLearn(MidiCCParam param) { m_learningParam = param; }
+    void cancelMidiLearn() { m_learningParam = MidiCCParam::None; }
+    bool isMidiLearning() const { return m_learningParam != MidiCCParam::None; }
+    MidiCCParam getMidiLearnTarget() const { return m_learningParam; }
+    void setMidiBinding(int controller, MidiCCParam param);
+    MidiCCParam getMidiBinding(int controller) const;
+    void setParamChangeListener(std::function<void(MidiCCParam, float)> callback) { m_paramCallback = callback; }
+
     // Audio Rendering (Full FX Chain)
     void render(float* outputBuffer, uint32_t numFrames, uint32_t numChannels);
 
     // FX Chain Access
+    Equalizer& getPianoEqualizer() { return m_pianoEq; }
+    Equalizer& getSynthEqualizer() { return m_synthEq; }
     Equalizer& getEqualizer() { return m_equalizer; }
     Compressor& getCompressor() { return m_compressor; }
     Chorus& getChorus() { return m_chorus; }
@@ -108,11 +156,21 @@ private:
     int m_droneRootNote = 36; // C2
 
     // Studio FX Chain
+    Equalizer m_pianoEq;
+    Equalizer m_synthEq;
     Equalizer m_equalizer;
     Chorus m_chorus;
     Delay m_delay;
     Reverb m_reverb;
     Compressor m_compressor;
+
+    // Velocity curve setting
+    VelocityCurve m_velocityCurve = VelocityCurve::Linear;
+
+    // MIDI CC Router & Learn
+    MidiCCParam m_learningParam = MidiCCParam::None;
+    std::map<int, MidiCCParam> m_ccBindings;
+    std::function<void(MidiCCParam, float)> m_paramCallback = nullptr;
 
     std::recursive_mutex m_hostMutex;
 };

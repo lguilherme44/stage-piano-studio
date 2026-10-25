@@ -305,6 +305,14 @@ void Sampler::noteOn(int note, int velocity, bool looping) {
     }
     if (!layer->sample) return;
 
+    // Retrigger check: if the same note is already sounding, fade it out to prevent phase stacking & mud
+    for (auto& oldV : m_voices) {
+        if (oldV.active && oldV.note == note) {
+            oldV.stage = Voice::Release;
+            oldV.releaseStep = std::max(oldV.releaseStep, 1.0f / (m_sampleRate * 0.020f)); // 20ms smooth anti-mud release
+        }
+    }
+
     // Find voice
     int voiceIdx = -1;
     uint64_t oldestAge = UINT64_MAX;

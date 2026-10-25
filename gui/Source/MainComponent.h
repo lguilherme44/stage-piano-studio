@@ -72,6 +72,11 @@ private:
     juce::TextButton m_btnFooterConfig{"CONFIG"};
     juce::TextButton m_btnRefresh{"REFRESH"};
     juce::TextButton m_btnImport{"IMPORT SF2 / SFZ"};
+    juce::TextButton m_btnMidiLearn{"MIDI LEARN"};
+
+    // Performance & Skin Controls
+    juce::ComboBox m_comboVelocityCurve;
+    juce::ComboBox m_comboTheme;
 
     struct InstItem {
         juce::String label;
@@ -83,6 +88,7 @@ private:
 
     void populateInstrumentCombos();
     void openImportDialog();
+    void updateUIFromMidi(MidiCCParam param, float val);
     std::unique_ptr<juce::FileChooser> m_fileChooser;
 
     // Slot A (Piano)
@@ -102,10 +108,15 @@ private:
     juce::ComboBox m_comboDroneSound;
     juce::Slider m_sliderDroneVol;
 
-    // Effects
-    juce::Slider m_sliderEqLow;
-    juce::Slider m_sliderEqMid;
-    juce::Slider m_sliderEqHigh;
+    // Slot A (Piano) EQ
+    juce::Slider m_sliderPianoEqLow;
+    juce::Slider m_sliderPianoEqMid;
+    juce::Slider m_sliderPianoEqHigh;
+
+    // Slot B (Synth) EQ
+    juce::Slider m_sliderSynthEqLow;
+    juce::Slider m_sliderSynthEqMid;
+    juce::Slider m_sliderSynthEqHigh;
 
     juce::ToggleButton m_toggleChorus{"Chorus"};
     juce::Slider m_sliderChorusMix;

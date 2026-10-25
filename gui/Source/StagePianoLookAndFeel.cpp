@@ -1,14 +1,43 @@
 #include "StagePianoLookAndFeel.h"
 
-const juce::Colour StagePianoLookAndFeel::bgChassis   = juce::Colour(0xff121317);
-const juce::Colour StagePianoLookAndFeel::bgPanel     = juce::Colour(0xff181a20);
-const juce::Colour StagePianoLookAndFeel::borderPanel = juce::Colour(0xff272a33);
-const juce::Colour StagePianoLookAndFeel::accentAmber = juce::Colour(0xfff59e0b);
-const juce::Colour StagePianoLookAndFeel::accentNord  = juce::Colour(0xffd02b2b);
-const juce::Colour StagePianoLookAndFeel::textLight   = juce::Colour(0xfff1f5f9);
-const juce::Colour StagePianoLookAndFeel::textDim     = juce::Colour(0xff94a3b8);
+juce::Colour StagePianoLookAndFeel::bgChassis   = juce::Colour(0xff121317);
+juce::Colour StagePianoLookAndFeel::bgPanel     = juce::Colour(0xff181a20);
+juce::Colour StagePianoLookAndFeel::borderPanel = juce::Colour(0xff272a33);
+juce::Colour StagePianoLookAndFeel::accentAmber = juce::Colour(0xfff59e0b);
+juce::Colour StagePianoLookAndFeel::accentNord  = juce::Colour(0xffd02b2b);
+juce::Colour StagePianoLookAndFeel::textLight   = juce::Colour(0xfff1f5f9);
+juce::Colour StagePianoLookAndFeel::textDim     = juce::Colour(0xff94a3b8);
 
 StagePianoLookAndFeel::StagePianoLookAndFeel() {
+    setTheme(Theme::NordStudio);
+}
+
+void StagePianoLookAndFeel::setTheme(Theme theme) {
+    m_theme = theme;
+    switch (theme) {
+        case Theme::NordStudio:
+            bgChassis   = juce::Colour(0xff121317);
+            bgPanel     = juce::Colour(0xff181a20);
+            borderPanel = juce::Colour(0xff272a33);
+            accentAmber = juce::Colour(0xfff59e0b);
+            accentNord  = juce::Colour(0xffd02b2b);
+            break;
+        case Theme::YamahaMotif:
+            bgChassis   = juce::Colour(0xff0d131f);
+            bgPanel     = juce::Colour(0xff141c2c);
+            borderPanel = juce::Colour(0xff222e44);
+            accentAmber = juce::Colour(0xff38bdf8);
+            accentNord  = juce::Colour(0xff2563eb);
+            break;
+        case Theme::RolandStage:
+            bgChassis   = juce::Colour(0xff09090b);
+            bgPanel     = juce::Colour(0xff121215);
+            borderPanel = juce::Colour(0xff27272a);
+            accentAmber = juce::Colour(0xffeab308);
+            accentNord  = juce::Colour(0xffb91c1c);
+            break;
+    }
+
     setColour(juce::ResizableWindow::backgroundColourId, bgChassis);
     setColour(juce::DialogWindow::backgroundColourId, bgPanel);
 
@@ -89,6 +118,52 @@ void StagePianoLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, in
     g.strokePath(pointer, juce::PathStrokeType(1.5f));
     g.setColour(accentAmber);
     g.fillPath(pointer);
+}
+
+void StagePianoLookAndFeel::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height,
+                                            float sliderPos, float /*minSliderPos*/, float /*maxSliderPos*/,
+                                            const juce::Slider::SliderStyle /*style*/, juce::Slider& /*slider*/) {
+    auto bounds = juce::Rectangle<int>(x, y, width, height).toFloat();
+    float centerX = bounds.getCentreX();
+
+    // 1. Calibration notch lines on left & right
+    g.setColour(borderPanel.brighter(0.15f));
+    for (int i = 0; i <= 6; ++i) {
+        float ly = bounds.getY() + 8.0f + i * ((bounds.getHeight() - 16.0f) / 6.0f);
+        g.drawHorizontalLine(static_cast<int>(ly), centerX - 15.0f, centerX - 7.0f);
+        g.drawHorizontalLine(static_cast<int>(ly), centerX + 7.0f, centerX + 15.0f);
+    }
+
+    // 2. Center recessed track
+    auto trackRect = juce::Rectangle<float>(centerX - 2.5f, bounds.getY() + 4.0f, 5.0f, bounds.getHeight() - 8.0f);
+    g.setColour(juce::Colour(0xff08090b));
+    g.fillRoundedRectangle(trackRect, 2.0f);
+    g.setColour(borderPanel);
+    g.drawRoundedRectangle(trackRect, 2.0f, 1.0f);
+
+    // 3. Studio Console Fader Cap (Aluminum / Dark Gunmetal)
+    float capW = 28.0f;
+    float capH = 18.0f;
+    float capY = std::clamp(sliderPos - (capH * 0.5f), bounds.getY() + 2.0f, bounds.getBottom() - capH - 2.0f);
+    auto capRect = juce::Rectangle<float>(centerX - (capW * 0.5f), capY, capW, capH);
+
+    // Drop shadow
+    g.setColour(juce::Colours::black.withAlpha(0.7f));
+    g.fillRoundedRectangle(capRect.translated(0.0f, 2.0f), 3.0f);
+
+    // Metallic body
+    juce::ColourGradient capGrad(juce::Colour(0xff3f4453), capRect.getX(), capRect.getY(),
+                                juce::Colour(0xff16181f), capRect.getX(), capRect.getBottom(), false);
+    g.setGradientFill(capGrad);
+    g.fillRoundedRectangle(capRect, 3.0f);
+
+    // Bevel frame
+    g.setColour(juce::Colour(0xff52596d));
+    g.drawRoundedRectangle(capRect, 3.0f, 1.0f);
+
+    // Center indicator line
+    g.setColour(accentAmber);
+    g.drawHorizontalLine(static_cast<int>(capY + capH * 0.5f), capRect.getX() + 3.0f, capRect.getRight() - 3.0f);
 }
 
 void StagePianoLookAndFeel::drawButtonBackground(juce::Graphics& g, juce::Button& button,

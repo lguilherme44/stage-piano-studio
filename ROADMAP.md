@@ -9,11 +9,16 @@ Funcionalidades planejadas e marcos técnicos para as próximas versões.
 - [ ] **Compactação Lossless da Biblioteca**: Suporte a FLAC ou compactação sem perda em tempo real para reduzir o uso de disco das amostras.
 
 ## Fase 2: Realismo Acústico e Expressividade
+- [x] **Perfis de Curva de Velocity**: Curvas selecionáveis (Linear, Soft 1, Soft 2, Hard 1, Hard 2, Compressed) para casar perfeitamente com a ação de teclas de qualquer controlador (pesadas tipo martelo, semipesadas ou synth-action).
+- [x] **Equalizadores Independentes por Camada (Slot A e Slot B)**: Modelagem tonal dedicada com 3 bandas independentes (Grave, Médio paramétrico, Agudo) para o Piano e para o Synth Pad, garantindo encaixe perfeito na mixagem ao vivo.
 - [ ] **Round-Robin Alternado**: Disparo cíclico de amostras diferentes na mesma nota/velocity para evitar o efeito "metralhadora" em repetições rápidas.
 - [ ] **Amostras de Liberação (Release Samples) e Ressonância de Damper**: Acionamento de ruído mecânico na soltura da tecla e ressonância simpática ao pisar no pedal de sustain.
-- [ ] **Perfis de Curva de Velocity**: Curvas selecionáveis (Suave, Linear, Pesada, Spline customizada) para casar perfeitamente com a ação de teclas de qualquer controlador (pesadas, semipesadas ou synth-action).
 
-## Fase 3: Recursos para Performance ao Vivo
+## Fase 3: Recursos para Performance ao Vivo e Customização de Palco
+- [x] **Suporte Nativo a Drivers ASIO / ASIO4ALL no Windows**: Compilação automática com o SDK Steinberg ASIO no Windows para suporte a latência ultrabaixa e interfaces dedicadas (Focusrite, Behringer, etc.).
+- [x] **Mapeamento MIDI Inteligente (MIDI Learn & CC Router)**: Mapeamento em tempo real de knobs, sliders e botões de qualquer teclado controlador com feedback visual interativo e persistência de binds.
+- [x] **Faders Verticais de Mixagem de Estúdio**: Sliders verticais táteis calibrados com notch marks para mixagem visual e rápida de níveis (Slot A, Slot B e Drone contínuo).
+- [x] **Sistema de Skins e Temas de Palco**: Alternância instantânea de paletas visuais consagradas (Nord Red Studio, Yamaha Motif Navy, Roland V-Stage Obsidian Gold) preparando a base para layout strategies modulares.
 - [ ] **Transição Suave de Sons (Patch Remain / Sound Continuity)**: Sustentar acordes da música anterior sem corte de áudio ao trocar de preset.
 - [ ] **Roteamento de Troca de Programa MIDI (PC)**: Seleção rápida de bancos e presets diretamente pelos botões físicos ou pedais do teclado.
 - [ ] **Modo Divisão de Teclado (Keyboard Split)**: Ponto de divisão configurável para tocar Baixo/Drone na mão esquerda e Piano/Lead na mão direita.

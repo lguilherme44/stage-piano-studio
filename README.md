@@ -49,14 +49,37 @@ O **Stage Piano Studio** resolve isso: carregamento instantâneo de amostras, la
 - **Transição Suave ao Vivo:** Ao trocar o tom da música com o drone ativo, o tom anterior faz um fade-out gradual de 1,5 segundos enquanto a nova nota cresce suavemente por baixo, mantendo a harmonia contínua.
 - Volume e controle de presença dedicados.
 
-### 3. Rack de Efeitos DSP de Estúdio
-- **Equalizador de 3 Bandas:** Graves (*Low Shelf* em 80 Hz), Médios paramétricos ajustáveis (*Peaking* em 1,2 kHz com Q) e Agudos (*High Shelf* em 8 kHz) usando biquads transpostos (RBJ Forma Direta II).
+### 3. Rack de Efeitos DSP de Estúdio & Equalizadores Dedicados por Camada
+- **Equalizadores de 3 Bandas Independentes (Slot A e Slot B):** Cada camada (Piano e Synth Pad) possui seu próprio equalizador estéreo dedicado com Graves (*Low Shelf* em 100 Hz), Médios paramétricos ajustáveis (*Peaking* em 1,2 kHz com Q) e Agudos (*High Shelf* em 8 kHz) usando biquads transpostos (RBJ Forma Direta II). Permite esculpir o brilho do piano sem afetar o calor do pad.
 - **Chorus Estéreo em Quadratura:** Modulação com 90 graus de diferença de fase entre canais para abertura e profundidade estéreo.
 - **Delay Ping-Pong:** Linhas de atraso cruzadas com amortecimento de altas frequências no feedback.
 - **Reverb de Estúdio:** Algoritmo de difusão de ambiente/hall com cauda natural e ajuste de mix.
 - **Compressor Dinâmico de Estúdio:** Detetor de envelope suave (*soft-knee*), controle de Threshold, ganho de saída (*Makeup*) e barra com medidor de LEDs em tempo real de redução de ganho (*Gain Reduction Meter*).
+- **Limitador Suave Analógico (Zero Discontinuidades):** Estágio de saída com saturação suave baseada em tangente hiperbólica assintótica, eliminando estalos digitais e chiados em situações de alta polifonia.
 
-### 4. Teclado Virtual & Conectividade MIDI Universal
+### 4. Faders Verticais de Mixagem de Estúdio & Ergonomia de Palco
+- **Sliders Verticais Táteis:** Substituem knobs rotativos para o controle de volume principal do **Slot A (Piano)**, **Slot B (Synth Pad)** e **Drone Contínuo**, proporcionando leitura imediata de níveis e ajustes precisos mesmo em ambientes de palco escuros.
+- **Visual Console com Notch Marks:** Calibração gráfica com marcas de decibéis e indicador central luminoso na cabeça do fader metálico.
+
+### 5. Perfis de Curva de Velocity (Keybed Touch Response)
+- Ajuste instantâneo da resposta dinâmica às teclas físicas de qualquer teclado controlador:
+  - **Linear:** Resposta 1:1 direta.
+  - **Soft 1 & Soft 2 (Light Touch):** Curvas exponenciais para teclados com ação leve ou sintetizador, facilitando atingir velocities altas sem esforço excessivo.
+  - **Hard 1 & Hard 2 (Weighted Hammer Action):** Curvas logarítmicas desenhadas para controladores com ação pesada de piano de cauda mecânico.
+  - **Compressed (Live Stage Presence):** Curva com piso dinâmico elevado, garantindo que mesmo toques leves mantenham presença sonora e peso na mixagem da banda ao vivo.
+
+### 6. Mapeamento MIDI Universal (MIDI Learn & CC Router)
+- **Modo MIDI Learn Interativo:** Clique no botão `MIDI LEARN`, selecione o parâmetro desejado (Volumes, Cutoff, EQ, Reverb, Chorus, Delay) e gire qualquer fader ou knob físico do seu teclado para mapear instantaneamente.
+- **Roteamento Inteligente:** Compatível com os padrões de fábrica mais comuns da indústria (CC 7 para Volume Piano, CC 11 para Pad, CC 1 para Drone, CC 74 para Cutoff, CC 91/93 para FX).
+- **Despacho Assíncrono Thread-Safe:** Eventos de CC recebidos nas threads prioritárias de áudio/MIDI (`CoreMIDI`/`WASAPI`) atualizam a interface gráfica com garantia de thread safety via despachantes assíncronos (`MessageManager::callAsync`), eliminando ruídos, travamentos ou dropouts.
+
+### 7. Sistema de Skins & Temas de Palco
+- Alterne o visual do aplicativo para combinar com o estilo do seu setup físico:
+  - **Nord Red Studio:** Chassi escuro clássico com detalhes em vermelho carmesim e visor OLED âmbar.
+  - **Yamaha Motif Navy:** Tons sóbrios de azul marinho com acentos royal blue e cyan, inspirados em lendárias workstations.
+  - **Roland V-Stage Obsidian Gold:** Elegância com base obsidiana e destaques dourados e vinho.
+
+### 8. Teclado Virtual & Conectividade MIDI Universal
 - **Teclado Virtual de 61 Teclas:** Totalmente integrado na interface (de C2 a C7), com suporte a cliques de mouse, atalhos de computador e feedback visual luminoso das notas acionadas.
 - **Reconhecimento MIDI Plug-and-Play:** Reconhece e roteia automaticamente qualquer teclado USB MIDI ou interface conectada ao sistema (Roland, Yamaha, Korg, Casio, Arturia, Novation, etc.).
 - **Suporte a Pedal de Sustain:** Leitura direta de CC#64 com liberação amortecida de vozes.
