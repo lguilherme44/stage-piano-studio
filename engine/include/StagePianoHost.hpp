@@ -119,9 +119,24 @@ public:
     // Emergency Panic & Safety Guard (Flushes all voices, DFD streams & DSP buffers)
     void panic();
 
-    // Global Transpose (+/- 24 semitones)
+    // Global Transpose (+/- 24 semitones) and Octave (+/- 3 octaves)
     void setGlobalTranspose(int semitones) { m_globalTranspose = std::clamp(semitones, -24, 24); }
     int getGlobalTranspose() const { return m_globalTranspose; }
+    void setGlobalOctave(int oct) { m_globalOctave = std::clamp(oct, -3, 3); }
+    int getGlobalOctave() const { return m_globalOctave; }
+
+    // Keyboard Low-C Calibration (for 61-key keyboards like Roland XPS-10)
+    void startLearningLowestC() { m_learningLowestC = true; }
+    bool isLearningLowestC() const { return m_learningLowestC.load(); }
+    void cancelLearningLowestC() { m_learningLowestC = false; }
+    int getLowestCMappedNote() const { return m_lowestCMappedNote; }
+    bool processMidiNoteForCalibration(int midiNote);
+
+    // Acoustic Piano Timbre Features (Nord-style String Resonance & Soft Ballad Action)
+    void setStringResonance(bool enabled);
+    bool isStringResonanceEnabled() const { return m_stringResonance; }
+    void setSoftPiano(bool enabled);
+    bool isSoftPianoEnabled() const { return m_softPiano; }
 
     // DFD Diagnostics & Monitoring (Kontakt-aligned)
     int getDfdLoadPercent() const { return DiskStreamer::getInstance().getDfdLoadPercent(); }
@@ -179,6 +194,11 @@ private:
     // Velocity curve setting
     VelocityCurve m_velocityCurve = VelocityCurve::Linear;
     int m_globalTranspose = 0;
+    int m_globalOctave = 0;
+    std::atomic<bool> m_learningLowestC{false};
+    int m_lowestCMappedNote = 36; // C2 by default on 61-key keyboards
+    bool m_stringResonance = true;
+    bool m_softPiano = false;
 
     // MIDI CC Router & Learn
     MidiCCParam m_learningParam = MidiCCParam::None;

@@ -47,6 +47,9 @@ public:
     // ChangeListener
     void changeListenerCallback(juce::ChangeBroadcaster* source) override;
 
+    // MouseListener
+    void mouseDown(const juce::MouseEvent& event) override;
+
     void openAudioSettings();
     void setSkin(SkinType type);
     SkinType getCurrentSkinType() const { return m_currentSkin ? m_currentSkin->getType() : SkinType::NordStage; }
@@ -73,12 +76,16 @@ private:
     juce::MidiKeyboardComponent m_keyboardComponent{m_keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard};
 
     // Header Components
-    juce::TextButton m_btnPrevPreset{"< Prev"};
-    juce::TextButton m_btnNextPreset{"Next >"};
+    juce::TextButton m_btnPrevPreset{"<"};
+    juce::TextButton m_btnNextPreset{">"};
     juce::TextButton m_btnSavePreset{"Save Preset"};
     juce::TextButton m_btnSettings{"AUDIO / MIDI"};
     juce::TextButton m_btnPanic{"PANIC"};
     juce::ComboBox m_comboTranspose;
+    juce::TextButton m_btnOctaveDown{"-1 Oct"};
+    juce::TextButton m_btnOctaveUp{"+1 Oct"};
+    juce::TextButton m_btnLearnC{"LEARN C"};
+
     juce::TextButton m_btnFooterConfig{"CONFIG"};
     juce::TextButton m_btnRefresh{"REFRESH"};
     juce::TextButton m_btnImport{"IMPORT SF2 / SFZ"};
@@ -87,6 +94,21 @@ private:
     // Performance & Skin Controls
     juce::ComboBox m_comboVelocityCurve;
     juce::ComboBox m_comboTheme;
+
+    // Interactive Model Selectors & Nord Badges
+    juce::TextButton m_btnPrevPiano{"<"};
+    juce::TextButton m_btnNextPiano{">"};
+    juce::ToggleButton m_toggleStrRes{"STR RES"};
+    juce::ToggleButton m_toggleSoft{"SOFT"};
+
+    juce::TextButton m_btnPrevSynth{"<"};
+    juce::TextButton m_btnNextSynth{">"};
+    juce::ToggleButton m_toggleLngRel{"LNG REL"};
+    juce::ToggleButton m_toggleNoSens{"NO SENS"};
+
+    // Program Bank Buttons (1..8)
+    std::array<juce::TextButton, 8> m_btnPrograms;
+    int m_currentProgram = 1;
 
     struct InstItem {
         juce::String label;
@@ -99,6 +121,10 @@ private:
     void populateInstrumentCombos();
     void openImportDialog();
     void updateUIFromMidi(MidiCCParam param, float val);
+    void updateOctaveDisplay();
+    void cancelMidiLearnState();
+    MidiCCParam getParamForComponent(juce::Component* target, juce::String& outName);
+    bool m_isWaitingForControlClick = false;
     std::unique_ptr<juce::FileChooser> m_fileChooser;
 
     // Slot A (Piano)

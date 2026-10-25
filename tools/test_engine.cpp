@@ -93,7 +93,40 @@ int main() {
     assert(host.getDfdActiveRequests() >= 0);
     assert(host.getDfdUnderrunCount() == 0);
 
-    // 8. Test Panic Button & Emergency Reset
+    // 8. Test Global Octave & Roland XPS-10 Low-C Calibration
+    std::cout << "[TestEngine] Testing Global Octave and XPS-10 Low-C Calibration...\n";
+    assert(host.getGlobalOctave() == 0);
+    host.setGlobalOctave(-1);
+    assert(host.getGlobalOctave() == -1);
+    host.setGlobalOctave(2);
+    assert(host.getGlobalOctave() == 2);
+    host.setGlobalOctave(0);
+
+    // Simulate Roland XPS-10 61-key calibration:
+    // XPS-10 lowest key is C2 (MIDI note 36). Bottom C on 88-key concert grand is C1 (note 24).
+    host.startLearningLowestC();
+    assert(host.isLearningLowestC());
+    // User presses lowest C on XPS-10 (note 36)
+    bool calibrated = host.processMidiNoteForCalibration(36);
+    assert(calibrated);
+    assert(!host.isLearningLowestC());
+    // (24 - 36) / 12 = -1 octave
+    assert(host.getGlobalOctave() == -1);
+    assert(host.getLowestCMappedNote() == 36);
+
+    // 9. Test Acoustic Timbre (String Resonance & Soft Ballad Action)
+    std::cout << "[TestEngine] Testing String Resonance & Soft Piano...\n";
+    host.setStringResonance(false);
+    assert(!host.isStringResonanceEnabled());
+    host.setStringResonance(true);
+    assert(host.isStringResonanceEnabled());
+
+    host.setSoftPiano(true);
+    assert(host.isSoftPianoEnabled());
+    host.setSoftPiano(false);
+    assert(!host.isSoftPianoEnabled());
+
+    // 10. Test Panic Button & Emergency Reset
     std::cout << "[TestEngine] Testing Emergency Panic...\n";
     host.noteOn(60, 100);
     host.noteOn(64, 100);

@@ -262,7 +262,7 @@ void NordStageLayout::paintBackground(juce::Graphics& g, juce::Rectangle<int> bo
     g.drawText("HD V1.3.7 - DFD STREAMING HOST", 44, 42, 200, 16, juce::Justification::left);
 
     // Central High-Contrast OLED / LCD Screen (Blue Framed with Glowing Cyan Text)
-    auto screenBox = juce::Rectangle<int>(255, 12, 305, 56);
+    auto screenBox = juce::Rectangle<int>(220, 12, 260, 56);
     g.setColour(juce::Colour(0xff03080e)); // Dark midnight LCD glass
     g.fillRoundedRectangle(screenBox.toFloat(), 5.0f);
     g.setColour(juce::Colour(0xff0284c7)); // Cyan Metallic Bezel
@@ -276,22 +276,24 @@ void NordStageLayout::paintBackground(juce::Graphics& g, juce::Rectangle<int> bo
 
     // Cyan glowing program & layer text
     g.setColour(juce::Colour(0xff38bdf8)); // Bright Cyan Title
-    g.setFont(juce::FontOptions(16.0f, juce::Font::bold));
-    g.drawText("Program 1", screenBox.getX() + 12, screenBox.getY() + 6, 160, 20, juce::Justification::left);
+    g.setFont(juce::FontOptions(15.0f, juce::Font::bold));
+    g.drawText("Program " + juce::String(ctx.currentProgram), screenBox.getX() + 10, screenBox.getY() + 6, 120, 18, juce::Justification::left);
 
     g.setColour(juce::Colour(0xffa5f3fc));
-    g.setFont(juce::FontOptions(11.0f, juce::Font::bold));
-    g.drawText("[PIANO]  " + ctx.pianoName, screenBox.getX() + 12, screenBox.getY() + 27, 210, 14, juce::Justification::left);
-    g.drawText("[SYNTH]  " + ctx.synthName, screenBox.getX() + 12, screenBox.getY() + 41, 210, 14, juce::Justification::left);
+    g.setFont(juce::FontOptions(10.5f, juce::Font::bold));
+    g.drawText("[PIANO] " + ctx.pianoName, screenBox.getX() + 10, screenBox.getY() + 25, 155, 14, juce::Justification::left);
+    g.drawText("[SYNTH] " + ctx.synthName, screenBox.getX() + 10, screenBox.getY() + 39, 155, 14, juce::Justification::left);
 
-    // Live Telemetry inside Screen Box (Right aligned)
-    g.setColour(juce::Colour(0xff38bdf8));
+    // Live Telemetry & Octave inside Screen Box (Right aligned)
+    g.setColour(ctx.isLearningLowestC ? juce::Colour(0xfff59e0b) : juce::Colour(0xff38bdf8));
     g.setFont(juce::FontOptions(9.5f, juce::Font::bold));
-    g.drawText("STAGE PIANO DFD", screenBox.getRight() - 110, screenBox.getY() + 8, 100, 12, juce::Justification::right);
+    juce::String octInfo = ctx.isLearningLowestC ? "CALIBRATING C" : (juce::String("OCT: ") + (ctx.globalOctave > 0 ? "+" : "") + juce::String(ctx.globalOctave));
+    g.drawText(octInfo, screenBox.getRight() - 95, screenBox.getY() + 6, 88, 12, juce::Justification::right);
+
     g.setColour(juce::Colour(0xff94a3b8));
-    g.setFont(juce::FontOptions(9.0f));
+    g.setFont(juce::FontOptions(8.5f));
     juce::String telem = "DSP: " + juce::String(ctx.dspLoad, 1) + "%\nDFD: " + juce::String(ctx.dfdLoad) + "%\nVOICES: " + juce::String(ctx.activeVoices);
-    g.drawMultiLineText(telem, screenBox.getRight() - 110, screenBox.getY() + 24, 100, juce::Justification::right);
+    g.drawMultiLineText(telem, screenBox.getRight() - 95, screenBox.getY() + 20, 88, juce::Justification::right);
 
     // 3. Footer Strip
     auto footerBounds = bounds.removeFromBottom(50);
@@ -412,62 +414,59 @@ void NordStageLayout::paintBackground(juce::Graphics& g, juce::Rectangle<int> bo
 
     // --- CARD 2: PIANO SECTION (SLOT A) ---
     // 7-Segment LED Model Display + Dual Vertical LED Ladders
-    float pDisX = r2.getX() + 18.0f;
+    float pDisX = r2.getX() + 14.0f;
     float pDisY = r2.getY() + 36.0f;
-    float pDisW = 44.0f;
-    float pDisH = 38.0f;
+    float pDisW = 40.0f;
+    float pDisH = 34.0f;
 
     // Left Ladder (Purple/Magenta)
-    drawLedLadder(g, juce::Rectangle<float>(pDisX - 10.0f, pDisY, 6.0f, pDisH), 6, 4, juce::Colour(0xffd946ef));
-    // 7-Segment Box showing Model "1"
-    draw7SegmentBox(g, juce::Rectangle<float>(pDisX, pDisY, pDisW, pDisH), 1);
+    drawLedLadder(g, juce::Rectangle<float>(pDisX - 8.0f, pDisY, 5.0f, pDisH), 6, 4, juce::Colour(0xffd946ef));
+    // 7-Segment Box showing Model Index
+    int pModel = juce::jlimit(1, 99, ctx.pianoModelIndex > 0 ? ctx.pianoModelIndex : 1);
+    draw7SegmentBox(g, juce::Rectangle<float>(pDisX, pDisY, pDisW, pDisH), pModel);
     // Right Ladder (Bright Red)
-    drawLedLadder(g, juce::Rectangle<float>(pDisX + pDisW + 4.0f, pDisY, 6.0f, pDisH), 6, 5, juce::Colour(0xffff2222));
+    drawLedLadder(g, juce::Rectangle<float>(pDisX + pDisW + 3.0f, pDisY, 5.0f, pDisH), 6, 5, juce::Colour(0xffff2222));
 
     // Label: MODEL
     g.setColour(juce::Colour(0xff94a3b8));
     g.setFont(juce::FontOptions(8.5f, juce::Font::bold));
     g.drawText("MODEL", static_cast<int>(pDisX), static_cast<int>(pDisY + pDisH + 2.0f), static_cast<int>(pDisW), 12, juce::Justification::centred);
 
-    // Level label
-    g.drawText("LEVEL", r2.getRight() - 75, r2.getY() + 72, 55, 12, juce::Justification::centred);
+    // Level label above tall fader
+    g.drawText("LEVEL", r2.getRight() - 68, r2.getY() + 54, 60, 12, juce::Justification::centred);
 
-    // String Resonance & Open String Badges
-    drawTactileButton(g, juce::Rectangle<float>(r2.getX() + 12, r2.getY() + 185, 78, 26), "STR RES", false, true);
-    drawTactileButton(g, juce::Rectangle<float>(r2.getX() + 96, r2.getY() + 185, 78, 26), "OPN STR", false, true);
-    drawTactileButton(g, juce::Rectangle<float>(r2.getX() + 180, r2.getY() + 185, 78, 26), "SOFT", false, false);
-
-    // Rotary Piano Select encoder text & arrows
-    g.setColour(juce::Colours::white);
-    g.setFont(juce::FontOptions(10.0f, juce::Font::bold));
-    g.drawText("<  PIANO SELECT  >", r2.getX() + 12, r2.getY() + 152, r2.getWidth() - 24, 16, juce::Justification::centred);
+    // Acoustic Timbre & String Resonance Header
+    g.setColour(juce::Colour(0xffcbd5e1));
+    g.setFont(juce::FontOptions(9.5f, juce::Font::bold));
+    g.drawText("ACOUSTIC TIMBRE", r2.getX() + 14, r2.getY() + 165, 150, 14, juce::Justification::left);
 
     // --- CARD 3: SYNTH & PROGRAMS (SLOT B + CENTRAL CONTROLS) ---
     // 7-Segment LED Sample Display + Dual Vertical LED Ladders
-    float sDisX = r3.getX() + 18.0f;
+    float sDisX = r3.getX() + 14.0f;
     float sDisY = r3.getY() + 36.0f;
-    float sDisW = 44.0f;
-    float sDisH = 38.0f;
+    float sDisW = 40.0f;
+    float sDisH = 34.0f;
 
-    drawLedLadder(g, juce::Rectangle<float>(sDisX - 10.0f, sDisY, 6.0f, sDisH), 6, 3, juce::Colour(0xff38bdf8));
-    draw7SegmentBox(g, juce::Rectangle<float>(sDisX, sDisY, sDisW, sDisH), 3);
-    drawLedLadder(g, juce::Rectangle<float>(sDisX + sDisW + 4.0f, sDisY, 6.0f, sDisH), 6, 4, juce::Colour(0xffff2222));
+    drawLedLadder(g, juce::Rectangle<float>(sDisX - 8.0f, sDisY, 5.0f, sDisH), 6, 3, juce::Colour(0xff38bdf8));
+    int sSample = juce::jlimit(1, 99, ctx.synthSampleIndex > 0 ? ctx.synthSampleIndex : 1);
+    draw7SegmentBox(g, juce::Rectangle<float>(sDisX, sDisY, sDisW, sDisH), sSample);
+    drawLedLadder(g, juce::Rectangle<float>(sDisX + sDisW + 3.0f, sDisY, 5.0f, sDisH), 6, 4, juce::Colour(0xffff2222));
 
     g.setColour(juce::Colour(0xff94a3b8));
     g.setFont(juce::FontOptions(8.5f, juce::Font::bold));
     g.drawText("SAMPLE", static_cast<int>(sDisX), static_cast<int>(sDisY + sDisH + 2.0f), static_cast<int>(sDisW), 12, juce::Justification::centred);
 
-    g.drawText("CUTOFF", r3.getX() + 112, r3.getY() + 72, 68, 12, juce::Justification::centred);
-    g.drawText("LEVEL",  r3.getRight() - 75, r3.getY() + 72, 55, 12, juce::Justification::centred);
+    g.drawText("CUTOFF", r3.getX() + 115, r3.getY() + 64, 60, 12, juce::Justification::centred);
+    g.drawText("LEVEL",  r3.getRight() - 68, r3.getY() + 54, 60, 12, juce::Justification::centred);
 
     // Radial ticks around VCF Cutoff knob
-    drawNordKnobTicks(g, r3.getX() + 146.0f, r3.getY() + 117.0f, 22.0f, startA, endA, 9, { "40Hz", "1kHz", "18kHz" });
+    drawNordKnobTicks(g, r3.getX() + 145.0f, r3.getY() + 112.0f, 20.0f, startA, endA, 9, { "40Hz", "1kHz", "18kHz" });
 
-    // Synth EQ
-    g.drawText("SYNTH 3-BAND EQ", r3.getX() + 12, r3.getY() + 172, 140, 14, juce::Justification::left);
+    // Synth EQ Header
+    g.drawText("SYNTH 3-BAND EQ", r3.getX() + 12, r3.getY() + 165, 140, 14, juce::Justification::left);
 
     // Center Programs Bank Box (Classic 1..4 and 5..8 push switches)
-    auto progBank = juce::Rectangle<float>(r3.getX() + 12, r3.getY() + 278, r3.getWidth() - 24, 76);
+    auto progBank = juce::Rectangle<float>(r3.getX() + 10, r3.getY() + 276, r3.getWidth() - 20, 78);
     g.setColour(juce::Colour(0xff111216));
     g.fillRoundedRectangle(progBank, 4.0f);
     g.setColour(juce::Colour(0xff22242c));
@@ -475,21 +474,7 @@ void NordStageLayout::paintBackground(juce::Graphics& g, juce::Rectangle<int> bo
 
     g.setColour(juce::Colour(0xff94a3b8));
     g.setFont(juce::FontOptions(8.5f, juce::Font::bold));
-    g.drawText("PROGRAM BANK (1-8)", progBank.getX() + 6, progBank.getY() + 4, 130, 12, juce::Justification::left);
-
-    // Draw 8 program buttons with red LED dots
-    float bW = 28.0f;
-    float bH = 20.0f;
-    for (int i = 0; i < 4; ++i) {
-        float bx = progBank.getX() + 8.0f + i * (bW + 6.0f);
-        // Row 1: Programs 1..4
-        drawTactileButton(g, juce::Rectangle<float>(bx, progBank.getY() + 22.0f, bW, bH), juce::String(i + 1), false, (i == 0));
-        // Row 2: Programs 5..8
-        drawTactileButton(g, juce::Rectangle<float>(bx, progBank.getY() + 48.0f, bW, bH), juce::String(i + 5), false, false);
-    }
-    // STORE and TOUCH buttons on the right of program bank
-    drawTactileButton(g, juce::Rectangle<float>(progBank.getRight() - 58, progBank.getY() + 22.0f, 50, bH), "STORE", false, false, juce::Colour(0xfff59e0b));
-    drawTactileButton(g, juce::Rectangle<float>(progBank.getRight() - 58, progBank.getY() + 48.0f, 50, bH), "TOUCH", false, true, juce::Colour(0xfff59e0b));
+    g.drawText("PROGRAM BANK (1-8)", progBank.getX() + 8, progBank.getY() + 4, 130, 12, juce::Justification::left);
 
     // --- CARD 4: EFFECTS & MASTER ---
     // Reverb, Modulation & Ambient Drone Engine
@@ -534,15 +519,17 @@ void NordStageLayout::layoutComponents(juce::Rectangle<int> bounds, const SkinUI
     contentBounds.removeFromLeft(12);
     auto r4 = contentBounds;
 
-    // Header buttons (Right aligned)
-    int hX = bounds.getWidth() - 20;
-    if (comps.comboTheme)     { hX -= 175; comps.comboTheme->setBounds(hX, 22, 175, 36); }
-    if (comps.btnPanic)        { hX -= 70;  comps.btnPanic->setBounds(hX, 22, 60, 36); }
-    if (comps.btnSettings)     { hX -= 105; comps.btnSettings->setBounds(hX, 22, 95, 36); }
-    if (comps.comboTranspose)  { hX -= 105; comps.comboTranspose->setBounds(hX, 22, 95, 36); }
-    if (comps.btnSavePreset)   { hX -= 90;  comps.btnSavePreset->setBounds(hX, 22, 80, 36); }
-    if (comps.btnNextPreset)   { hX -= 45;  comps.btnNextPreset->setBounds(hX, 22, 38, 36); }
-    if (comps.btnPrevPreset)   { hX -= 45;  comps.btnPrevPreset->setBounds(hX, 22, 38, 36); }
+    // Header buttons (Right aligned, perfectly non-overlapping)
+    if (comps.btnPrevPreset)  comps.btnPrevPreset->setBounds(486, 22, 32, 36);
+    if (comps.btnNextPreset)  comps.btnNextPreset->setBounds(522, 22, 32, 36);
+    if (comps.btnSavePreset)  comps.btnSavePreset->setBounds(558, 22, 72, 36);
+    if (comps.btnLearnC)      comps.btnLearnC->setBounds(634, 22, 94, 36);
+    if (comps.btnOctaveDown)  comps.btnOctaveDown->setBounds(732, 22, 42, 36);
+    if (comps.btnOctaveUp)    comps.btnOctaveUp->setBounds(778, 22, 42, 36);
+    if (comps.comboTranspose) comps.comboTranspose->setBounds(824, 22, 86, 36);
+    if (comps.btnSettings)    comps.btnSettings->setBounds(914, 22, 88, 36);
+    if (comps.btnPanic)       comps.btnPanic->setBounds(1006, 22, 54, 36);
+    if (comps.comboTheme)     comps.comboTheme->setBounds(1064, 22, 140, 36);
 
     // Footer buttons
     if (comps.btnFooterConfig) comps.btnFooterConfig->setBounds(footerArea.getRight() - 95, footerArea.getY() + 10, 85, 30);
@@ -563,20 +550,46 @@ void NordStageLayout::layoutComponents(juce::Rectangle<int> bounds, const SkinUI
     if (comps.comboVelocityCurve) comps.comboVelocityCurve->setBounds(r1.getX() + 12, r1.getY() + 328, r1.getWidth() - 24, 26);
 
     // --- Section 2: Piano Section (Slot A) ---
-    if (comps.comboPiano) comps.comboPiano->setBounds(r2.getX() + 75, r2.getY() + 40, r2.getWidth() - 88, 26);
-    if (comps.togglePiano) comps.togglePiano->setBounds(r2.getX() + 12, r2.getY() + 94, 110, 24);
-    if (comps.sliderPianoVol) comps.sliderPianoVol->setBounds(r2.getRight() - 75, r2.getY() + 86, 55, 78);
+    if (comps.comboPiano) comps.comboPiano->setBounds(r2.getX() + 66, r2.getY() + 38, r2.getWidth() - 146, 28);
+    if (comps.btnPrevPiano) comps.btnPrevPiano->setBounds(r2.getRight() - 74, r2.getY() + 38, 28, 28);
+    if (comps.btnNextPiano) comps.btnNextPiano->setBounds(r2.getRight() - 42, r2.getY() + 38, 28, 28);
+
+    if (comps.togglePiano) comps.togglePiano->setBounds(r2.getX() + 14, r2.getY() + 86, 110, 24);
+    // Tall Pro Console Volume Fader (180px tall throw)
+    if (comps.sliderPianoVol) comps.sliderPianoVol->setBounds(r2.getRight() - 68, r2.getY() + 70, 60, 180);
+
+    // Interactive Acoustic Timbre Buttons
+    if (comps.toggleStrRes) comps.toggleStrRes->setBounds(r2.getX() + 14, r2.getY() + 185, 80, 26);
+    if (comps.toggleSoft) comps.toggleSoft->setBounds(r2.getX() + 100, r2.getY() + 185, 80, 26);
 
     // --- Section 3: Synth Section (Slot B) ---
-    if (comps.comboSynth) comps.comboSynth->setBounds(r3.getX() + 75, r3.getY() + 40, r3.getWidth() - 88, 26);
-    if (comps.toggleSynth) comps.toggleSynth->setBounds(r3.getX() + 12, r3.getY() + 94, 95, 24);
-    if (comps.sliderSynthCutoff) comps.sliderSynthCutoff->setBounds(r3.getX() + 116, r3.getY() + 86, 60, 60);
-    if (comps.sliderSynthVol) comps.sliderSynthVol->setBounds(r3.getRight() - 75, r3.getY() + 86, 55, 78);
+    if (comps.comboSynth) comps.comboSynth->setBounds(r3.getX() + 66, r3.getY() + 38, r3.getWidth() - 146, 28);
+    if (comps.btnPrevSynth) comps.btnPrevSynth->setBounds(r3.getRight() - 74, r3.getY() + 38, 28, 28);
+    if (comps.btnNextSynth) comps.btnNextSynth->setBounds(r3.getRight() - 42, r3.getY() + 38, 28, 28);
+
+    if (comps.toggleSynth) comps.toggleSynth->setBounds(r3.getX() + 14, r3.getY() + 86, 95, 24);
+    if (comps.sliderSynthCutoff) comps.sliderSynthCutoff->setBounds(r3.getX() + 115, r3.getY() + 80, 60, 60);
+    // Tall Pro Console Volume Fader (180px tall throw)
+    if (comps.sliderSynthVol) comps.sliderSynthVol->setBounds(r3.getRight() - 68, r3.getY() + 70, 60, 180);
 
     // Synth EQ Knobs
-    if (comps.sliderSynthEqLow)  comps.sliderSynthEqLow->setBounds(r3.getX() + 8,   r3.getY() + 192, 70, 58);
-    if (comps.sliderSynthEqMid)  comps.sliderSynthEqMid->setBounds(r3.getX() + 84,  r3.getY() + 192, 70, 58);
-    if (comps.sliderSynthEqHigh) comps.sliderSynthEqHigh->setBounds(r3.getX() + 160, r3.getY() + 192, 70, 58);
+    if (comps.sliderSynthEqLow)  comps.sliderSynthEqLow->setBounds(r3.getX() + 8,   r3.getY() + 182, 60, 50);
+    if (comps.sliderSynthEqMid)  comps.sliderSynthEqMid->setBounds(r3.getX() + 74,  r3.getY() + 182, 60, 50);
+    if (comps.sliderSynthEqHigh) comps.sliderSynthEqHigh->setBounds(r3.getX() + 140, r3.getY() + 182, 60, 50);
+
+    // Synth toggles
+    if (comps.toggleLngRel) comps.toggleLngRel->setBounds(r3.getX() + 14, r3.getY() + 242, 85, 22);
+    if (comps.toggleNoSens) comps.toggleNoSens->setBounds(r3.getX() + 105, r3.getY() + 242, 85, 22);
+
+    // Program Bank (1..8) Interactive Push Buttons
+    for (int i = 0; i < 4; ++i) {
+        if (comps.btnPrograms[i]) {
+            comps.btnPrograms[i]->setBounds(r3.getX() + 16 + i * 44, r3.getY() + 296, 38, 24);
+        }
+        if (comps.btnPrograms[i + 4]) {
+            comps.btnPrograms[i + 4]->setBounds(r3.getX() + 16 + i * 44, r3.getY() + 324, 38, 24);
+        }
+    }
 
     // --- Section 4: Effects & Master ---
     if (comps.toggleReverb) comps.toggleReverb->setBounds(r4.getX() + 14, r4.getY() + 54, 90, 24);
@@ -594,7 +607,8 @@ void NordStageLayout::layoutComponents(juce::Rectangle<int> bounds, const SkinUI
     if (comps.toggleDelay) comps.toggleDelay->setBounds(r4.getX() + 14, r4.getY() + 285, 85, 24);
     if (comps.sliderDelayMix) comps.sliderDelayMix->setBounds(r4.getX() + 105, r4.getY() + 275, 65, 48);
 
-    if (comps.sliderDroneVol) comps.sliderDroneVol->setBounds(r4.getRight() - 65, r4.getY() + 220, 52, 110);
+    // Tall Drone Volume Fader (140px tall throw)
+    if (comps.sliderDroneVol) comps.sliderDroneVol->setBounds(r4.getRight() - 68, r4.getY() + 215, 60, 140);
 
     // Virtual Keyboard
     int kbX = 18;

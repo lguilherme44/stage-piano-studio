@@ -51,6 +51,8 @@ MainComponent::MainComponent() {
     addAndMakeVisible(m_keyboardComponent);
     setWantsKeyboardFocus(true);
 
+    addMouseListener(this, true);
+
     setSkin(SkinType::NordStage);
 
     setSize(1220, 770);
@@ -58,6 +60,7 @@ MainComponent::MainComponent() {
 }
 
 MainComponent::~MainComponent() {
+    removeMouseListener(this);
     stopTimer();
     m_keyboardState.removeListener(this);
     m_deviceManager.removeChangeListener(this);
@@ -418,22 +421,20 @@ void MainComponent::initAudioAndMidi() {
 void MainComponent::setupUI() {
     auto setupRotary = [this](juce::Slider& s, const juce::String& suffix, double min, double max, double def) {
         s.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
-        s.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 55, 14);
+        s.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
+        s.setPopupDisplayEnabled(true, false, this);
         s.setTextValueSuffix(suffix);
         s.setRange(min, max, (max - min) > 100.0 ? 1.0 : 0.05);
         s.setValue(def, juce::dontSendNotification);
-        s.setColour(juce::Slider::textBoxTextColourId, StagePianoLookAndFeel::accentAmber);
-        s.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::transparentBlack);
         addAndMakeVisible(s);
     };
 
     auto setupFader = [this](juce::Slider& s, double min, double max, double def) {
         s.setSliderStyle(juce::Slider::LinearVertical);
-        s.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 55, 14);
+        s.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
+        s.setPopupDisplayEnabled(true, false, this);
         s.setRange(min, max, 0.02);
         s.setValue(def, juce::dontSendNotification);
-        s.setColour(juce::Slider::textBoxTextColourId, StagePianoLookAndFeel::accentAmber);
-        s.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::transparentBlack);
         addAndMakeVisible(s);
     };
 
@@ -444,7 +445,32 @@ void MainComponent::setupUI() {
         if (idx >= 0 && idx < static_cast<int>(m_availablePianos.size())) {
             m_host->loadPiano(m_availablePianos[idx].id.toStdString());
         }
+        repaint();
     };
+
+    addAndMakeVisible(m_btnPrevPiano);
+    m_btnPrevPiano.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff1f222a));
+    m_btnPrevPiano.onClick = [this] {
+        int cur = m_comboPiano.getSelectedId();
+        if (cur > 1) m_comboPiano.setSelectedId(cur - 1);
+        else if (m_comboPiano.getNumItems() > 0) m_comboPiano.setSelectedId(m_comboPiano.getNumItems());
+    };
+
+    addAndMakeVisible(m_btnNextPiano);
+    m_btnNextPiano.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff1f222a));
+    m_btnNextPiano.onClick = [this] {
+        int cur = m_comboPiano.getSelectedId();
+        if (cur < m_comboPiano.getNumItems()) m_comboPiano.setSelectedId(cur + 1);
+        else if (m_comboPiano.getNumItems() > 0) m_comboPiano.setSelectedId(1);
+    };
+
+    addAndMakeVisible(m_toggleStrRes);
+    m_toggleStrRes.setToggleState(true, juce::dontSendNotification);
+    m_toggleStrRes.onClick = [this] { m_host->setStringResonance(m_toggleStrRes.getToggleState()); };
+
+    addAndMakeVisible(m_toggleSoft);
+    m_toggleSoft.setToggleState(false, juce::dontSendNotification);
+    m_toggleSoft.onClick = [this] { m_host->setSoftPiano(m_toggleSoft.getToggleState()); };
 
     addAndMakeVisible(m_togglePiano);
     m_togglePiano.setToggleState(true, juce::dontSendNotification);
@@ -460,7 +486,30 @@ void MainComponent::setupUI() {
         if (idx >= 0 && idx < static_cast<int>(m_availableSynths.size())) {
             m_host->loadSynth(m_availableSynths[idx].id.toStdString());
         }
+        repaint();
     };
+
+    addAndMakeVisible(m_btnPrevSynth);
+    m_btnPrevSynth.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff1f222a));
+    m_btnPrevSynth.onClick = [this] {
+        int cur = m_comboSynth.getSelectedId();
+        if (cur > 1) m_comboSynth.setSelectedId(cur - 1);
+        else if (m_comboSynth.getNumItems() > 0) m_comboSynth.setSelectedId(m_comboSynth.getNumItems());
+    };
+
+    addAndMakeVisible(m_btnNextSynth);
+    m_btnNextSynth.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff1f222a));
+    m_btnNextSynth.onClick = [this] {
+        int cur = m_comboSynth.getSelectedId();
+        if (cur < m_comboSynth.getNumItems()) m_comboSynth.setSelectedId(cur + 1);
+        else if (m_comboSynth.getNumItems() > 0) m_comboSynth.setSelectedId(1);
+    };
+
+    addAndMakeVisible(m_toggleLngRel);
+    m_toggleLngRel.setToggleState(false, juce::dontSendNotification);
+
+    addAndMakeVisible(m_toggleNoSens);
+    m_toggleNoSens.setToggleState(false, juce::dontSendNotification);
 
     addAndMakeVisible(m_toggleSynth);
     m_toggleSynth.setToggleState(true, juce::dontSendNotification);
@@ -471,6 +520,23 @@ void MainComponent::setupUI() {
 
     setupRotary(m_sliderSynthCutoff, " Hz", 300.0, 20000.0, 8500.0);
     m_sliderSynthCutoff.onValueChange = [this] { m_host->setSynthFilterCutoff(static_cast<float>(m_sliderSynthCutoff.getValue())); };
+
+    // Program Bank Buttons (1..8)
+    for (int i = 0; i < 8; ++i) {
+        addAndMakeVisible(m_btnPrograms[i]);
+        m_btnPrograms[i].setButtonText(juce::String(i + 1));
+        m_btnPrograms[i].setColour(juce::TextButton::buttonColourId, (i == 0) ? StagePianoLookAndFeel::accentNord : juce::Colour(0xff1a1d24));
+        m_btnPrograms[i].onClick = [this, i] {
+            m_currentProgram = i + 1;
+            for (int j = 0; j < 8; ++j) {
+                m_btnPrograms[j].setColour(juce::TextButton::buttonColourId, (j == i) ? StagePianoLookAndFeel::accentNord : juce::Colour(0xff1a1d24));
+            }
+            if (i < m_comboPiano.getNumItems()) {
+                m_comboPiano.setSelectedId(i + 1);
+            }
+            repaint();
+        };
+    }
 
     // Velocity Curve Profile
     addAndMakeVisible(m_comboVelocityCurve);
@@ -623,6 +689,43 @@ void MainComponent::setupUI() {
         m_host->setGlobalTranspose(t);
     };
 
+    // Global Octave and XPS-10 Low-C Calibration Controls
+    addAndMakeVisible(m_btnOctaveDown);
+    m_btnOctaveDown.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
+    m_btnOctaveDown.onClick = [this] {
+        int oct = m_host->getGlobalOctave() - 1;
+        if (oct >= -3) {
+            m_host->setGlobalOctave(oct);
+            updateOctaveDisplay();
+        }
+    };
+
+    addAndMakeVisible(m_btnOctaveUp);
+    m_btnOctaveUp.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
+    m_btnOctaveUp.onClick = [this] {
+        int oct = m_host->getGlobalOctave() + 1;
+        if (oct <= 3) {
+            m_host->setGlobalOctave(oct);
+            updateOctaveDisplay();
+        }
+    };
+
+    addAndMakeVisible(m_btnLearnC);
+    m_btnLearnC.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
+    m_btnLearnC.onClick = [this] {
+        if (m_host->isLearningLowestC()) {
+            m_host->cancelLearningLowestC();
+            m_btnLearnC.setButtonText("LEARN C");
+            m_btnLearnC.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
+            m_btnLearnC.setColour(juce::TextButton::textColourOffId, StagePianoLookAndFeel::textLight);
+        } else {
+            m_host->startLearningLowestC();
+            m_btnLearnC.setButtonText("PRESS LOW C");
+            m_btnLearnC.setColour(juce::TextButton::buttonColourId, StagePianoLookAndFeel::accentAmber);
+            m_btnLearnC.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
+        }
+    };
+
     // Skin / Theme Switcher
     addAndMakeVisible(m_comboTheme);
     m_comboTheme.addItem("Skin: Nord Red Studio", 1);
@@ -642,75 +745,15 @@ void MainComponent::setupUI() {
     addAndMakeVisible(m_btnMidiLearn);
     m_btnMidiLearn.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
     m_btnMidiLearn.onClick = [this] {
-        if (m_host->isMidiLearning()) {
-            m_host->cancelMidiLearn();
-            m_btnMidiLearn.setButtonText("MIDI LEARN");
-            m_btnMidiLearn.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
-            m_btnMidiLearn.setColour(juce::TextButton::textColourOffId, StagePianoLookAndFeel::textLight);
+        if (m_isWaitingForControlClick || (m_host && m_host->isMidiLearning())) {
+            cancelMidiLearnState();
             return;
         }
 
-        juce::PopupMenu menu;
-        menu.addSectionHeader("Select parameter to map via MIDI CC:");
-        menu.addItem(1, "Slot A Volume (Piano)");
-        menu.addItem(2, "Slot B Volume (Synth)");
-        menu.addItem(3, "Drone Volume");
-        menu.addItem(4, "Synth Filter Cutoff");
-        menu.addSeparator();
-        menu.addItem(5, "Slot A (Piano) EQ Low");
-        menu.addItem(6, "Slot A (Piano) EQ Mid");
-        menu.addItem(7, "Slot A (Piano) EQ High");
-        menu.addSeparator();
-        menu.addItem(8, "Slot B (Synth) EQ Low");
-        menu.addItem(9, "Slot B (Synth) EQ Mid");
-        menu.addItem(10, "Slot B (Synth) EQ High");
-        menu.addSeparator();
-        menu.addItem(11, "Chorus Mix");
-        menu.addItem(12, "Delay Mix");
-        menu.addItem(13, "Reverb Mix");
-        menu.addSeparator();
-        menu.addItem(99, "Reset Default CCs (CC7, CC11, CC74, CC1, CC91, CC93)");
-
-        menu.showMenuAsync(juce::PopupMenu::Options().withTargetComponent(&m_btnMidiLearn),
-            [this](int result) {
-                if (result == 0) return;
-                if (result == 99) {
-                    m_host->setMidiBinding(7, MidiCCParam::PianoVolume);
-                    m_host->setMidiBinding(11, MidiCCParam::SynthVolume);
-                    m_host->setMidiBinding(74, MidiCCParam::SynthCutoff);
-                    m_host->setMidiBinding(1, MidiCCParam::DroneVolume);
-                    m_host->setMidiBinding(91, MidiCCParam::ReverbMix);
-                    m_host->setMidiBinding(93, MidiCCParam::ChorusMix);
-                    juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::InfoIcon, "MIDI CC", "Default CC bindings restored!");
-                    return;
-                }
-
-                MidiCCParam target = MidiCCParam::None;
-                juce::String paramName = "";
-                switch (result) {
-                    case 1: target = MidiCCParam::PianoVolume; paramName = "Piano Vol"; break;
-                    case 2: target = MidiCCParam::SynthVolume; paramName = "Synth Vol"; break;
-                    case 3: target = MidiCCParam::DroneVolume; paramName = "Drone Vol"; break;
-                    case 4: target = MidiCCParam::SynthCutoff; paramName = "Cutoff"; break;
-                    case 5: target = MidiCCParam::PianoEqLow; paramName = "Piano Low"; break;
-                    case 6: target = MidiCCParam::PianoEqMid; paramName = "Piano Mid"; break;
-                    case 7: target = MidiCCParam::PianoEqHigh; paramName = "Piano High"; break;
-                    case 8: target = MidiCCParam::SynthEqLow; paramName = "Synth Low"; break;
-                    case 9: target = MidiCCParam::SynthEqMid; paramName = "Synth Mid"; break;
-                    case 10: target = MidiCCParam::SynthEqHigh; paramName = "Synth High"; break;
-                    case 11: target = MidiCCParam::ChorusMix; paramName = "Chorus"; break;
-                    case 12: target = MidiCCParam::DelayMix; paramName = "Delay"; break;
-                    case 13: target = MidiCCParam::ReverbMix; paramName = "Reverb"; break;
-                    default: break;
-                }
-
-                if (target != MidiCCParam::None) {
-                    m_host->startMidiLearn(target);
-                    m_btnMidiLearn.setButtonText("MOVE HW CC (" + paramName + ")");
-                    m_btnMidiLearn.setColour(juce::TextButton::buttonColourId, StagePianoLookAndFeel::accentAmber);
-                    m_btnMidiLearn.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
-                }
-            });
+        m_isWaitingForControlClick = true;
+        m_btnMidiLearn.setButtonText("CLICK ANY CONTROL ON SCREEN");
+        m_btnMidiLearn.setColour(juce::TextButton::buttonColourId, StagePianoLookAndFeel::accentAmber);
+        m_btnMidiLearn.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
     };
 
     addAndMakeVisible(m_btnImport);
@@ -755,9 +798,113 @@ void MainComponent::audioDeviceIOCallbackWithContext(const float* const* /*input
 void MainComponent::audioDeviceAboutToStart(juce::AudioIODevice* /*device*/) {}
 void MainComponent::audioDeviceStopped() {}
 
+void MainComponent::updateOctaveDisplay() {
+    int oct = m_host ? m_host->getGlobalOctave() : 0;
+    m_btnOctaveDown.setButtonText(oct > -3 ? "-1 Oct" : "MIN");
+    m_btnOctaveUp.setButtonText(oct < 3 ? "+1 Oct" : "MAX");
+
+    // Recalculate visible lowest key on the virtual keyboard:
+    // Standard 61-key keyboard starting on C2 (36) shifted by octave
+    int lowestKey = std::clamp(36 + (oct * 12), 12, 60);
+    m_keyboardComponent.setLowestVisibleKey(lowestKey);
+    repaint();
+}
+
+void MainComponent::cancelMidiLearnState() {
+    m_isWaitingForControlClick = false;
+    if (m_host) {
+        m_host->cancelMidiLearn();
+    }
+    m_btnMidiLearn.setButtonText("MIDI LEARN");
+    m_btnMidiLearn.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
+    m_btnMidiLearn.setColour(juce::TextButton::textColourOffId, StagePianoLookAndFeel::textLight);
+}
+
+MidiCCParam MainComponent::getParamForComponent(juce::Component* target, juce::String& outName) {
+    if (target == nullptr) return MidiCCParam::None;
+
+    auto matches = [target](juce::Component& c) {
+        return target == &c || c.isParentOf(target);
+    };
+
+    if (matches(m_sliderPianoVol))    { outName = "Piano Vol";     return MidiCCParam::PianoVolume; }
+    if (matches(m_sliderSynthVol))    { outName = "Synth Vol";     return MidiCCParam::SynthVolume; }
+    if (matches(m_sliderDroneVol))    { outName = "Drone Vol";     return MidiCCParam::DroneVolume; }
+    if (matches(m_sliderSynthCutoff)) { outName = "Synth Cutoff";  return MidiCCParam::SynthCutoff; }
+
+    if (matches(m_sliderPianoEqLow))  { outName = "Piano Low EQ";  return MidiCCParam::PianoEqLow; }
+    if (matches(m_sliderPianoEqMid))  { outName = "Piano Mid EQ";  return MidiCCParam::PianoEqMid; }
+    if (matches(m_sliderPianoEqHigh)) { outName = "Piano High EQ"; return MidiCCParam::PianoEqHigh; }
+
+    if (matches(m_sliderSynthEqLow))  { outName = "Synth Low EQ";  return MidiCCParam::SynthEqLow; }
+    if (matches(m_sliderSynthEqMid))  { outName = "Synth Mid EQ";  return MidiCCParam::SynthEqMid; }
+    if (matches(m_sliderSynthEqHigh)) { outName = "Synth High EQ"; return MidiCCParam::SynthEqHigh; }
+
+    if (matches(m_sliderChorusMix))   { outName = "Chorus Mix";    return MidiCCParam::ChorusMix; }
+    if (matches(m_sliderDelayMix))    { outName = "Delay Mix";     return MidiCCParam::DelayMix; }
+    if (matches(m_sliderReverbMix))   { outName = "Reverb Mix";    return MidiCCParam::ReverbMix; }
+
+    return MidiCCParam::None;
+}
+
+void MainComponent::mouseDown(const juce::MouseEvent& event) {
+    juce::String paramName;
+    MidiCCParam param = getParamForComponent(event.eventComponent, paramName);
+
+    if (param != MidiCCParam::None) {
+        // Left click when interactive MIDI Learn is armed, OR Alt+LeftClick directly
+        if (m_isWaitingForControlClick || event.mods.isAltDown()) {
+            m_isWaitingForControlClick = false;
+            m_host->startMidiLearn(param);
+            m_btnMidiLearn.setButtonText("MOVE HW CC (" + paramName + ")");
+            m_btnMidiLearn.setColour(juce::TextButton::buttonColourId, StagePianoLookAndFeel::accentAmber);
+            m_btnMidiLearn.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
+            return;
+        }
+
+        // Right-click context menu directly on the component
+        if (event.mods.isPopupMenu()) {
+            juce::PopupMenu menu;
+            menu.addItem(1, "MIDI Learn: " + paramName);
+            menu.addItem(2, "Reset Default CCs (CC7, CC11, CC74, CC1, CC91, CC93)");
+            menu.showMenuAsync(juce::PopupMenu::Options().withMousePosition(), [this, param, paramName](int res) {
+                if (res == 1) {
+                    m_isWaitingForControlClick = false;
+                    m_host->startMidiLearn(param);
+                    m_btnMidiLearn.setButtonText("MOVE HW CC (" + paramName + ")");
+                    m_btnMidiLearn.setColour(juce::TextButton::buttonColourId, StagePianoLookAndFeel::accentAmber);
+                    m_btnMidiLearn.setColour(juce::TextButton::textColourOffId, juce::Colours::black);
+                } else if (res == 2) {
+                    m_host->setMidiBinding(7, MidiCCParam::PianoVolume);
+                    m_host->setMidiBinding(11, MidiCCParam::SynthVolume);
+                    m_host->setMidiBinding(74, MidiCCParam::SynthCutoff);
+                    m_host->setMidiBinding(1, MidiCCParam::DroneVolume);
+                    m_host->setMidiBinding(91, MidiCCParam::ReverbMix);
+                    m_host->setMidiBinding(93, MidiCCParam::ChorusMix);
+                    juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::InfoIcon, "MIDI CC", "Default CC bindings restored!");
+                }
+            });
+            return;
+        }
+    }
+}
+
 void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message) {
     if (source != nullptr) {
         m_activeMidiDevice = source->getName().toStdString();
+    }
+
+    if (message.isNoteOn()) {
+        if (m_host && m_host->isLearningLowestC()) {
+            m_host->processMidiNoteForCalibration(message.getNoteNumber());
+            juce::MessageManager::callAsync([this] {
+                m_btnLearnC.setButtonText("LEARN C");
+                m_btnLearnC.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
+                m_btnLearnC.setColour(juce::TextButton::textColourOffId, StagePianoLookAndFeel::textLight);
+                updateOctaveDisplay();
+            });
+            return;
+        }
     }
 
     m_keyboardState.processNextMidiEvent(message);
@@ -774,9 +921,7 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source, const juc
             m_host->handleMidiCC(cc, val);
             if (wasLearning) {
                 juce::MessageManager::callAsync([this] {
-                    m_btnMidiLearn.setButtonText("MIDI LEARN");
-                    m_btnMidiLearn.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff222530));
-                    m_btnMidiLearn.setColour(juce::TextButton::textColourOffId, StagePianoLookAndFeel::textLight);
+                    cancelMidiLearnState();
                 });
             }
         }
@@ -829,6 +974,11 @@ void MainComponent::paint(juce::Graphics& g) {
     ctx.midiDevice = m_activeMidiDevice;
     ctx.sustainDown = m_sustainDown;
     ctx.gainReductionDb = m_host ? m_host->getCompressor().getGainReductionDb() : 0.0f;
+    ctx.globalOctave = m_host ? m_host->getGlobalOctave() : 0;
+    ctx.isLearningLowestC = m_host ? m_host->isLearningLowestC() : false;
+    ctx.pianoModelIndex = m_comboPiano.getSelectedId();
+    ctx.synthSampleIndex = m_comboSynth.getSelectedId();
+    ctx.currentProgram = m_currentProgram;
 
     if (m_currentSkin) {
         m_currentSkin->paintBackground(g, getLocalBounds(), ctx);
@@ -847,21 +997,38 @@ void MainComponent::resized() {
     comps.comboTranspose = &m_comboTranspose;
     comps.comboTheme = &m_comboTheme;
 
+    // Octave & Calibration
+    comps.btnOctaveDown = &m_btnOctaveDown;
+    comps.btnOctaveUp = &m_btnOctaveUp;
+    comps.btnLearnC = &m_btnLearnC;
+
     comps.comboPiano = &m_comboPiano;
+    comps.btnPrevPiano = &m_btnPrevPiano;
+    comps.btnNextPiano = &m_btnNextPiano;
     comps.sliderPianoVol = &m_sliderPianoVol;
     comps.togglePiano = &m_togglePiano;
     comps.comboVelocityCurve = &m_comboVelocityCurve;
     comps.sliderPianoEqLow = &m_sliderPianoEqLow;
     comps.sliderPianoEqMid = &m_sliderPianoEqMid;
     comps.sliderPianoEqHigh = &m_sliderPianoEqHigh;
+    comps.toggleStrRes = &m_toggleStrRes;
+    comps.toggleSoft = &m_toggleSoft;
 
     comps.comboSynth = &m_comboSynth;
+    comps.btnPrevSynth = &m_btnPrevSynth;
+    comps.btnNextSynth = &m_btnNextSynth;
     comps.sliderSynthVol = &m_sliderSynthVol;
     comps.sliderSynthCutoff = &m_sliderSynthCutoff;
     comps.toggleSynth = &m_toggleSynth;
     comps.sliderSynthEqLow = &m_sliderSynthEqLow;
     comps.sliderSynthEqMid = &m_sliderSynthEqMid;
     comps.sliderSynthEqHigh = &m_sliderSynthEqHigh;
+    comps.toggleLngRel = &m_toggleLngRel;
+    comps.toggleNoSens = &m_toggleNoSens;
+
+    for (int i = 0; i < 8; ++i) {
+        comps.btnPrograms[i] = &m_btnPrograms[i];
+    }
 
     comps.btnDroneToggle = &m_btnDroneToggle;
     comps.comboDroneRoot = &m_comboDroneRoot;

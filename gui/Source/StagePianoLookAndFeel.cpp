@@ -185,44 +185,57 @@ void StagePianoLookAndFeel::drawLinearSlider(juce::Graphics& g, int x, int y, in
     auto bounds = juce::Rectangle<int>(x, y, width, height).toFloat();
     float centerX = bounds.getCentreX();
 
-    // 1. Calibration notch lines on left & right
-    g.setColour(borderPanel.brighter(0.15f));
+    // 1. Calibration notch lines on left & right with dB silkscreen
+    g.setFont(juce::FontOptions(7.5f, juce::Font::bold));
+    static const char* dbLabels[7] = { "+6", "0", "-6", "-12", "-18", "-24", "-inf" };
     for (int i = 0; i <= 6; ++i) {
-        float ly = bounds.getY() + 8.0f + i * ((bounds.getHeight() - 16.0f) / 6.0f);
-        g.drawHorizontalLine(static_cast<int>(ly), centerX - 15.0f, centerX - 7.0f);
-        g.drawHorizontalLine(static_cast<int>(ly), centerX + 7.0f, centerX + 15.0f);
+        float ly = bounds.getY() + 10.0f + i * ((bounds.getHeight() - 20.0f) / 6.0f);
+        bool isZero = (i == 1);
+        g.setColour(isZero ? juce::Colour(0xffef4444) : juce::Colour(0xff475569));
+        g.drawHorizontalLine(static_cast<int>(ly), centerX - 15.0f, centerX - 8.0f);
+        g.drawHorizontalLine(static_cast<int>(ly), centerX + 8.0f, centerX + 15.0f);
+
+        // dB text cleanly within component left margin
+        g.setColour(isZero ? juce::Colour(0xfff87171) : juce::Colour(0xff94a3b8));
+        g.drawText(dbLabels[i], static_cast<int>(bounds.getX()), static_cast<int>(ly - 5.0f),
+                   static_cast<int>(centerX - 17.0f), 10, juce::Justification::right);
     }
 
-    // 2. Center recessed track
-    auto trackRect = juce::Rectangle<float>(centerX - 2.5f, bounds.getY() + 4.0f, 5.0f, bounds.getHeight() - 8.0f);
-    g.setColour(juce::Colour(0xff08090b));
-    g.fillRoundedRectangle(trackRect, 2.0f);
-    g.setColour(borderPanel);
-    g.drawRoundedRectangle(trackRect, 2.0f, 1.0f);
+    // 2. Center recessed track (pro audio metallic groove)
+    auto trackRect = juce::Rectangle<float>(centerX - 3.0f, bounds.getY() + 6.0f, 6.0f, bounds.getHeight() - 12.0f);
+    g.setColour(juce::Colour(0xff06070a));
+    g.fillRoundedRectangle(trackRect, 3.0f);
+    g.setColour(juce::Colour(0xff1f222a));
+    g.drawRoundedRectangle(trackRect, 3.0f, 1.2f);
 
-    // 3. Studio Console Fader Cap (Aluminum / Dark Gunmetal)
-    float capW = 28.0f;
-    float capH = 18.0f;
-    float capY = std::clamp(sliderPos - (capH * 0.5f), bounds.getY() + 2.0f, bounds.getBottom() - capH - 2.0f);
+    // 3. Pro Console Fader Cap (Generous width: 36px, height: 24px)
+    float capW = 36.0f;
+    float capH = 22.0f;
+    float capY = std::clamp(sliderPos - (capH * 0.5f), bounds.getY() + 4.0f, bounds.getBottom() - capH - 4.0f);
     auto capRect = juce::Rectangle<float>(centerX - (capW * 0.5f), capY, capW, capH);
 
     // Drop shadow
-    g.setColour(juce::Colours::black.withAlpha(0.7f));
-    g.fillRoundedRectangle(capRect.translated(0.0f, 2.0f), 3.0f);
+    g.setColour(juce::Colours::black.withAlpha(0.75f));
+    g.fillRoundedRectangle(capRect.translated(0.0f, 2.5f), 3.5f);
 
-    // Metallic body
-    juce::ColourGradient capGrad(juce::Colour(0xff3f4453), capRect.getX(), capRect.getY(),
-                                juce::Colour(0xff16181f), capRect.getX(), capRect.getBottom(), false);
+    // Metallic body with horizontal tactile ridges
+    juce::ColourGradient capGrad(juce::Colour(0xff484e5d), capRect.getX(), capRect.getY(),
+                                juce::Colour(0xff15171d), capRect.getX(), capRect.getBottom(), false);
     g.setGradientFill(capGrad);
-    g.fillRoundedRectangle(capRect, 3.0f);
+    g.fillRoundedRectangle(capRect, 3.5f);
+
+    // Subtle tactile grip ridges on the fader cap
+    g.setColour(juce::Colour(0x25ffffff));
+    g.drawHorizontalLine(static_cast<int>(capY + 5.0f), capRect.getX() + 4.0f, capRect.getRight() - 4.0f);
+    g.drawHorizontalLine(static_cast<int>(capY + 17.0f), capRect.getX() + 4.0f, capRect.getRight() - 4.0f);
 
     // Bevel frame
-    g.setColour(juce::Colour(0xff52596d));
-    g.drawRoundedRectangle(capRect, 3.0f, 1.0f);
+    g.setColour(juce::Colour(0xff60677c));
+    g.drawRoundedRectangle(capRect, 3.5f, 1.0f);
 
-    // Center indicator line
-    g.setColour(accentAmber);
-    g.drawHorizontalLine(static_cast<int>(capY + capH * 0.5f), capRect.getX() + 3.0f, capRect.getRight() - 3.0f);
+    // Center indicator line (Crisp amber Nord notch)
+    g.setColour(juce::Colour(0xfffbbf24));
+    g.fillRect(capRect.getX() + 4.0f, capY + (capH * 0.5f) - 1.0f, capW - 8.0f, 2.0f);
 }
 
 void StagePianoLookAndFeel::drawButtonBackground(juce::Graphics& g, juce::Button& button,

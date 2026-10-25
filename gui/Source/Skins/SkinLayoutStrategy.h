@@ -18,23 +18,39 @@ struct SkinUIComponents {
     juce::ComboBox* comboTranspose = nullptr;
     juce::ComboBox* comboTheme = nullptr;
 
+    // Octave & XPS-10 Calibration Controls
+    juce::Button* btnOctaveDown = nullptr;
+    juce::Button* btnOctaveUp = nullptr;
+    juce::Button* btnLearnC = nullptr;
+
     // Slot A (Piano Layer)
     juce::ComboBox* comboPiano = nullptr;
+    juce::Button* btnPrevPiano = nullptr;
+    juce::Button* btnNextPiano = nullptr;
     juce::Slider* sliderPianoVol = nullptr;
     juce::ToggleButton* togglePiano = nullptr;
     juce::ComboBox* comboVelocityCurve = nullptr;
     juce::Slider* sliderPianoEqLow = nullptr;
     juce::Slider* sliderPianoEqMid = nullptr;
     juce::Slider* sliderPianoEqHigh = nullptr;
+    juce::ToggleButton* toggleStrRes = nullptr;
+    juce::ToggleButton* toggleSoft = nullptr;
 
     // Slot B (Synth Pad Layer)
     juce::ComboBox* comboSynth = nullptr;
+    juce::Button* btnPrevSynth = nullptr;
+    juce::Button* btnNextSynth = nullptr;
     juce::Slider* sliderSynthVol = nullptr;
     juce::Slider* sliderSynthCutoff = nullptr;
     juce::ToggleButton* toggleSynth = nullptr;
     juce::Slider* sliderSynthEqLow = nullptr;
     juce::Slider* sliderSynthEqMid = nullptr;
     juce::Slider* sliderSynthEqHigh = nullptr;
+    juce::ToggleButton* toggleLngRel = nullptr;
+    juce::ToggleButton* toggleNoSens = nullptr;
+
+    // Program Bank (1..8)
+    std::array<juce::Button*, 8> btnPrograms{};
 
     // Ambient Drone Engine
     juce::Button* btnDroneToggle = nullptr;
@@ -71,6 +87,11 @@ struct SkinContext {
     juce::String midiDevice;
     bool sustainDown = false;
     float gainReductionDb = 0.0f;
+    int globalOctave = 0;
+    bool isLearningLowestC = false;
+    int pianoModelIndex = 1;
+    int synthSampleIndex = 1;
+    int currentProgram = 1;
 };
 
 class SkinLayoutStrategy {

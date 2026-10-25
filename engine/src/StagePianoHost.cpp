@@ -197,10 +197,43 @@ static int applyVelocityCurveMapping(int inputVel, VelocityCurve curve) {
     return std::clamp(static_cast<int>(std::round(outNorm * 127.0f)), 1, 127);
 }
 
+bool StagePianoHost::processMidiNoteForCalibration(int midiNote) {
+    if (m_learningLowestC.load()) {
+        m_lowestCMappedNote = midiNote;
+        // Standard concert grand bottom C is C1 (note 24)
+        // If user presses XPS-10 lowest C (note 36), diff is 24 - 36 = -12 semitones (-1 octave)
+        int semitoneDiff = 24 - midiNote;
+        m_globalOctave = std::clamp(semitoneDiff / 12, -3, 3);
+        m_learningLowestC = false;
+        return true;
+    }
+    return false;
+}
+
+void StagePianoHost::setStringResonance(bool enabled) {
+    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    m_stringResonance = enabled;
+    if (m_pianoSampler) {
+        m_pianoSampler->setReleaseMs(enabled ? 1200.0f : 450.0f);
+    }
+}
+
+void StagePianoHost::setSoftPiano(bool enabled) {
+    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    m_softPiano = enabled;
+    if (m_pianoSampler) {
+        m_pianoSampler->setFilterCutoff(enabled ? 5500.0f : 20000.0f);
+    }
+}
+
 void StagePianoHost::noteOn(int note, int velocity) {
     std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    if (m_learningLowestC.load()) {
+        processMidiNoteForCalibration(note);
+        return;
+    }
     int mappedVel = applyVelocityCurveMapping(velocity, m_velocityCurve);
-    int transposedNote = std::clamp(note + m_globalTranspose, 0, 127);
+    int transposedNote = std::clamp(note + m_globalTranspose + (m_globalOctave * 12), 0, 127);
 
     if (m_pianoEnabled) {
         int pianoNote = std::clamp(transposedNote + (m_pianoOctave * 12), 0, 127);
@@ -340,7 +373,7 @@ void StagePianoHost::handleMidiCC(int controller, int value) {
 
 void StagePianoHost::noteOff(int note) {
     std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
-    int transposedNote = std::clamp(note + m_globalTranspose, 0, 127);
+    int transposedNote = std::clamp(note + m_globalTranspose + (m_globalOctave * 12), 0, 127);
 
     if (m_pianoEnabled) {
         int pianoNote = std::clamp(transposedNote + (m_pianoOctave * 12), 0, 127);
