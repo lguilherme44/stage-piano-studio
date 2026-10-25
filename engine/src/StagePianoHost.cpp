@@ -200,14 +200,15 @@ static int applyVelocityCurveMapping(int inputVel, VelocityCurve curve) {
 void StagePianoHost::noteOn(int note, int velocity) {
     std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
     int mappedVel = applyVelocityCurveMapping(velocity, m_velocityCurve);
+    int transposedNote = std::clamp(note + m_globalTranspose, 0, 127);
 
     if (m_pianoEnabled) {
-        int pianoNote = std::clamp(note + (m_pianoOctave * 12), 0, 127);
+        int pianoNote = std::clamp(transposedNote + (m_pianoOctave * 12), 0, 127);
         m_pianoSampler->noteOn(pianoNote, mappedVel);
     }
 
     if (m_synthEnabled) {
-        int synthNote = std::clamp(note + (m_synthOctave * 12), 0, 127);
+        int synthNote = std::clamp(transposedNote + (m_synthOctave * 12), 0, 127);
         m_synthSampler->noteOn(synthNote, mappedVel);
     }
 }
@@ -339,16 +340,32 @@ void StagePianoHost::handleMidiCC(int controller, int value) {
 
 void StagePianoHost::noteOff(int note) {
     std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    int transposedNote = std::clamp(note + m_globalTranspose, 0, 127);
 
     if (m_pianoEnabled) {
-        int pianoNote = std::clamp(note + (m_pianoOctave * 12), 0, 127);
+        int pianoNote = std::clamp(transposedNote + (m_pianoOctave * 12), 0, 127);
         m_pianoSampler->noteOff(pianoNote);
     }
 
     if (m_synthEnabled) {
-        int synthNote = std::clamp(note + (m_synthOctave * 12), 0, 127);
+        int synthNote = std::clamp(transposedNote + (m_synthOctave * 12), 0, 127);
         m_synthSampler->noteOff(synthNote);
     }
+}
+
+void StagePianoHost::panic() {
+    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    m_pianoSampler->allNotesOff();
+    m_synthSampler->allNotesOff();
+    m_droneSampler->allNotesOff();
+    m_droneActive.store(false);
+    m_reverb.reset();
+    m_delay.reset();
+    m_chorus.reset();
+    m_pianoEq.reset();
+    m_synthEq.reset();
+    m_equalizer.reset();
+    std::cout << "[StagePianoHost] EMERGENCY PANIC TRIGGERED: All voices, DFD streams & DSP buffers flushed.\n";
 }
 
 void StagePianoHost::setSustainPedal(bool pressed) {

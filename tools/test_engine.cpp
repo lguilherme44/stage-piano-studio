@@ -78,6 +78,29 @@ int main() {
     host.getSynthEqualizer().setHighGain(-3.0f);
     assert(std::abs(host.getSynthEqualizer().getHighGain() - (-3.0f)) < 0.01f);
 
+    // 6. Test Global Transpose
+    std::cout << "[TestEngine] Testing Global Transpose...\n";
+    assert(host.getGlobalTranspose() == 0);
+    host.setGlobalTranspose(3); // Transpose +3 semitones (e.g. C -> Eb)
+    assert(host.getGlobalTranspose() == 3);
+    host.setGlobalTranspose(-2); // Transpose -2 semitones (e.g. C -> Bb)
+    assert(host.getGlobalTranspose() == -2);
+    host.setGlobalTranspose(0);
+
+    // 7. Test DFD Streaming Engine Diagnostics
+    std::cout << "[TestEngine] Testing DFD Streaming Engine diagnostics...\n";
+    assert(host.getDfdLoadPercent() >= 0 && host.getDfdLoadPercent() <= 100);
+    assert(host.getDfdActiveRequests() >= 0);
+    assert(host.getDfdUnderrunCount() == 0);
+
+    // 8. Test Panic Button & Emergency Reset
+    std::cout << "[TestEngine] Testing Emergency Panic...\n";
+    host.noteOn(60, 100);
+    host.noteOn(64, 100);
+    host.noteOn(67, 100);
+    host.panic();
+    assert(host.getTotalActiveVoices() == 0);
+
     std::cout << "[TestEngine] All StagePianoHost engine tests PASSED successfully!\n";
     return 0;
 }

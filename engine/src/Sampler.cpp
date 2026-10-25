@@ -171,6 +171,8 @@ std::shared_ptr<SampleData> Sampler::getOrLoadSample(const std::string& filename
     FmtChunk fmt{};
     bool hasFmt = false;
     std::vector<int16_t> pcmData;
+    size_t dataByteOffset = 0;
+    size_t totalDataBytes = 0;
 
     while (in) {
         ChunkHeader ch;
@@ -181,21 +183,40 @@ std::shared_ptr<SampleData> Sampler::getOrLoadSample(const std::string& filename
             if (ch.size > sizeof(fmt)) in.seekg(ch.size - sizeof(fmt), std::ios::cur);
             hasFmt = true;
         } else if (memcmp(ch.id, "data", 4) == 0) {
-            pcmData.resize(ch.size / sizeof(int16_t));
-            in.read(reinterpret_cast<char*>(pcmData.data()), ch.size);
+            dataByteOffset = in.tellg();
+            totalDataBytes = ch.size;
             break;
         } else {
             in.seekg(ch.size, std::ios::cur);
         }
     }
 
-    if (!hasFmt || pcmData.empty()) return nullptr;
+    if (!hasFmt || totalDataBytes == 0) return nullptr;
 
     auto sample = std::make_shared<SampleData>();
     sample->filename = filename;
+    sample->fullPath = filepath;
     sample->sampleRate = fmt.sample_rate;
     sample->channels = fmt.num_channels;
-    sample->numFrames = pcmData.size() / fmt.num_channels;
+    sample->dataByteOffset = dataByteOffset;
+
+    size_t bytesPerFrame = fmt.num_channels * sizeof(int16_t);
+    size_t totalFrames = (bytesPerFrame > 0) ? (totalDataBytes / bytesPerFrame) : 0;
+    sample->numFrames = totalFrames;
+
+    // DFD Architecture: Preload only the attack transient into RAM (~64KB)
+    if (totalFrames <= DFD_PRELOAD_FRAMES) {
+        pcmData.resize(totalDataBytes / sizeof(int16_t));
+        in.read(reinterpret_cast<char*>(pcmData.data()), totalDataBytes);
+        sample->isFullyPreloaded = true;
+        sample->preloadFrames = totalFrames;
+    } else {
+        size_t preloadBytes = DFD_PRELOAD_FRAMES * bytesPerFrame;
+        pcmData.resize(preloadBytes / sizeof(int16_t));
+        in.read(reinterpret_cast<char*>(pcmData.data()), preloadBytes);
+        sample->isFullyPreloaded = false;
+        sample->preloadFrames = DFD_PRELOAD_FRAMES;
+    }
     sample->pcm = std::move(pcmData);
 
     m_sampleCache[filename] = sample;
@@ -253,7 +274,7 @@ bool Sampler::loadInstrument(const std::string& jsonPath, const std::string& sam
     m_preset.baseInstrument = m_instrumentName;
 
     std::cout << "[Sampler] Loaded instrument '" << m_instrumentName << "' ("
-              << m_zones.size() << " note zones configured, instant lazy loading active)" << std::endl;
+              << m_zones.size() << " note zones configured, DFD Direct-From-Disk streaming active)" << std::endl;
     return true;
 }
 
@@ -305,11 +326,11 @@ void Sampler::noteOn(int note, int velocity, bool looping) {
     }
     if (!layer->sample) return;
 
-    // Retrigger check: if the same note is already sounding, fade it out to prevent phase stacking & mud
+    // Retrigger check: if the same note is already sounding, fade it out smoothly
     for (auto& oldV : m_voices) {
         if (oldV.active && oldV.note == note) {
             oldV.stage = Voice::Release;
-            oldV.releaseStep = std::max(oldV.releaseStep, 1.0f / (m_sampleRate * 0.020f)); // 20ms smooth anti-mud release
+            oldV.releaseStep = std::max(oldV.releaseStep, 1.0f / (m_sampleRate * 0.020f));
         }
     }
 
@@ -334,6 +355,13 @@ void Sampler::noteOn(int note, int velocity, bool looping) {
     }
 
     Voice& v = m_voices[voiceIdx];
+    
+    // Cancel previous streaming requests if recycling an active voice
+    if (v.cancelToken) {
+        v.cancelToken->store(true, std::memory_order_relaxed);
+    }
+    DiskStreamer::getInstance().cancelRequestsForVoice(v.voiceId);
+
     v.active = true;
     v.isLooping = looping;
     v.note = note;
@@ -341,9 +369,41 @@ void Sampler::noteOn(int note, int velocity, bool looping) {
     v.sample = layer->sample;
     v.position = 0.0;
     
+    v.voiceId = static_cast<uint32_t>(voiceIdx + 1);
+    v.cancelToken = std::make_shared<std::atomic<bool>>(false);
+    v.inFlightRequest = std::make_shared<std::atomic<bool>>(false);
+    
+    if (v.ringBuffer) {
+        v.ringBuffer->reset();
+    }
+    v.nextDiskFrame = v.sample->preloadFrames;
+    v.ringBufferHeadFrame = v.sample->preloadFrames;
+
     v.playbackRate = std::pow(2.0, (note - rootNote) / 12.0);
     float normVel = static_cast<float>(velocity) / 127.0f;
     v.gain = std::pow(normVel, 1.3f);
+
+    // Initial DFD Chunk Schedule: Queue first disk block while attack plays from RAM
+    if (!v.sample->isFullyPreloaded && v.nextDiskFrame < v.sample->numFrames) {
+        size_t framesToRead = std::min(DFD_CHUNK_FRAMES, v.sample->numFrames - v.nextDiskFrame);
+        DFDStreamRequest req{};
+        req.voiceId = v.voiceId;
+        req.filePath = v.sample->fullPath;
+        req.fileByteOffset = v.sample->dataByteOffset + v.nextDiskFrame * v.sample->channels * sizeof(int16_t);
+        req.framesToRead = framesToRead;
+        req.channels = v.sample->channels;
+        double deadline = (v.playbackRate > 0.0)
+            ? (static_cast<double>(v.sample->preloadFrames) / (m_sampleRate * v.playbackRate))
+            : 1.0;
+        req.deadlineSec = deadline;
+        req.cancelToken = v.cancelToken;
+        req.targetBuffer = v.ringBuffer.get();
+        req.inFlightFlag = v.inFlightRequest.get();
+
+        v.inFlightRequest->store(true, std::memory_order_release);
+        v.nextDiskFrame += framesToRead;
+        DiskStreamer::getInstance().enqueueRequest(req);
+    }
 
     // Envelope configuration
     if (m_preset.attackMs <= 2.0f) {
@@ -402,6 +462,10 @@ void Sampler::setSustainPedal(bool pressed) {
 void Sampler::allNotesOff() {
     std::lock_guard<std::recursive_mutex> lock(m_samplerMutex);
     for (auto& v : m_voices) {
+        if (v.cancelToken) {
+            v.cancelToken->store(true, std::memory_order_relaxed);
+        }
+        DiskStreamer::getInstance().cancelRequestsForVoice(v.voiceId);
         v.active = false;
         v.sample = nullptr;
     }
@@ -430,11 +494,14 @@ void Sampler::render(float* outputBuffer, uint32_t numFrames, uint32_t numChanne
         activeCount++;
         const int16_t* pcm = v.sample->pcm.data();
         size_t sampleFrames = v.sample->numFrames;
+        size_t preloadFrames = v.sample->preloadFrames;
         uint16_t sampleCh = v.sample->channels;
 
         for (uint32_t f = 0; f < numFrames; ++f) {
             if (!v.isLooping && v.position >= sampleFrames - 1) {
                 v.active = false;
+                if (v.cancelToken) v.cancelToken->store(true, std::memory_order_relaxed);
+                DiskStreamer::getInstance().cancelRequestsForVoice(v.voiceId);
                 break;
             }
 
@@ -463,6 +530,8 @@ void Sampler::render(float* outputBuffer, uint32_t numFrames, uint32_t numChanne
                     if (v.envLevel <= 0.0f) {
                         v.envLevel = 0.0f;
                         v.active = false;
+                        if (v.cancelToken) v.cancelToken->store(true, std::memory_order_relaxed);
+                        DiskStreamer::getInstance().cancelRequestsForVoice(v.voiceId);
                         break;
                     }
                     break;
@@ -479,18 +548,84 @@ void Sampler::render(float* outputBuffer, uint32_t numFrames, uint32_t numChanne
             float frac = static_cast<float>(v.position - idx0);
 
             float sL = 0.0f, sR = 0.0f;
-            if (sampleCh == 2) {
-                float s0_L = static_cast<float>(pcm[idx0 * 2]) * inv32768;
-                float s1_L = static_cast<float>(pcm[idx1 * 2]) * inv32768;
-                float s0_R = static_cast<float>(pcm[idx0 * 2 + 1]) * inv32768;
-                float s1_R = static_cast<float>(pcm[idx1 * 2 + 1]) * inv32768;
 
-                sL = s0_L + frac * (s1_L - s0_L);
-                sR = s0_R + frac * (s1_R - s0_R);
+            // DFD Dual-Stream Retrieval (RAM Preload vs Ring Buffer)
+            if (v.sample->isFullyPreloaded || idx1 < preloadFrames) {
+                // 100% in RAM Preload
+                if (sampleCh == 2) {
+                    float s0_L = static_cast<float>(pcm[idx0 * 2]) * inv32768;
+                    float s1_L = static_cast<float>(pcm[idx1 * 2]) * inv32768;
+                    float s0_R = static_cast<float>(pcm[idx0 * 2 + 1]) * inv32768;
+                    float s1_R = static_cast<float>(pcm[idx1 * 2 + 1]) * inv32768;
+
+                    sL = s0_L + frac * (s1_L - s0_L);
+                    sR = s0_R + frac * (s1_R - s0_R);
+                } else {
+                    float s0 = static_cast<float>(pcm[idx0]) * inv32768;
+                    float s1 = static_cast<float>(pcm[idx1]) * inv32768;
+                    sL = sR = s0 + frac * (s1 - s0);
+                }
+            } else if (idx0 == preloadFrames - 1 && idx1 == preloadFrames) {
+                // Boundary crossing sample between preload and ring buffer
+                int16_t b0_L = 0, b0_R = 0;
+                if (sampleCh == 2) {
+                    b0_L = pcm[idx0 * 2];
+                    b0_R = pcm[idx0 * 2 + 1];
+                } else {
+                    b0_L = b0_R = pcm[idx0];
+                }
+
+                int16_t b1_L = 0, b1_R = 0;
+                bool peekOk = v.ringBuffer && v.ringBuffer->peekFrame(0, b1_L, b1_R);
+                if (peekOk) {
+                    float s0_L = static_cast<float>(b0_L) * inv32768;
+                    float s1_L = static_cast<float>(b1_L) * inv32768;
+                    float s0_R = static_cast<float>(b0_R) * inv32768;
+                    float s1_R = static_cast<float>(b1_R) * inv32768;
+
+                    sL = s0_L + frac * (s1_L - s0_L);
+                    sR = s0_R + frac * (s1_R - s0_R);
+                } else {
+                    // Preload boundary underrun protection
+                    sL = static_cast<float>(b0_L) * inv32768;
+                    sR = static_cast<float>(b0_R) * inv32768;
+                }
             } else {
-                float s0 = static_cast<float>(pcm[idx0]) * inv32768;
-                float s1 = static_cast<float>(pcm[idx1]) * inv32768;
-                sL = sR = s0 + frac * (s1 - s0);
+                // Streaming from Ring Buffer
+                if (v.ringBuffer && idx0 >= v.ringBufferHeadFrame) {
+                    size_t relOffset0 = idx0 - v.ringBufferHeadFrame;
+                    size_t relOffset1 = idx1 - v.ringBufferHeadFrame;
+                    size_t avail = v.ringBuffer->getAvailableFrames();
+
+                    if (relOffset1 < avail) {
+                        int16_t r0_L = 0, r0_R = 0, r1_L = 0, r1_R = 0;
+                        v.ringBuffer->peekFrame(relOffset0, r0_L, r0_R);
+                        v.ringBuffer->peekFrame(relOffset1, r1_L, r1_R);
+
+                        float s0_L = static_cast<float>(r0_L) * inv32768;
+                        float s1_L = static_cast<float>(r1_L) * inv32768;
+                        float s0_R = static_cast<float>(r0_R) * inv32768;
+                        float s1_R = static_cast<float>(r1_R) * inv32768;
+
+                        sL = s0_L + frac * (s1_L - s0_L);
+                        sR = s0_R + frac * (s1_R - s0_R);
+
+                        // Advance ring buffer once consumer is well ahead of head
+                        if (relOffset0 > 2048) {
+                            size_t adv = relOffset0 - 512;
+                            v.ringBuffer->advanceFrames(adv);
+                            v.ringBufferHeadFrame += adv;
+                        }
+                    } else {
+                        // DFDError: Buffer Underrun -> Graceful Micro-fadeout (No pops or crackles)
+                        DiskStreamer::getInstance().recordUnderrun();
+                        v.stage = Voice::Release;
+                        v.releaseStep = std::max(v.releaseStep, 1.0f / (m_sampleRate * 0.015f)); // 15ms
+                        sL = sR = 0.0f;
+                    }
+                } else {
+                    sL = sR = 0.0f;
+                }
             }
 
             // Continuous seamless crossfade loop for ambient drones
@@ -499,77 +634,85 @@ void Sampler::render(float* outputBuffer, uint32_t numFrames, uint32_t numChanne
                 size_t loopEnd = static_cast<size_t>(sampleFrames * 0.85);
                 size_t xfadeLen = std::min<size_t>(static_cast<size_t>(m_sampleRate * 2.0f), (loopEnd - loopStart) / 3);
 
-                if (v.position >= (loopEnd - xfadeLen)) {
-                    double xfadePos = v.position - (loopEnd - xfadeLen);
-                    double progress = std::clamp(xfadePos / static_cast<double>(xfadeLen), 0.0, 1.0);
-                    float gainA = std::cos(static_cast<float>(progress * 1.5707963267948966));
-                    float gainB = std::sin(static_cast<float>(progress * 1.5707963267948966));
+                if (v.position >= loopEnd - xfadeLen && v.position < loopEnd) {
+                    float xfadeAlpha = static_cast<float>(v.position - (loopEnd - xfadeLen)) / xfadeLen;
+                    size_t wrapPos = loopStart + static_cast<size_t>(v.position - (loopEnd - xfadeLen));
+                    if (wrapPos + 1 < sampleFrames) {
+                        float w0 = static_cast<float>(pcm[wrapPos * sampleCh]) * inv32768;
+                        float w1 = static_cast<float>(pcm[(wrapPos + 1) * sampleCh]) * inv32768;
+                        float wrapSampleL = w0 + frac * (w1 - w0);
 
-                    double bPos = loopStart + xfadePos;
-                    size_t bIdx0 = static_cast<size_t>(bPos) % sampleFrames;
-                    size_t bIdx1 = std::min(bIdx0 + 1, sampleFrames - 1);
-                    float bFrac = static_cast<float>(bPos - static_cast<size_t>(bPos));
+                        float wrapSampleR = wrapSampleL;
+                        if (sampleCh == 2) {
+                            float wr0 = static_cast<float>(pcm[wrapPos * 2 + 1]) * inv32768;
+                            float wr1 = static_cast<float>(pcm[(wrapPos + 1) * 2 + 1]) * inv32768;
+                            wrapSampleR = wr0 + frac * (wr1 - wr0);
+                        }
 
-                    float bL = 0.0f, bR = 0.0f;
-                    if (sampleCh == 2) {
-                        float b0_L = static_cast<float>(pcm[bIdx0 * 2]) * inv32768;
-                        float b1_L = static_cast<float>(pcm[bIdx1 * 2]) * inv32768;
-                        float b0_R = static_cast<float>(pcm[bIdx0 * 2 + 1]) * inv32768;
-                        float b1_R = static_cast<float>(pcm[bIdx1 * 2 + 1]) * inv32768;
-                        bL = b0_L + bFrac * (b1_L - b0_L);
-                        bR = b0_R + bFrac * (b1_R - b0_R);
-                    } else {
-                        float b0 = static_cast<float>(pcm[bIdx0]) * inv32768;
-                        float b1 = static_cast<float>(pcm[bIdx1]) * inv32768;
-                        bL = bR = b0 + bFrac * (b1 - b0);
+                        sL = sL * (1.0f - xfadeAlpha) + wrapSampleL * xfadeAlpha;
+                        sR = sR * (1.0f - xfadeAlpha) + wrapSampleR * xfadeAlpha;
                     }
+                }
 
-                    sL = sL * gainA + bL * gainB;
-                    sR = sR * gainA + bR * gainB;
-
-                    if (v.position >= loopEnd) {
-                        v.position = loopStart + (v.position - loopEnd);
-                    }
+                if (v.position >= loopEnd) {
+                    v.position = static_cast<double>(loopStart);
                 }
             }
 
-            // Apply Voice Filter (Tone/Brightness/Resonance)
+            // Apply Per-Voice Dynamic Resonant Cutoff Filter
             if (useFilter) {
                 sL = v.filter[0].process(sL);
                 sR = v.filter[1].process(sR);
             }
 
-            float finalGain = v.gain * v.envLevel * m_preset.masterVolume;
-            sL *= finalGain;
-            sR *= finalGain;
+            // Apply envelope, gain & pan
+            float amp = v.envLevel * v.gain * m_preset.masterVolume;
+            sL *= amp;
+            sR *= amp;
 
-            if (numChannels >= 2) {
-                outputBuffer[f * numChannels] += sL;
+            outputBuffer[f * numChannels] += sL;
+            if (numChannels > 1) {
                 outputBuffer[f * numChannels + 1] += sR;
-            } else {
-                outputBuffer[f] += (sL + sR) * 0.5f;
             }
 
             v.position += v.playbackRate;
         }
+
+        // DFD Ring Buffer Replenishment Check
+        if (v.active && !v.sample->isFullyPreloaded && v.nextDiskFrame < v.sample->numFrames) {
+            if (v.inFlightRequest && !v.inFlightRequest->load(std::memory_order_acquire)) {
+                if (v.ringBuffer && v.ringBuffer->getAvailableFrames() < 32768) {
+                    size_t framesToRead = std::min(DFD_CHUNK_FRAMES, v.sample->numFrames - v.nextDiskFrame);
+                    DFDStreamRequest req{};
+                    req.voiceId = v.voiceId;
+                    req.filePath = v.sample->fullPath;
+                    req.fileByteOffset = v.sample->dataByteOffset + v.nextDiskFrame * v.sample->channels * sizeof(int16_t);
+                    req.framesToRead = framesToRead;
+                    req.channels = v.sample->channels;
+                    double remainingSec = (v.playbackRate > 0.0)
+                        ? (static_cast<double>(v.ringBuffer->getAvailableFrames()) / (m_sampleRate * v.playbackRate))
+                        : 1.0;
+                    req.deadlineSec = remainingSec;
+                    req.cancelToken = v.cancelToken;
+                    req.targetBuffer = v.ringBuffer.get();
+                    req.inFlightFlag = v.inFlightRequest.get();
+
+                    v.inFlightRequest->store(true, std::memory_order_release);
+                    v.nextDiskFrame += framesToRead;
+                    DiskStreamer::getInstance().enqueueRequest(req);
+                }
+            }
+        }
     }
 
-    m_activeVoices = activeCount;
+    m_activeVoices.store(activeCount, std::memory_order_relaxed);
 
-    // 1. Apply Studio 3-Band Equalizer (Grave, Médio, Agudo)
-    m_equalizer.process(outputBuffer, numFrames, numChannels);
+    // Dynamic Processing Chain: Equalizer -> Compressor
+    if (m_preset.eqEnabled) {
+        m_equalizer.process(outputBuffer, numFrames, numChannels);
+    }
 
-    // 2. Apply Dynamic Compressor (Peak/RMS, Soft-Knee, Makeup)
-    m_compressor.process(outputBuffer, numFrames, numChannels);
-
-    // 3. Studio Master Limiter / Soft-Saturation (prevents harsh DAC digital clipping)
-    const uint32_t totalSamples = numFrames * numChannels;
-    for (uint32_t i = 0; i < totalSamples; ++i) {
-        float s = outputBuffer[i];
-        if (s > 1.0f) {
-            outputBuffer[i] = 1.0f - std::exp(-(s - 1.0f) * 0.5f);
-        } else if (s < -1.0f) {
-            outputBuffer[i] = -1.0f + std::exp((s + 1.0f) * 0.5f);
-        }
+    if (m_preset.compEnabled) {
+        m_compressor.process(outputBuffer, numFrames, numChannels);
     }
 }

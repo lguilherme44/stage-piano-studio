@@ -116,6 +116,18 @@ public:
     Delay& getDelay() { return m_delay; }
     Reverb& getReverb() { return m_reverb; }
 
+    // Emergency Panic & Safety Guard (Flushes all voices, DFD streams & DSP buffers)
+    void panic();
+
+    // Global Transpose (+/- 24 semitones)
+    void setGlobalTranspose(int semitones) { m_globalTranspose = std::clamp(semitones, -24, 24); }
+    int getGlobalTranspose() const { return m_globalTranspose; }
+
+    // DFD Diagnostics & Monitoring (Kontakt-aligned)
+    int getDfdLoadPercent() const { return DiskStreamer::getInstance().getDfdLoadPercent(); }
+    int getDfdActiveRequests() const { return DiskStreamer::getInstance().getActiveRequests(); }
+    uint64_t getDfdUnderrunCount() const { return DiskStreamer::getInstance().getUnderrunCount(); }
+
     // Direct DSP Access for Synth Layer
     void setSynthFilterCutoff(float hz) { m_synthSampler->setFilterCutoff(hz); }
     void setSynthFilterResonance(float res) { m_synthSampler->setFilterResonance(res); }
@@ -166,6 +178,7 @@ private:
 
     // Velocity curve setting
     VelocityCurve m_velocityCurve = VelocityCurve::Linear;
+    int m_globalTranspose = 0;
 
     // MIDI CC Router & Learn
     MidiCCParam m_learningParam = MidiCCParam::None;

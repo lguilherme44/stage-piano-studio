@@ -4,6 +4,7 @@
 #include "Compressor.hpp"
 #include "TimbrePreset.hpp"
 #include "Biquad.hpp"
+#include "DiskStreamer.hpp"
 
 #include <string>
 #include <vector>
@@ -13,12 +14,21 @@
 #include <atomic>
 #include <cstdint>
 
+constexpr size_t DFD_PRELOAD_FRAMES = 32768; // ~0.74 seconds preload in RAM
+constexpr size_t DFD_CHUNK_FRAMES = 16384;   // ~0.37 seconds per disk streaming chunk
+
 struct SampleData {
     std::string filename;
+    std::string fullPath;
     uint32_t sampleRate = 44100;
     uint16_t channels = 2;
-    std::vector<int16_t> pcm;
     size_t numFrames = 0;
+    size_t dataByteOffset = 0;
+
+    // RAM Preload: first DFD_PRELOAD_FRAMES frames of the sample
+    std::vector<int16_t> pcm;
+    size_t preloadFrames = 0;
+    bool isFullyPreloaded = false;
 };
 
 struct VelocityLayer {
@@ -35,6 +45,12 @@ struct NoteZone {
 };
 
 struct Voice {
+    Voice() : ringBuffer(std::make_unique<VoiceRingBuffer>(65536, 2)) {}
+    Voice(Voice&& other) noexcept = default;
+    Voice& operator=(Voice&& other) noexcept = default;
+    Voice(const Voice&) = delete;
+    Voice& operator=(const Voice&) = delete;
+
     bool active = false;
     bool isLooping = false;
     int note = -1;
@@ -56,6 +72,14 @@ struct Voice {
 
     // Per-voice stereo filter (for cutoff & resonance timbre shaping)
     Biquad filter[2];
+
+    // DFD Streaming Components
+    uint32_t voiceId = 0;
+    std::unique_ptr<VoiceRingBuffer> ringBuffer;
+    std::shared_ptr<std::atomic<bool>> cancelToken;
+    std::shared_ptr<std::atomic<bool>> inFlightRequest;
+    size_t nextDiskFrame = 0;
+    size_t ringBufferHeadFrame = 0;
 };
 
 class Sampler {
