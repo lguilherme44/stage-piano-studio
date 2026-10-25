@@ -140,7 +140,31 @@ sudo apt-get install -y \
   libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libgl1-mesa-dev
 ```
 
-### Comandos de Compilação (Todas as Plataformas)
+### Compilação Automática em 1 Clique (Scripts por Sistema Operacional)
+
+Criamos scripts que detectam automaticamente o sistema operacional, localizam o compilador e o CMake, ativam o SDK do ASIO no Windows e geram o binário final:
+
+* **No macOS ou Linux:**
+  ```bash
+  ./build.sh
+  ```
+  *(Ou `./build.sh --clean` para reconstrução limpa e `./build.sh --no-test` para pular testes)*
+
+* **No Windows (PowerShell ou Git Bash):**
+  ```powershell
+  # No PowerShell:
+  .\build.ps1
+
+  # Ou no Git Bash / Terminal:
+  ./build.sh
+  ```
+
+* **No Windows (Explorador de Arquivos):**
+  Basta dar um duplo-clique no arquivo [`build.bat`](file:///Volumes/SSD-EXT/StagePianoStudio/build.bat). Ele compila a versão Release x64 com suporte ASIO, atualiza o executável na pasta do projeto e atualiza o atalho na Área de Trabalho (*Desktop*).
+
+---
+
+### Compilação Manual via CMake (Opcional)
 ```bash
 # 1. Clonar o repositório
 git clone https://github.com/lguilherme44/stage-piano-studio.git

@@ -30,8 +30,12 @@ target_sources(StagePianoStudio PRIVATE
     Source/Main.cpp
     Source/MainComponent.cpp
     Source/StagePianoLookAndFeel.cpp
+    Source/Skins/NordStageLayout.cpp
+    Source/Skins/YamahaMotifLayout.cpp
+    Source/Skins/RolandVStageLayout.cpp
     
     "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Sampler.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/DiskStreamer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Equalizer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Compressor.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Chorus.cpp"
@@ -75,6 +79,52 @@ if(WIN32)
 endif()
 
 target_link_libraries(StagePianoStudio PRIVATE
+    juce::juce_core
+    juce::juce_events
+    juce::juce_graphics
+    juce::juce_data_structures
+    juce::juce_gui_basics
+    juce::juce_gui_extra
+    juce::juce_audio_basics
+    juce::juce_audio_devices
+    juce::juce_audio_formats
+    juce::juce_audio_processors
+    juce::juce_audio_utils
+)
+
+# Offscreen Snapshot Preview Renderer for Headless Verification & Telemetry
+add_executable(render_skin_previews
+    "${CMAKE_CURRENT_SOURCE_DIR}/../tools/render_skin_previews.cpp"
+    Source/MainComponent.cpp
+    Source/StagePianoLookAndFeel.cpp
+    Source/Skins/NordStageLayout.cpp
+    Source/Skins/YamahaMotifLayout.cpp
+    Source/Skins/RolandVStageLayout.cpp
+    
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Sampler.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/DiskStreamer.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Equalizer.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Compressor.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Chorus.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Delay.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/Reverb.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/TimbrePreset.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/StagePianoHost.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/src/SampleImporter.cpp"
+)
+
+target_include_directories(render_skin_previews PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/Source"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../engine/include"
+)
+
+target_compile_definitions(render_skin_previews PRIVATE
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_VST3_CAN_REPLACE_VST2=0
+)
+
+target_link_libraries(render_skin_previews PRIVATE
     juce::juce_core
     juce::juce_events
     juce::juce_graphics

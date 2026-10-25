@@ -49,8 +49,11 @@ MainComponent::MainComponent() {
     m_keyboardComponent.setColour(juce::MidiKeyboardComponent::textLabelColourId, juce::Colour(0xff64748b));
     m_keyboardComponent.setColour(juce::MidiKeyboardComponent::shadowColourId, juce::Colours::black.withAlpha(0.6f));
     addAndMakeVisible(m_keyboardComponent);
+    setWantsKeyboardFocus(true);
 
-    setSize(1140, 770);
+    setSkin(SkinType::NordStage);
+
+    setSize(1220, 770);
     startTimerHz(30);
 }
 
@@ -602,6 +605,24 @@ void MainComponent::setupUI() {
     m_btnSettings.setColour(juce::TextButton::buttonColourId, juce::Colour(0xff2a2c38));
     m_btnSettings.onClick = [this] { openAudioSettings(); };
 
+    // Emergency Panic Button (Cuts all voices & resets buffers)
+    addAndMakeVisible(m_btnPanic);
+    m_btnPanic.setColour(juce::TextButton::buttonColourId, juce::Colour(0xffdc2626));
+    m_btnPanic.setColour(juce::TextButton::textColourOffId, juce::Colours::white);
+    m_btnPanic.onClick = [this] { m_host->panic(); };
+
+    // Global Transpose Selector (-12 to +12)
+    addAndMakeVisible(m_comboTranspose);
+    for (int t = -12; t <= 12; ++t) {
+        juce::String text = (t > 0 ? "+" : "") + juce::String(t);
+        m_comboTranspose.addItem("Trans: " + text, t + 13);
+    }
+    m_comboTranspose.setSelectedId(13, juce::dontSendNotification);
+    m_comboTranspose.onChange = [this] {
+        int t = m_comboTranspose.getSelectedId() - 13;
+        m_host->setGlobalTranspose(t);
+    };
+
     // Skin / Theme Switcher
     addAndMakeVisible(m_comboTheme);
     m_comboTheme.addItem("Skin: Nord Red Studio", 1);
@@ -610,14 +631,7 @@ void MainComponent::setupUI() {
     m_comboTheme.setSelectedId(1, juce::dontSendNotification);
     m_comboTheme.onChange = [this] {
         int id = m_comboTheme.getSelectedId();
-        switch (id) {
-            case 1: m_lookAndFeel.setTheme(StagePianoLookAndFeel::Theme::NordStudio); break;
-            case 2: m_lookAndFeel.setTheme(StagePianoLookAndFeel::Theme::YamahaMotif); break;
-            case 3: m_lookAndFeel.setTheme(StagePianoLookAndFeel::Theme::RolandStage); break;
-            default: break;
-        }
-        m_btnSavePreset.setColour(juce::TextButton::buttonColourId, StagePianoLookAndFeel::accentNord);
-        repaint();
+        setSkin(static_cast<SkinType>(id));
     };
 
     // Footer Buttons
@@ -773,225 +787,108 @@ void MainComponent::timerCallback() {
     repaint();
 }
 
-void MainComponent::paint(juce::Graphics& g) {
-    g.fillAll(StagePianoLookAndFeel::bgChassis);
-
-    auto bounds = getLocalBounds();
-
-    // 1. Header Bar
-    auto headerBounds = bounds.removeFromTop(80);
-    g.setColour(juce::Colour(0xff181920));
-    g.fillRect(headerBounds);
-    g.setColour(StagePianoLookAndFeel::borderPanel);
-    g.drawHorizontalLine(headerBounds.getBottom() - 1, 0.0f, static_cast<float>(getWidth()));
-
-    // Brand Label
-    g.setColour(StagePianoLookAndFeel::accentNord);
-    g.fillRoundedRectangle(20.0f, 22.0f, 8.0f, 36.0f, 2.0f);
-
-    g.setColour(juce::Colours::white);
-    g.setFont(juce::FontOptions(17.0f, juce::Font::bold));
-    g.drawText("STAGE PIANO STUDIO", 36, 22, 220, 20, juce::Justification::left);
-    g.setColour(StagePianoLookAndFeel::textDim);
-    g.setFont(juce::FontOptions(11.0f));
-    g.drawText("DUAL-LAYER + CONTINUOUS DRONE HOST", 36, 42, 240, 16, juce::Justification::left);
-
-    // OLED Screen Box
-    auto oledRect = juce::Rectangle<int>(280, 14, 355, 52);
-    g.setColour(juce::Colour(0xff090a0d));
-    g.fillRoundedRectangle(oledRect.toFloat(), 6.0f);
-    g.setColour(juce::Colour(0xff222530));
-    g.drawRoundedRectangle(oledRect.toFloat(), 6.0f, 1.5f);
-
-    g.setColour(StagePianoLookAndFeel::accentAmber);
-    g.setFont(juce::FontOptions(10.0f, juce::Font::bold));
-    g.drawText("DUAL-LAYER LIVE SETUP", 295, 20, 180, 12, juce::Justification::left);
-
-    g.setColour(juce::Colour(0xfffbbf24));
-    g.setFont(juce::FontOptions(13.0f, juce::Font::bold));
-    juce::String layerStr = m_host->getPianoName() + " + " + m_host->getSynthName();
-    g.drawText(layerStr, 295, 36, 190, 20, juce::Justification::left);
-
-    g.setColour(StagePianoLookAndFeel::textDim);
-    g.setFont(juce::FontOptions(10.0f));
-    juce::String telemetry = "DSP: " + juce::String(m_dspLoad.load(), 1) + "% | VOICES: " + juce::String(m_host->getTotalActiveVoices());
-    g.drawText(telemetry, 410, 28, 215, 20, juce::Justification::right);
-
-    // 2. Footer Strip
-    auto footerBounds = bounds.removeFromBottom(50);
-    g.setColour(juce::Colour(0xff15161c));
-    g.fillRect(footerBounds);
-    g.setColour(StagePianoLookAndFeel::borderPanel);
-    g.drawHorizontalLine(footerBounds.getY(), 0.0f, static_cast<float>(getWidth()));
-
-    bool hasMidi = (m_activeMidiDevice != "No MIDI input active (click CONFIG)");
-    g.setColour(hasMidi ? juce::Colour(0xff10b981) : juce::Colour(0xffef4444));
-    g.fillEllipse(20.0f, footerBounds.getY() + 21.0f, 8.0f, 8.0f);
-    g.setColour(StagePianoLookAndFeel::textLight);
-    g.setFont(juce::FontOptions(11.0f, juce::Font::bold));
-    g.drawText("MIDI: " + juce::String(m_activeMidiDevice), 34, footerBounds.getY() + 16, 320, 18, juce::Justification::left);
-
-    g.setColour(m_sustainDown ? StagePianoLookAndFeel::accentAmber : StagePianoLookAndFeel::textDim);
-    g.drawText(m_sustainDown ? "SUSTAIN: [DOWN]" : "SUSTAIN: [UP]", 360, footerBounds.getY() + 16, 110, 18, juce::Justification::left);
-
-    // 3. Four Main Cards
-    auto contentBounds = bounds.removeFromTop(385).reduced(16, 8);
-    int colWidth = (contentBounds.getWidth() - 36) / 4;
-
-    auto r1 = contentBounds.removeFromLeft(colWidth);
-    contentBounds.removeFromLeft(12);
-    auto r2 = contentBounds.removeFromLeft(colWidth);
-    contentBounds.removeFromLeft(12);
-    auto r3 = contentBounds.removeFromLeft(colWidth);
-    contentBounds.removeFromLeft(12);
-    auto r4 = contentBounds;
-
-    auto drawCard = [&g](juce::Rectangle<int> r, const juce::String& title, const juce::String& tag) {
-        g.setColour(StagePianoLookAndFeel::bgPanel);
-        g.fillRoundedRectangle(r.toFloat(), 8.0f);
-        g.setColour(StagePianoLookAndFeel::borderPanel);
-        g.drawRoundedRectangle(r.toFloat(), 8.0f, 1.0f);
-
-        g.setColour(StagePianoLookAndFeel::textLight);
-        g.setFont(juce::FontOptions(11.0f, juce::Font::bold));
-        g.drawText(title, r.getX() + 14, r.getY() + 12, 180, 16, juce::Justification::left);
-
-        g.setColour(StagePianoLookAndFeel::textDim);
-        g.setFont(juce::FontOptions(9.0f));
-        g.drawText(tag, r.getRight() - 95, r.getY() + 12, 80, 16, juce::Justification::right);
-
-        g.setColour(StagePianoLookAndFeel::borderPanel);
-        g.drawHorizontalLine(r.getY() + 34, static_cast<float>(r.getX() + 14), static_cast<float>(r.getRight() - 14));
-    };
-
-    drawCard(r1, "PIANO & SYNTH LAYER", "DUAL SLOT");
-    drawCard(r2, "AMBIENT DRONE ENGINE", "KEY LATCH");
-    drawCard(r3, "EQ & MODULATION", "SLOT A / B");
-    drawCard(r4, "REVERB & COMPRESSOR", "STUDIO FX");
-
-    // Slot labels
-    g.setColour(StagePianoLookAndFeel::textDim);
-    g.setFont(juce::FontOptions(10.0f, juce::Font::bold));
-    g.drawText("SLOT A: PIANO", r1.getX() + 14, r1.getY() + 38, 150, 14, juce::Justification::left);
-    g.drawText("LEVEL", r1.getRight() - 75, r1.getY() + 72, 55, 12, juce::Justification::centred);
-
-    g.drawText("SLOT B: SYNTH PAD", r1.getX() + 14, r1.getY() + 168, 150, 14, juce::Justification::left);
-    g.drawText("CUTOFF", r1.getX() + 112, r1.getY() + 204, 68, 12, juce::Justification::centred);
-    g.drawText("LEVEL", r1.getRight() - 75, r1.getY() + 204, 55, 12, juce::Justification::centred);
-
-    g.drawText("KEY TOUCH RESPONSE", r1.getX() + 14, r1.getY() + 312, 220, 14, juce::Justification::left);
-
-    g.drawText("DRONE HARMONIC ROOT", r2.getX() + 14, r2.getY() + 38, 180, 14, juce::Justification::left);
-    g.drawText("DRONE AMBIENT SOUND", r2.getX() + 14, r2.getY() + 104, 180, 14, juce::Justification::left);
-    g.drawText("DRONE LEVEL", r2.getX() + 14, r2.getY() + 210, 180, 14, juce::Justification::centred);
-
-    // Card 3 labels
-    g.drawText("SLOT A: PIANO EQ", r3.getX() + 14, r3.getY() + 38, 200, 14, juce::Justification::left);
-    g.drawText("SLOT B: SYNTH EQ", r3.getX() + 14, r3.getY() + 122, 200, 14, juce::Justification::left);
-    g.drawText("MODULATION", r3.getX() + 14, r3.getY() + 206, 200, 14, juce::Justification::left);
-
-    // Gain Reduction Meter in Card 4
-    auto meterBox = juce::Rectangle<int>(r4.getX() + 14, r4.getY() + 175, r4.getWidth() - 28, 26);
-    g.setColour(juce::Colour(0xff090a0d));
-    g.fillRoundedRectangle(meterBox.toFloat(), 4.0f);
-    float gr = m_host->getCompressor().getGainReductionDb();
-    g.setColour(StagePianoLookAndFeel::textDim);
-    g.setFont(juce::FontOptions(9.0f, juce::Font::bold));
-    g.drawText("GR: -" + juce::String(gr, 1) + " dB", meterBox.getX() + 6, meterBox.getY() + 3, 100, 10, juce::Justification::left);
-
-    int numLeds = 12;
-    int litLeds = juce::jlimit(0, numLeds, static_cast<int>(gr * 0.8f));
-    int ledW = (meterBox.getWidth() - 12 - (numLeds * 2)) / numLeds;
-    for (int i = 0; i < numLeds; ++i) {
-        int lx = meterBox.getX() + 6 + i * (ledW + 2);
-        int ly = meterBox.getY() + 13;
-        bool lit = (i < litLeds);
-        g.setColour(lit ? (i > 8 ? juce::Colour(0xffef4444) : StagePianoLookAndFeel::accentAmber) : juce::Colour(0xff222530));
-        g.fillRect(lx, ly, ledW, 8);
+bool MainComponent::keyPressed(const juce::KeyPress& key) {
+    if (key == juce::KeyPress::escapeKey) {
+        m_host->panic();
+        return true;
     }
+    return false;
+}
 
-    // Keyboard chassis frame
-    g.setColour(StagePianoLookAndFeel::borderPanel);
-    g.drawRoundedRectangle(15.0f, 480.0f, static_cast<float>(getWidth() - 30), 226.0f, 6.0f, 1.5f);
+void MainComponent::setSkin(SkinType type) {
+    switch (type) {
+        case SkinType::NordStage:
+            m_lookAndFeel.setTheme(StagePianoLookAndFeel::Theme::NordStudio);
+            m_currentSkin = SkinFactory::create(SkinType::NordStage);
+            m_comboTheme.setSelectedId(1, juce::dontSendNotification);
+            break;
+        case SkinType::YamahaMotif:
+            m_lookAndFeel.setTheme(StagePianoLookAndFeel::Theme::YamahaMotif);
+            m_currentSkin = SkinFactory::create(SkinType::YamahaMotif);
+            m_comboTheme.setSelectedId(2, juce::dontSendNotification);
+            break;
+        case SkinType::RolandVStage:
+            m_lookAndFeel.setTheme(StagePianoLookAndFeel::Theme::RolandStage);
+            m_currentSkin = SkinFactory::create(SkinType::RolandVStage);
+            m_comboTheme.setSelectedId(3, juce::dontSendNotification);
+            break;
+        default: break;
+    }
+    m_btnSavePreset.setColour(juce::TextButton::buttonColourId, StagePianoLookAndFeel::accentNord);
+    resized();
+    repaint();
+}
+
+void MainComponent::paint(juce::Graphics& g) {
+    SkinContext ctx;
+    ctx.pianoName = m_host ? m_host->getPianoName() : "Acoustic Grand";
+    ctx.synthName = m_host ? m_host->getSynthName() : "Warm Analog Pad";
+    ctx.dspLoad = m_dspLoad.load();
+    ctx.dfdLoad = m_host ? m_host->getDfdLoadPercent() : 0;
+    ctx.activeVoices = m_host ? m_host->getTotalActiveVoices() : 0;
+    ctx.midiDevice = m_activeMidiDevice;
+    ctx.sustainDown = m_sustainDown;
+    ctx.gainReductionDb = m_host ? m_host->getCompressor().getGainReductionDb() : 0.0f;
+
+    if (m_currentSkin) {
+        m_currentSkin->paintBackground(g, getLocalBounds(), ctx);
+    } else {
+        g.fillAll(StagePianoLookAndFeel::bgChassis);
+    }
 }
 
 void MainComponent::resized() {
-    auto bounds = getLocalBounds();
-    bounds.removeFromTop(80);
-    auto footerArea = bounds.removeFromBottom(50);
-    auto cardArea = bounds.removeFromTop(385);
-    auto contentBounds = cardArea.reduced(16, 8);
+    SkinUIComponents comps;
+    comps.btnPrevPreset = &m_btnPrevPreset;
+    comps.btnNextPreset = &m_btnNextPreset;
+    comps.btnSavePreset = &m_btnSavePreset;
+    comps.btnSettings = &m_btnSettings;
+    comps.btnPanic = &m_btnPanic;
+    comps.comboTranspose = &m_comboTranspose;
+    comps.comboTheme = &m_comboTheme;
 
-    int colWidth = (contentBounds.getWidth() - 36) / 4;
-    auto r1 = contentBounds.removeFromLeft(colWidth);
-    contentBounds.removeFromLeft(12);
-    auto r2 = contentBounds.removeFromLeft(colWidth);
-    contentBounds.removeFromLeft(12);
-    auto r3 = contentBounds.removeFromLeft(colWidth);
-    contentBounds.removeFromLeft(12);
-    auto r4 = contentBounds;
+    comps.comboPiano = &m_comboPiano;
+    comps.sliderPianoVol = &m_sliderPianoVol;
+    comps.togglePiano = &m_togglePiano;
+    comps.comboVelocityCurve = &m_comboVelocityCurve;
+    comps.sliderPianoEqLow = &m_sliderPianoEqLow;
+    comps.sliderPianoEqMid = &m_sliderPianoEqMid;
+    comps.sliderPianoEqHigh = &m_sliderPianoEqHigh;
 
-    // Header buttons
-    m_btnPrevPreset.setBounds(650, 22, 40, 36);
-    m_btnNextPreset.setBounds(695, 22, 40, 36);
-    m_btnSavePreset.setBounds(740, 22, 80, 36);
-    m_btnSettings.setBounds(825, 22, 110, 36);
-    m_comboTheme.setBounds(940, 22, 180, 36);
+    comps.comboSynth = &m_comboSynth;
+    comps.sliderSynthVol = &m_sliderSynthVol;
+    comps.sliderSynthCutoff = &m_sliderSynthCutoff;
+    comps.toggleSynth = &m_toggleSynth;
+    comps.sliderSynthEqLow = &m_sliderSynthEqLow;
+    comps.sliderSynthEqMid = &m_sliderSynthEqMid;
+    comps.sliderSynthEqHigh = &m_sliderSynthEqHigh;
 
-    // Footer buttons
-    m_btnFooterConfig.setBounds(footerArea.getRight() - 95, footerArea.getY() + 10, 85, 30);
-    m_btnMidiLearn.setBounds(footerArea.getRight() - 250, footerArea.getY() + 10, 145, 30);
-    m_btnImport.setBounds(footerArea.getRight() - 415, footerArea.getY() + 10, 155, 30);
-    m_btnRefresh.setBounds(footerArea.getRight() - 510, footerArea.getY() + 10, 85, 30);
+    comps.btnDroneToggle = &m_btnDroneToggle;
+    comps.comboDroneRoot = &m_comboDroneRoot;
+    comps.comboDroneSound = &m_comboDroneSound;
+    comps.sliderDroneVol = &m_sliderDroneVol;
 
-    // Card 1: Slot A & Slot B + Velocity Curve
-    m_comboPiano.setBounds(r1.getX() + 14, r1.getY() + 54, r1.getWidth() - 28, 26);
-    m_togglePiano.setBounds(r1.getX() + 14, r1.getY() + 102, 110, 24);
-    m_sliderPianoVol.setBounds(r1.getRight() - 75, r1.getY() + 86, 55, 78);
+    comps.toggleChorus = &m_toggleChorus;
+    comps.sliderChorusMix = &m_sliderChorusMix;
+    comps.toggleDelay = &m_toggleDelay;
+    comps.sliderDelayMix = &m_sliderDelayMix;
+    comps.toggleReverb = &m_toggleReverb;
+    comps.sliderReverbMix = &m_sliderReverbMix;
+    comps.sliderCompThresh = &m_sliderCompThresh;
+    comps.sliderCompMakeup = &m_sliderCompMakeup;
 
-    m_comboSynth.setBounds(r1.getX() + 14, r1.getY() + 184, r1.getWidth() - 28, 26);
-    m_toggleSynth.setBounds(r1.getX() + 14, r1.getY() + 230, 95, 24);
-    m_sliderSynthCutoff.setBounds(r1.getX() + 112, r1.getY() + 218, 68, 62);
-    m_sliderSynthVol.setBounds(r1.getRight() - 75, r1.getY() + 218, 55, 78);
+    comps.btnFooterConfig = &m_btnFooterConfig;
+    comps.btnMidiLearn = &m_btnMidiLearn;
+    comps.btnImport = &m_btnImport;
+    comps.btnRefresh = &m_btnRefresh;
 
-    m_comboVelocityCurve.setBounds(r1.getX() + 14, r1.getY() + 328, r1.getWidth() - 28, 26);
+    comps.keyboardComponent = &m_keyboardComponent;
 
-    // Card 2: Ambient Drone Engine
-    m_comboDroneRoot.setBounds(r2.getX() + 14, r2.getY() + 54, r2.getWidth() - 28, 26);
-    m_comboDroneSound.setBounds(r2.getX() + 14, r2.getY() + 120, r2.getWidth() - 28, 26);
-    m_btnDroneToggle.setBounds(r2.getX() + 14, r2.getY() + 160, r2.getWidth() - 28, 38);
-    m_sliderDroneVol.setBounds(r2.getCentreX() - 30, r2.getY() + 226, 60, 128);
+    if (m_currentSkin) {
+        m_currentSkin->layoutComponents(getLocalBounds(), comps);
+    }
 
-    // Card 3: Dedicated Slot A (Piano) EQ, Slot B (Synth) EQ & Modulation
-    // Row 1: Piano EQ
-    m_sliderPianoEqLow.setBounds(r3.getX() + 8, r3.getY() + 54, 72, 60);
-    m_sliderPianoEqMid.setBounds(r3.getX() + 86, r3.getY() + 54, 72, 60);
-    m_sliderPianoEqHigh.setBounds(r3.getX() + 164, r3.getY() + 54, 72, 60);
-
-    // Row 2: Synth EQ
-    m_sliderSynthEqLow.setBounds(r3.getX() + 8, r3.getY() + 138, 72, 60);
-    m_sliderSynthEqMid.setBounds(r3.getX() + 86, r3.getY() + 138, 72, 60);
-    m_sliderSynthEqHigh.setBounds(r3.getX() + 164, r3.getY() + 138, 72, 60);
-
-    // Row 3: Modulation
-    m_toggleChorus.setBounds(r3.getX() + 14, r3.getY() + 230, 90, 24);
-    m_sliderChorusMix.setBounds(r3.getX() + 115, r3.getY() + 220, 65, 50);
-
-    m_toggleDelay.setBounds(r3.getX() + 14, r3.getY() + 285, 90, 24);
-    m_sliderDelayMix.setBounds(r3.getX() + 115, r3.getY() + 275, 65, 50);
-
-    // Card 4: Reverb & Compressor
-    m_toggleReverb.setBounds(r4.getX() + 14, r4.getY() + 45, 90, 24);
-    m_sliderReverbMix.setBounds(r4.getX() + 110, r4.getY() + 40, 65, 50);
-
-    m_sliderCompThresh.setBounds(r4.getX() + 15, r4.getY() + 100, 70, 70);
-    m_sliderCompMakeup.setBounds(r4.getX() + 95, r4.getY() + 100, 70, 70);
-
-    // Virtual Piano Keyboard (61 keys from C2 to C7 = 36 white keys)
-    int kbX = 18;
-    int kbY = 483;
-    int kbW = getWidth() - 36;
-    int kbH = 220;
-    m_keyboardComponent.setBounds(kbX, kbY, kbW, kbH);
-    m_keyboardComponent.setKeyWidth(static_cast<float>(kbW) / 36.0f);
+    if (comps.keyboardComponent) {
+        m_keyboardComponent.setKeyWidth(static_cast<float>(m_keyboardComponent.getWidth()) / 36.0f);
+    }
 }

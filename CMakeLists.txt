@@ -39,6 +39,7 @@ add_executable(test_engine
     tools/test_engine.cpp
     engine/src/StagePianoHost.cpp
     engine/src/Sampler.cpp
+    engine/src/DiskStreamer.cpp
     engine/src/Chorus.cpp
     engine/src/Compressor.cpp
     engine/src/Delay.cpp

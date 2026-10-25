@@ -5,6 +5,8 @@
 #include <juce_audio_utils/juce_audio_utils.h>
 #include "StagePianoLookAndFeel.h"
 #include "StagePianoHost.hpp"
+#include "Skins/SkinLayoutStrategy.h"
+#include "Skins/SkinFactory.h"
 
 class MainComponent : public juce::Component,
                       public juce::AudioIODeviceCallback,
@@ -39,16 +41,22 @@ public:
     // Timer
     void timerCallback() override;
 
+    // Keyboard Hotkeys (Esc -> Panic)
+    bool keyPressed(const juce::KeyPress& key) override;
+
     // ChangeListener
     void changeListenerCallback(juce::ChangeBroadcaster* source) override;
 
     void openAudioSettings();
+    void setSkin(SkinType type);
+    SkinType getCurrentSkinType() const { return m_currentSkin ? m_currentSkin->getType() : SkinType::NordStage; }
 
 private:
     void initAudioAndMidi();
     void setupUI();
 
     StagePianoLookAndFeel m_lookAndFeel;
+    std::unique_ptr<SkinLayoutStrategy> m_currentSkin;
     juce::AudioDeviceManager m_deviceManager;
     std::shared_ptr<StagePianoHost> m_host;
 
@@ -69,6 +77,8 @@ private:
     juce::TextButton m_btnNextPreset{"Next >"};
     juce::TextButton m_btnSavePreset{"Save Preset"};
     juce::TextButton m_btnSettings{"AUDIO / MIDI"};
+    juce::TextButton m_btnPanic{"PANIC"};
+    juce::ComboBox m_comboTranspose;
     juce::TextButton m_btnFooterConfig{"CONFIG"};
     juce::TextButton m_btnRefresh{"REFRESH"};
     juce::TextButton m_btnImport{"IMPORT SF2 / SFZ"};

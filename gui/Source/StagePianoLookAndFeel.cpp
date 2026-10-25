@@ -74,6 +74,65 @@ void StagePianoLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, in
     auto toAngle = rotaryStartAngle + sliderPosProportional * (rotaryEndAngle - rotaryStartAngle);
     auto center = bounds.getCentre();
 
+    if (m_theme == Theme::NordStudio) {
+        // --- Authentic Clavia Nord Hardware Fluted Knob ---
+        // 1. Drop shadow
+        g.setColour(juce::Colours::black.withAlpha(0.65f));
+        g.fillEllipse(center.x - radius, center.y - radius + 2.0f, radius * 2.0f, radius * 2.0f);
+
+        // 2. Fluted outer gear / ridges (side tactile grip notches)
+        int numRidges = 18;
+        for (int i = 0; i < numRidges; ++i) {
+            float angle = (static_cast<float>(i) / numRidges) * juce::MathConstants<float>::twoPi;
+            float rx = center.x + std::cos(angle) * (radius - 1.2f);
+            float ry = center.y + std::sin(angle) * (radius - 1.2f);
+            g.setColour(juce::Colour(0xff0d0e12));
+            g.fillEllipse(rx - 1.8f, ry - 1.8f, 3.6f, 3.6f);
+        }
+
+        // 3. Beveled Body Ring
+        juce::ColourGradient bodyGrad(juce::Colour(0xff2d2f38), center.x - radius, center.y - radius,
+                                      juce::Colour(0xff141518), center.x + radius, center.y + radius, false);
+        g.setGradientFill(bodyGrad);
+        g.fillEllipse(center.x - radius + 1.5f, center.y - radius + 1.5f, (radius - 1.5f) * 2.0f, (radius - 1.5f) * 2.0f);
+
+        // 4. Nord Red Inner Ring (signature Clavia hardware badge detail)
+        float redRingRadius = radius * 0.85f;
+        g.setColour(juce::Colour(0xff991b1e));
+        g.drawEllipse(center.x - redRingRadius, center.y - redRingRadius, redRingRadius * 2.0f, redRingRadius * 2.0f, 1.4f);
+
+        // 5. Active Value Track Arc
+        if (sliderPosProportional > 0.0f) {
+            juce::Path valArc;
+            valArc.addCentredArc(center.x, center.y, radius * 0.95f, radius * 0.95f, 0.0f, rotaryStartAngle, toAngle, true);
+            g.setColour(juce::Colour(0xffef4444).withAlpha(0.4f));
+            g.strokePath(valArc, juce::PathStrokeType(3.5f));
+            g.setColour(juce::Colour(0xffef4444));
+            g.strokePath(valArc, juce::PathStrokeType(1.8f));
+        }
+
+        // 6. Flat Matte Black Top Cap
+        float capRadius = radius * 0.76f;
+        juce::ColourGradient capGrad(juce::Colour(0xff22242a), center.x, center.y - capRadius,
+                                     juce::Colour(0xff0d0e11), center.x, center.y + capRadius, false);
+        g.setGradientFill(capGrad);
+        g.fillEllipse(center.x - capRadius, center.y - capRadius, capRadius * 2.0f, capRadius * 2.0f);
+
+        // Cap Bevel
+        g.setColour(juce::Colour(0xff474d5d));
+        g.drawEllipse(center.x - capRadius, center.y - capRadius, capRadius * 2.0f, capRadius * 2.0f, 1.0f);
+
+        // 7. Crisp White Pointer Line (Nord chickenhead / line indicator)
+        juce::Path pointer;
+        float ptrLen = capRadius * 0.82f;
+        pointer.addRoundedRectangle(-1.25f, -capRadius, 2.5f, ptrLen, 0.8f);
+        pointer.applyTransform(juce::AffineTransform::rotation(toAngle).translated(center.x, center.y));
+
+        g.setColour(juce::Colours::white);
+        g.fillPath(pointer);
+        return;
+    }
+
     // 1. Dark outer drop shadow
     g.setColour(juce::Colours::black.withAlpha(0.6f));
     g.fillEllipse(center.x - radius, center.y - radius + 2.0f, radius * 2.0f, radius * 2.0f);
@@ -171,7 +230,40 @@ void StagePianoLookAndFeel::drawButtonBackground(juce::Graphics& g, juce::Button
                                                 bool shouldDrawButtonAsHighlighted,
                                                 bool shouldDrawButtonAsDown) {
     auto bounds = button.getLocalBounds().toFloat().reduced(0.5f);
-    auto cornerSize = 5.0f;
+    auto cornerSize = 4.0f;
+
+    if (m_theme == Theme::NordStudio) {
+        // --- Authentic Clavia Nord Tactile Push Button with Status LED Dot ---
+        juce::Colour topCol = shouldDrawButtonAsDown ? juce::Colour(0xff15161a)
+                                                     : (shouldDrawButtonAsHighlighted ? juce::Colour(0xff2d2f38) : juce::Colour(0xff21232a));
+        juce::Colour botCol = shouldDrawButtonAsDown ? juce::Colour(0xff0b0c0e) : juce::Colour(0xff131417);
+
+        juce::ColourGradient btnGrad(topCol, bounds.getX(), bounds.getY(),
+                                     botCol, bounds.getX(), bounds.getBottom(), false);
+        g.setGradientFill(btnGrad);
+        g.fillRoundedRectangle(bounds, cornerSize);
+
+        // Metallic/plastic bevel border
+        g.setColour(shouldDrawButtonAsDown ? juce::Colour(0xff0a0b0d) : juce::Colour(0xff3f4452));
+        g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
+
+        // If button is active/toggled on, draw glowing red status LED dot in top-right or center-top
+        bool isLit = button.getToggleState();
+        if (button.getClickingTogglesState() || isLit) {
+            float ledR = 2.5f;
+            float lx = bounds.getRight() - 10.0f;
+            float ly = bounds.getY() + 7.0f;
+
+            g.setColour(isLit ? juce::Colour(0xffff2222) : juce::Colour(0xff450d0f));
+            g.fillEllipse(lx - ledR, ly - ledR, ledR * 2.0f, ledR * 2.0f);
+
+            if (isLit) {
+                g.setColour(juce::Colour(0xffff4444).withAlpha(0.5f));
+                g.drawEllipse(lx - ledR - 1.0f, ly - ledR - 1.0f, (ledR + 1.0f) * 2.0f, (ledR + 1.0f) * 2.0f, 0.8f);
+            }
+        }
+        return;
+    }
 
     juce::Colour bg = backgroundColour;
     if (shouldDrawButtonAsDown) {

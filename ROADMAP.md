@@ -6,6 +6,7 @@ Funcionalidades planejadas e marcos técnicos para as próximas versões.
 - [x] **Importador Nativo de SoundFont 2 (`.sf2`)**: Leitura e reprodução direta de bancos SF2 clássicos sem necessidade de ferramentas externas ou conversão prévia.
 - [x] **Leitor de Formato SFZ**: Suporte a definições de texto `.sfz` para mapear multisamples customizados da comunidade.
 - [x] **Importador Drag & Drop de Pastas de Amostras**: Reconhecimento automático de nomes de arquivos (ex: `Grand_C3_v127.wav`) inferindo nota raiz, faixa de velocity e pontos de loop.
+- [ ] **Direct-From-Disk (DFD) Streaming com Pré-cache**: Arquitetura inspirada no Kontakt com pré-carregamento dos transientes de ataque na RAM (~64 KB por sample) e leitura contínua assíncrona do disco via thread de I/O em background, escalonador EDF (Earliest Deadline First) e ring buffers por voz.
 - [ ] **Compactação Lossless da Biblioteca**: Suporte a FLAC ou compactação sem perda em tempo real para reduzir o uso de disco das amostras.
 
 ## Fase 2: Realismo Acústico e Expressividade
@@ -21,6 +22,9 @@ Funcionalidades planejadas e marcos técnicos para as próximas versões.
 - [x] **Sistema de Skins e Temas de Palco**: Alternância instantânea de paletas visuais consagradas (Nord Red Studio, Yamaha Motif Navy, Roland V-Stage Obsidian Gold) preparando a base para layout strategies modulares.
 - [ ] **Transição Suave de Sons (Patch Remain / Sound Continuity)**: Sustentar acordes da música anterior sem corte de áudio ao trocar de preset.
 - [ ] **Roteamento de Troca de Programa MIDI (PC)**: Seleção rápida de bancos e presets diretamente pelos botões físicos ou pedais do teclado.
+- [ ] **Modo Setlist / Song Mode (Modo Repertório)**: Gerenciamento encadeado de músicas para shows ("Intro", "Verso", "Refrão"), salvando timbres, volumes, efeitos, EQs e transposições dedicadas por música, com avanço/retrocesso via pedal footswitch ou comando MIDI.
+- [ ] **Botão PANIC e Safety Guard**: Atalho de teclado rápido (`Esc`), mensagem MIDI All Notes Off (`CC 123`) e botão dedicado na UI para corte imediato de notas presas e reset dos buffers de efeitos em imprevistos no palco.
+- [ ] **Transpose Cromático Global e por Slot**: Transposição rápida de tonalidade (+/- 12 semitons) independente para cada camada ou geral.
 - [ ] **Modo Divisão de Teclado (Keyboard Split)**: Ponto de divisão configurável para tocar Baixo/Drone na mão esquerda e Piano/Lead na mão direita.
 
 ## Fase 4: Ecossistema de Plugins
