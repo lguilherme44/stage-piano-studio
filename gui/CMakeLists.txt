@@ -59,7 +59,7 @@ if(WIN32)
     FetchContent_Declare(
         asiosdk
         GIT_REPOSITORY https://github.com/audiosdk/asio.git
-        GIT_TAG master
+        GIT_TAG main
         GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(asiosdk)
