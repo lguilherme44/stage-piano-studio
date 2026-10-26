@@ -781,21 +781,33 @@ void MainComponent::audioDeviceIOCallbackWithContext(const float* const* /*input
         juce::FloatVectorOperations::clear(outputChannelData[ch], numSamples);
     }
 
-    std::vector<float> interleaved(numSamples * 2, 0.0f);
-    m_host->render(interleaved.data(), static_cast<uint32_t>(numSamples), 2);
+    // Render in chunks that fit the preallocated interleaved buffer
+    const int maxChunk = static_cast<int>(m_interleaved.size() / 2);
+    for (int offset = 0; offset < numSamples && maxChunk > 0; offset += maxChunk) {
+        int chunk = std::min(maxChunk, numSamples - offset);
+        m_host->render(m_interleaved.data(), static_cast<uint32_t>(chunk), 2);
 
-    for (int s = 0; s < numSamples; ++s) {
-        if (numOutputChannels >= 1) outputChannelData[0][s] = interleaved[s * 2];
-        if (numOutputChannels >= 2) outputChannelData[1][s] = interleaved[s * 2 + 1];
+        for (int s = 0; s < chunk; ++s) {
+            if (numOutputChannels >= 1) outputChannelData[0][offset + s] = m_interleaved[s * 2];
+            if (numOutputChannels >= 2) outputChannelData[1][offset + s] = m_interleaved[s * 2 + 1];
+        }
     }
 
     auto end = std::chrono::high_resolution_clock::now();
     double renderUs = std::chrono::duration<double, std::micro>(end - start).count();
-    double budgetUs = (numSamples / 44100.0) * 1e6;
-    m_dspLoad.store(static_cast<float>((renderUs / budgetUs) * 100.0));
+    double budgetUs = (numSamples / m_deviceSampleRate) * 1e6;
+    double load = (renderUs / budgetUs) * 100.0;
+    m_dspLoad.store(static_cast<float>(load));
+    if (load > 100.0) m_lateCallbacks.fetch_add(1, std::memory_order_relaxed);
 }
 
-void MainComponent::audioDeviceAboutToStart(juce::AudioIODevice* /*device*/) {}
+void MainComponent::audioDeviceAboutToStart(juce::AudioIODevice* device) {
+    // Called before the first callback and on every device/sample-rate/buffer change
+    m_deviceSampleRate = device->getCurrentSampleRate() > 0.0 ? device->getCurrentSampleRate() : 44100.0;
+    int blockSize = std::max(device->getCurrentBufferSizeSamples(), 64);
+    m_interleaved.assign(static_cast<size_t>(blockSize) * 2, 0.0f);
+    m_host->prepare(static_cast<float>(m_deviceSampleRate), static_cast<uint32_t>(blockSize));
+}
 void MainComponent::audioDeviceStopped() {}
 
 void MainComponent::updateOctaveDisplay() {
@@ -971,6 +983,8 @@ void MainComponent::paint(juce::Graphics& g) {
     ctx.dspLoad = m_dspLoad.load();
     ctx.dfdLoad = m_host ? m_host->getDfdLoadPercent() : 0;
     ctx.activeVoices = m_host ? m_host->getTotalActiveVoices() : 0;
+    ctx.dfdUnderruns = m_host ? m_host->getDfdUnderrunCount() : 0;
+    ctx.lateCallbacks = m_lateCallbacks.load(std::memory_order_relaxed);
     ctx.midiDevice = m_activeMidiDevice;
     ctx.sustainDown = m_sustainDown;
     ctx.gainReductionDb = m_host ? m_host->getCompressor().getGainReductionDb() : 0.0f;

@@ -68,6 +68,9 @@ private:
 
     // Telemetry state
     std::atomic<float> m_dspLoad{0.0f};
+    std::atomic<uint64_t> m_lateCallbacks{0};
+    double m_deviceSampleRate = 44100.0;  // written in audioDeviceAboutToStart, before callbacks run
+    std::vector<float> m_interleaved;     // preallocated: the audio callback never allocates
     std::string m_activeMidiDevice = "No MIDI input active (click CONFIG)";
     bool m_sustainDown = false;
 

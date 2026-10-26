@@ -84,6 +84,8 @@ struct SkinContext {
     float dspLoad = 0.0f;
     int dfdLoad = 0;
     int activeVoices = 0;
+    uint64_t dfdUnderruns = 0;   // voices faded because the disk stream was late
+    uint64_t lateCallbacks = 0;  // audio callbacks that took longer than their real-time budget
     juce::String midiDevice;
     bool sustainDown = false;
     float gainReductionDb = 0.0f;

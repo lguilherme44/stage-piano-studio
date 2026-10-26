@@ -292,7 +292,9 @@ void NordStageLayout::paintBackground(juce::Graphics& g, juce::Rectangle<int> bo
 
     g.setColour(juce::Colour(0xff94a3b8));
     g.setFont(juce::FontOptions(8.5f));
-    juce::String telem = "DSP: " + juce::String(ctx.dspLoad, 1) + "%\nDFD: " + juce::String(ctx.dfdLoad) + "%\nVOICES: " + juce::String(ctx.activeVoices);
+    juce::String telem = "DSP: " + juce::String(ctx.dspLoad, 1) + "%\nDFD: " + juce::String(ctx.dfdLoad) + "%\nVOICES: " + juce::String(ctx.activeVoices)
+                       + "\nUNDR/LATE: " + juce::String(static_cast<juce::int64>(ctx.dfdUnderruns))
+                       + "/" + juce::String(static_cast<juce::int64>(ctx.lateCallbacks));
     g.drawMultiLineText(telem, screenBox.getRight() - 95, screenBox.getY() + 20, 88, juce::Justification::right);
 
     // 3. Footer Strip
