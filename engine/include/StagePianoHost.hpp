@@ -7,6 +7,7 @@
 #include "Delay.hpp"
 #include "Reverb.hpp"
 #include "TimbrePreset.hpp"
+#include "EventQueue.hpp"
 
 #include <memory>
 #include <string>
@@ -46,10 +47,18 @@ enum class MidiCCParam {
     MasterVolume
 };
 
+// Threading model: render() runs on the audio thread and never takes a lock or allocates.
+// Note/pedal/drone/panic calls from MIDI or UI threads are queued and applied at the start of
+// the next render(); parameters are atomics; instrument loads happen on the calling thread.
 class StagePianoHost {
 public:
     StagePianoHost(float sampleRate = 44100.0f, const std::string& libraryDir = "/Volumes/SSD-EXT/StagePianoStudio/library");
     ~StagePianoHost();
+
+    // Must be called before audio starts and whenever the device sample rate / block size changes.
+    // Not concurrent with render().
+    void prepare(float sampleRate, uint32_t maxBlockSize);
+    float getSampleRate() const { return m_sampleRate; }
 
     // Sound Layer Slots
     bool loadPiano(const std::string& instrumentName);
@@ -57,7 +66,7 @@ public:
     bool loadDrone(const std::string& instrumentName);
 
     void setLibraryDir(const std::string& libraryDir);
-    const std::string& getLibraryDir() const { return m_libDir; }
+    std::string getLibraryDir() const;
     bool isInstrumentInstalled(const std::string& instrumentName) const;
 
     void setPianoEnabled(bool enabled);
@@ -102,7 +111,7 @@ public:
     MidiCCParam getMidiLearnTarget() const { return m_learningParam; }
     void setMidiBinding(int controller, MidiCCParam param);
     MidiCCParam getMidiBinding(int controller) const;
-    void setParamChangeListener(std::function<void(MidiCCParam, float)> callback) { m_paramCallback = callback; }
+    void setParamChangeListener(std::function<void(MidiCCParam, float)> callback);
 
     // Audio Rendering (Full FX Chain)
     void render(float* outputBuffer, uint32_t numFrames, uint32_t numChannels);
@@ -142,6 +151,7 @@ public:
     int getDfdLoadPercent() const { return DiskStreamer::getInstance().getDfdLoadPercent(); }
     int getDfdActiveRequests() const { return DiskStreamer::getInstance().getActiveRequests(); }
     uint64_t getDfdUnderrunCount() const { return DiskStreamer::getInstance().getUnderrunCount(); }
+    uint64_t getDroppedEventCount() const { return m_droppedEvents.load(std::memory_order_relaxed); }
 
     // Direct DSP Access for Synth Layer
     void setSynthFilterCutoff(float hz) { m_synthSampler->setFilterCutoff(hz); }
@@ -150,7 +160,7 @@ public:
     void setSynthRelease(float ms) { m_synthSampler->setReleaseMs(ms); }
 
     int getTotalActiveVoices() const {
-        return m_pianoSampler->getActiveVoiceCount() + m_synthSampler->getActiveVoiceCount() + (m_droneActive.load() ? 1 : 0);
+        return m_pianoSampler->getActiveVoiceCount() + m_synthSampler->getActiveVoiceCount() + m_droneSampler->getActiveVoiceCount();
     }
 
     std::string getPianoName() const { return m_pianoSampler->getInstrumentName(); }
@@ -158,10 +168,26 @@ public:
     std::string getDroneName() const { return m_droneSampler->getInstrumentName(); }
 
 private:
+    enum Layer : uint8_t { PianoLayer = 0, SynthLayer = 1, DroneLayer = 2, LayerCount = 3 };
+
+    struct Event {
+        enum Type : uint8_t { NoteOn, NoteOff, Sustain, ReleaseLayer, AllNotesOff, Panic, DroneOn, DroneOff };
+        Type type = NoteOn;
+        uint8_t layer = 0;
+        int16_t note = 0;
+        int16_t value = 0;
+    };
+
+    void pushEvent(const Event& e);
+    void applyEvent(const Event& e);
+    void renderChunk(float* out, uint32_t numFrames, uint32_t numChannels);
+    bool resolveInstrument(const std::string& instrumentName, std::string& jsonPath, std::string& samplesDir) const;
+
     float m_sampleRate = 44100.0f;
     std::string m_libDir;
     std::string m_samplesDir;
     std::string m_instDir;
+    mutable std::mutex m_pathMutex; // library paths, never touched by render()
 
     // Multi-Layer Samplers
     std::shared_ptr<Sampler> m_pianoSampler; // Slot A
@@ -169,18 +195,18 @@ private:
     std::shared_ptr<Sampler> m_droneSampler; // Ambient Continuous Drone
 
     // Slot Controls
-    bool m_pianoEnabled = true;
-    float m_pianoVolume = 1.0f;
-    int m_pianoOctave = 0;
+    std::atomic<bool> m_pianoEnabled{true};
+    std::atomic<float> m_pianoVolume{1.0f};
+    std::atomic<int> m_pianoOctave{0};
 
-    bool m_synthEnabled = true;
-    float m_synthVolume = 0.65f;
-    int m_synthOctave = 0;
+    std::atomic<bool> m_synthEnabled{true};
+    std::atomic<float> m_synthVolume{0.65f};
+    std::atomic<int> m_synthOctave{0};
 
     // Drone state
     std::atomic<bool> m_droneActive{false};
-    float m_droneVolume = 0.70f;
-    int m_droneRootNote = 36; // C2
+    std::atomic<float> m_droneVolume{0.70f};
+    std::atomic<int> m_droneRootNote{36}; // C2
 
     // Studio FX Chain
     Equalizer m_pianoEq;
@@ -192,18 +218,25 @@ private:
     Compressor m_compressor;
 
     // Velocity curve setting
-    VelocityCurve m_velocityCurve = VelocityCurve::Linear;
-    int m_globalTranspose = 0;
-    int m_globalOctave = 0;
+    std::atomic<VelocityCurve> m_velocityCurve{VelocityCurve::Linear};
+    std::atomic<int> m_globalTranspose{0};
+    std::atomic<int> m_globalOctave{0};
     std::atomic<bool> m_learningLowestC{false};
-    int m_lowestCMappedNote = 36; // C2 by default on 61-key keyboards
-    bool m_stringResonance = true;
-    bool m_softPiano = false;
+    std::atomic<int> m_lowestCMappedNote{36}; // C2 by default on 61-key keyboards
+    std::atomic<bool> m_stringResonance{true};
+    std::atomic<bool> m_softPiano{false};
 
     // MIDI CC Router & Learn
-    MidiCCParam m_learningParam = MidiCCParam::None;
+    std::atomic<MidiCCParam> m_learningParam{MidiCCParam::None};
     std::map<int, MidiCCParam> m_ccBindings;
     std::function<void(MidiCCParam, float)> m_paramCallback = nullptr;
+    mutable std::mutex m_ccMutex; // MIDI + UI threads only
 
-    std::recursive_mutex m_hostMutex;
+    // Audio-thread state
+    EventQueue<Event> m_events{8192}; // ~2000 keystrokes of headroom while audio is stalled
+    std::atomic<uint64_t> m_droppedEvents{0};
+    std::vector<float> m_mixBuffer;
+    std::vector<float> m_layerBuffer;
+    float m_layerGain[LayerCount] = {0.0f, 0.0f, 0.0f};
+    float m_gainSmoothCoeff = 0.0f;
 };

@@ -3,15 +3,15 @@
 #include <cstdint>
 #include <cmath>
 #include <algorithm>
-#include <mutex>
 #include <atomic>
 
+// Setters are safe from any thread: they only store atomics and flag the coefficients dirty.
 class Compressor {
 public:
     Compressor(float sampleRate = 44100.0f);
 
     void setSampleRate(float sampleRate);
-    void reset();
+    void reset(); // audio thread only
 
     void setThreshold(float thresholdDb);
     float getThreshold() const { return m_thresholdDb; }
@@ -41,22 +41,21 @@ public:
 private:
     void updateCoefficients();
 
-    float m_sampleRate = 44100.0f;
-    bool m_enabled = true;
+    std::atomic<float> m_sampleRate{44100.0f};
+    std::atomic<bool> m_enabled{true};
+    std::atomic<bool> m_dirty{true};
 
-    float m_thresholdDb = -12.0f;
-    float m_ratio = 3.0f;
-    float m_attackMs = 15.0f;
-    float m_releaseMs = 150.0f;
-    float m_makeupDb = 2.0f;
-    float m_kneeDb = 4.0f;
+    std::atomic<float> m_thresholdDb{-12.0f};
+    std::atomic<float> m_ratio{3.0f};
+    std::atomic<float> m_attackMs{15.0f};
+    std::atomic<float> m_releaseMs{150.0f};
+    std::atomic<float> m_makeupDb{2.0f};
+    std::atomic<float> m_kneeDb{4.0f};
 
+    // Audio-thread state
     float m_attackCoeff = 0.99f;
     float m_releaseCoeff = 0.999f;
     float m_makeupLinear = 1.2589f;
-
     float m_envelopeGrDb = 0.0f;
     std::atomic<float> m_currentGrDb{0.0f};
-
-    std::mutex m_paramMutex;
 };

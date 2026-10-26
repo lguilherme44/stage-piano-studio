@@ -1,9 +1,15 @@
 #include "Delay.hpp"
 
-Delay::Delay(float sampleRate) : m_sampleRate(sampleRate) {
+Delay::Delay(float sampleRate) {
+    prepare(sampleRate);
+}
+
+void Delay::prepare(float sampleRate) {
+    m_sampleRate = sampleRate;
     size_t maxDelay = static_cast<size_t>(m_sampleRate * 2.0f); // 2 seconds max
-    m_bufferL.resize(maxDelay, 0.0f);
-    m_bufferR.resize(maxDelay, 0.0f);
+    m_bufferL.assign(maxDelay, 0.0f);
+    m_bufferR.assign(maxDelay, 0.0f);
+    m_writeIdx = 0;
 }
 
 void Delay::reset() {
@@ -29,6 +35,9 @@ void Delay::setMix(float mix) {
 void Delay::process(float* buffer, uint32_t numFrames, uint32_t numChannels) {
     if (!m_enabled || m_mix <= 0.001f || numChannels == 0) return;
 
+    const float mix = m_mix;
+    const float feedback = m_feedback;
+    const bool pingPong = m_pingPong;
     size_t bufSize = m_bufferL.size();
     size_t delaySamples = static_cast<size_t>(m_timeMs * 0.001f * m_sampleRate);
     if (delaySamples >= bufSize) delaySamples = bufSize - 1;
@@ -46,19 +55,19 @@ void Delay::process(float* buffer, uint32_t numFrames, uint32_t numChannels) {
         m_dampR = 0.6f * delayedR + 0.4f * m_dampR;
 
         // Ping-pong cross feedback or stereo feedback
-        if (m_pingPong) {
-            m_bufferL[m_writeIdx] = inL + m_dampR * m_feedback;
-            m_bufferR[m_writeIdx] = inR + m_dampL * m_feedback;
+        if (pingPong) {
+            m_bufferL[m_writeIdx] = inL + m_dampR * feedback;
+            m_bufferR[m_writeIdx] = inR + m_dampL * feedback;
         } else {
-            m_bufferL[m_writeIdx] = inL + m_dampL * m_feedback;
-            m_bufferR[m_writeIdx] = inR + m_dampR * m_feedback;
+            m_bufferL[m_writeIdx] = inL + m_dampL * feedback;
+            m_bufferR[m_writeIdx] = inR + m_dampR * feedback;
         }
 
         if (numChannels >= 2) {
-            buffer[f * numChannels]     = inL + delayedL * m_mix;
-            buffer[f * numChannels + 1] = inR + delayedR * m_mix;
+            buffer[f * numChannels]     = inL + delayedL * mix;
+            buffer[f * numChannels + 1] = inR + delayedR * mix;
         } else {
-            buffer[f] = inL + (delayedL + delayedR) * 0.5f * m_mix;
+            buffer[f] = inL + (delayedL + delayedR) * 0.5f * mix;
         }
 
         m_writeIdx = (m_writeIdx + 1) % bufSize;

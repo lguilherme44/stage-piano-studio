@@ -2,8 +2,15 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <cmath>
 
 namespace fs = std::filesystem;
+
+namespace {
+constexpr uint32_t kMaxChannels = 8;
+constexpr float kGainSmoothSeconds = 0.020f;
+constexpr float kLayerOffFadeMs = 20.0f;
+}
 
 StagePianoHost::StagePianoHost(float sampleRate, const std::string& libraryDir)
     : m_sampleRate(sampleRate),
@@ -20,7 +27,9 @@ StagePianoHost::StagePianoHost(float sampleRate, const std::string& libraryDir)
 
     m_pianoSampler = std::make_shared<Sampler>(64, sampleRate);
     m_synthSampler = std::make_shared<Sampler>(64, sampleRate);
-    m_droneSampler = std::make_shared<Sampler>(8, sampleRate);
+    m_droneSampler = std::make_shared<Sampler>(8, sampleRate, true); // whole samples in RAM for the loop crossfade
+
+    prepare(sampleRate, 1024);
 
     // Initial Defaults
     loadPiano("NS3_Bright_Grand");
@@ -51,20 +60,59 @@ StagePianoHost::StagePianoHost(float sampleRate, const std::string& libraryDir)
     m_ccBindings[93] = MidiCCParam::ChorusMix;    // Chorus Send
 }
 
-StagePianoHost::~StagePianoHost() {
-    allNotesOff();
+StagePianoHost::~StagePianoHost() = default;
+
+void StagePianoHost::prepare(float sampleRate, uint32_t maxBlockSize) {
+    // Audio is stopped here, so events may have piled up: keep state changes (note-offs, pedal,
+    // drone latch, panic) but drop note-ons, which would otherwise all fire at once as stale notes
+    Event e;
+    while (m_events.pop(e)) {
+        if (e.type != Event::NoteOn) applyEvent(e);
+    }
+
+    if (sampleRate != m_sampleRate) {
+        // Playing voices hold pitch and envelope steps computed for the old rate
+        m_pianoSampler->allNotesOff();
+        m_synthSampler->allNotesOff();
+        m_droneSampler->allNotesOff();
+        if (m_droneActive.load()) {
+            pushEvent({Event::DroneOn, DroneLayer, static_cast<int16_t>(m_droneRootNote.load()), 90});
+        }
+
+        m_sampleRate = sampleRate;
+        m_pianoSampler->prepare(sampleRate);
+        m_synthSampler->prepare(sampleRate);
+        m_droneSampler->prepare(sampleRate);
+        m_pianoEq.setSampleRate(sampleRate);
+        m_synthEq.setSampleRate(sampleRate);
+        m_equalizer.setSampleRate(sampleRate);
+        m_compressor.setSampleRate(sampleRate);
+        m_chorus.prepare(sampleRate);
+        m_delay.prepare(sampleRate);
+        m_reverb.prepare(sampleRate);
+    }
+
+    size_t samples = static_cast<size_t>(std::max<uint32_t>(maxBlockSize, 64)) * kMaxChannels;
+    m_mixBuffer.assign(samples, 0.0f);
+    m_layerBuffer.assign(samples, 0.0f);
+    m_gainSmoothCoeff = 1.0f - std::exp(-1.0f / (kGainSmoothSeconds * m_sampleRate));
 }
 
 void StagePianoHost::setLibraryDir(const std::string& libraryDir) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    std::lock_guard<std::mutex> lock(m_pathMutex);
     m_libDir = libraryDir;
     m_samplesDir = m_libDir + "/samples";
     m_instDir = m_libDir + "/instruments";
 }
 
+std::string StagePianoHost::getLibraryDir() const {
+    std::lock_guard<std::mutex> lock(m_pathMutex);
+    return m_libDir;
+}
+
 bool StagePianoHost::isInstrumentInstalled(const std::string& instrumentName) const {
-    std::string jsonPath = m_instDir + "/" + instrumentName + ".json";
-    if (!fs::exists(jsonPath)) return false;
+    std::string jsonPath, samplesDir;
+    if (!resolveInstrument(instrumentName, jsonPath, samplesDir)) return false;
 
     std::ifstream in(jsonPath);
     if (!in) return false;
@@ -78,7 +126,7 @@ bool StagePianoHost::isInstrumentInstalled(const std::string& instrumentName) co
                 size_t end = line.rfind('"');
                 if (end > start) {
                     std::string sampleFile = line.substr(start, end - start);
-                    if (fs::exists(m_samplesDir + "/" + sampleFile)) {
+                    if (fs::exists(samplesDir + "/" + sampleFile)) {
                         return true;
                     }
                 }
@@ -88,34 +136,41 @@ bool StagePianoHost::isInstrumentInstalled(const std::string& instrumentName) co
     return false;
 }
 
-void StagePianoHost::setPianoEnabled(bool enabled) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
-    m_pianoEnabled = enabled;
-    if (!enabled && m_pianoSampler) {
-        m_pianoSampler->allNotesOff();
+bool StagePianoHost::resolveInstrument(const std::string& instrumentName, std::string& jsonPath, std::string& samplesDir) const {
+    {
+        std::lock_guard<std::mutex> lock(m_pathMutex);
+        jsonPath = m_instDir + "/" + instrumentName + ".json";
+        samplesDir = m_samplesDir;
     }
+    return fs::exists(jsonPath);
+}
+
+void StagePianoHost::pushEvent(const Event& e) {
+    if (!m_events.push(e)) {
+        m_droppedEvents.fetch_add(1, std::memory_order_relaxed);
+    }
+}
+
+void StagePianoHost::setPianoEnabled(bool enabled) {
+    m_pianoEnabled = enabled;
+    if (!enabled) pushEvent({Event::ReleaseLayer, PianoLayer, 0, 0});
 }
 
 void StagePianoHost::setSynthEnabled(bool enabled) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
     m_synthEnabled = enabled;
-    if (!enabled && m_synthSampler) {
-        m_synthSampler->allNotesOff();
-    }
+    if (!enabled) pushEvent({Event::ReleaseLayer, SynthLayer, 0, 0});
 }
 
 bool StagePianoHost::loadPiano(const std::string& instrumentName) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
-    std::string path = m_instDir + "/" + instrumentName + ".json";
-    if (!fs::exists(path)) return false;
-    return m_pianoSampler->loadInstrument(path, m_samplesDir);
+    std::string jsonPath, samplesDir;
+    if (!resolveInstrument(instrumentName, jsonPath, samplesDir)) return false;
+    return m_pianoSampler->loadInstrument(jsonPath, samplesDir);
 }
 
 bool StagePianoHost::loadSynth(const std::string& instrumentName) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
-    std::string path = m_instDir + "/" + instrumentName + ".json";
-    if (!fs::exists(path)) return false;
-    bool ok = m_synthSampler->loadInstrument(path, m_samplesDir);
+    std::string jsonPath, samplesDir;
+    if (!resolveInstrument(instrumentName, jsonPath, samplesDir)) return false;
+    bool ok = m_synthSampler->loadInstrument(jsonPath, samplesDir);
     if (ok) {
         // Default warm pad attack/release for synth slot
         m_synthSampler->setAttackMs(25.0f);
@@ -126,10 +181,9 @@ bool StagePianoHost::loadSynth(const std::string& instrumentName) {
 }
 
 bool StagePianoHost::loadDrone(const std::string& instrumentName) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
-    std::string path = m_instDir + "/" + instrumentName + ".json";
-    if (!fs::exists(path)) return false;
-    bool ok = m_droneSampler->loadInstrument(path, m_samplesDir);
+    std::string jsonPath, samplesDir;
+    if (!resolveInstrument(instrumentName, jsonPath, samplesDir)) return false;
+    bool ok = m_droneSampler->loadInstrument(jsonPath, samplesDir);
     if (ok && m_droneActive.load()) {
         triggerDroneKey(m_droneRootNote);
     }
@@ -137,23 +191,22 @@ bool StagePianoHost::loadDrone(const std::string& instrumentName) {
 }
 
 void StagePianoHost::triggerDroneKey(int rootNote) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
-    if (m_droneActive.load() && m_droneRootNote != rootNote) {
-        m_droneSampler->noteOff(m_droneRootNote);
+    int previous = m_droneRootNote.exchange(rootNote);
+    if (m_droneActive.load() && previous != rootNote) {
+        pushEvent({Event::DroneOff, DroneLayer, static_cast<int16_t>(previous), 0});
     }
-    m_droneRootNote = rootNote;
     m_droneActive.store(true);
 
     m_droneSampler->setAttackMs(800.0f);     // Smooth slow swell
     m_droneSampler->setReleaseMs(3500.0f);   // Long ambient fade
     m_droneSampler->setFilterCutoff(4500.0f);// Soft warm bed
-    m_droneSampler->noteOn(rootNote, 90, true);
+    pushEvent({Event::DroneOn, DroneLayer, static_cast<int16_t>(rootNote), 90});
 }
 
 void StagePianoHost::stopDrone() {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
     m_droneActive.store(false);
-    m_droneSampler->noteOff(m_droneRootNote);
+    // Note off, not a cut: the 3.5s release keeps rendering until the voice fades out
+    pushEvent({Event::DroneOff, DroneLayer, static_cast<int16_t>(m_droneRootNote.load()), 0});
 }
 
 void StagePianoHost::toggleDrone(int rootNote) {
@@ -165,7 +218,6 @@ void StagePianoHost::toggleDrone(int rootNote) {
 }
 
 void StagePianoHost::setDroneCutoff(float hz) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
     m_droneSampler->setFilterCutoff(hz);
 }
 
@@ -211,23 +263,16 @@ bool StagePianoHost::processMidiNoteForCalibration(int midiNote) {
 }
 
 void StagePianoHost::setStringResonance(bool enabled) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
     m_stringResonance = enabled;
-    if (m_pianoSampler) {
-        m_pianoSampler->setReleaseMs(enabled ? 1200.0f : 450.0f);
-    }
+    m_pianoSampler->setReleaseMs(enabled ? 1200.0f : 450.0f);
 }
 
 void StagePianoHost::setSoftPiano(bool enabled) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
     m_softPiano = enabled;
-    if (m_pianoSampler) {
-        m_pianoSampler->setFilterCutoff(enabled ? 5500.0f : 20000.0f);
-    }
+    m_pianoSampler->setFilterCutoff(enabled ? 5500.0f : 20000.0f);
 }
 
 void StagePianoHost::noteOn(int note, int velocity) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
     if (m_learningLowestC.load()) {
         processMidiNoteForCalibration(note);
         return;
@@ -237,17 +282,22 @@ void StagePianoHost::noteOn(int note, int velocity) {
 
     if (m_pianoEnabled) {
         int pianoNote = std::clamp(transposedNote + (m_pianoOctave * 12), 0, 127);
-        m_pianoSampler->noteOn(pianoNote, mappedVel);
+        pushEvent({Event::NoteOn, PianoLayer, static_cast<int16_t>(pianoNote), static_cast<int16_t>(mappedVel)});
     }
 
     if (m_synthEnabled) {
         int synthNote = std::clamp(transposedNote + (m_synthOctave * 12), 0, 127);
-        m_synthSampler->noteOn(synthNote, mappedVel);
+        pushEvent({Event::NoteOn, SynthLayer, static_cast<int16_t>(synthNote), static_cast<int16_t>(mappedVel)});
     }
 }
 
+void StagePianoHost::setParamChangeListener(std::function<void(MidiCCParam, float)> callback) {
+    std::lock_guard<std::mutex> lock(m_ccMutex);
+    m_paramCallback = std::move(callback);
+}
+
 void StagePianoHost::setMidiBinding(int controller, MidiCCParam param) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    std::lock_guard<std::mutex> lock(m_ccMutex);
     if (param == MidiCCParam::None) {
         m_ccBindings.erase(controller);
     } else {
@@ -256,20 +306,20 @@ void StagePianoHost::setMidiBinding(int controller, MidiCCParam param) {
 }
 
 MidiCCParam StagePianoHost::getMidiBinding(int controller) const {
+    std::lock_guard<std::mutex> lock(m_ccMutex);
     auto it = m_ccBindings.find(controller);
     return (it != m_ccBindings.end()) ? it->second : MidiCCParam::None;
 }
 
 void StagePianoHost::handleMidiCC(int controller, int value) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
+    std::lock_guard<std::mutex> lock(m_ccMutex);
 
-    if (m_learningParam != MidiCCParam::None) {
-        m_ccBindings[controller] = m_learningParam;
-        MidiCCParam learned = m_learningParam;
-        m_learningParam = MidiCCParam::None;
+    MidiCCParam learning = m_learningParam.exchange(MidiCCParam::None);
+    if (learning != MidiCCParam::None) {
+        m_ccBindings[controller] = learning;
         if (m_paramCallback) {
             float norm = static_cast<float>(value) / 127.0f;
-            m_paramCallback(learned, norm);
+            m_paramCallback(learning, norm);
         }
         return;
     }
@@ -372,109 +422,145 @@ void StagePianoHost::handleMidiCC(int controller, int value) {
 }
 
 void StagePianoHost::noteOff(int note) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
     int transposedNote = std::clamp(note + m_globalTranspose + (m_globalOctave * 12), 0, 127);
 
-    if (m_pianoEnabled) {
-        int pianoNote = std::clamp(transposedNote + (m_pianoOctave * 12), 0, 127);
-        m_pianoSampler->noteOff(pianoNote);
-    }
+    // Sent to both layers even if one was just disabled, so no note is left hanging
+    int pianoNote = std::clamp(transposedNote + (m_pianoOctave * 12), 0, 127);
+    pushEvent({Event::NoteOff, PianoLayer, static_cast<int16_t>(pianoNote), 0});
 
-    if (m_synthEnabled) {
-        int synthNote = std::clamp(transposedNote + (m_synthOctave * 12), 0, 127);
-        m_synthSampler->noteOff(synthNote);
-    }
+    int synthNote = std::clamp(transposedNote + (m_synthOctave * 12), 0, 127);
+    pushEvent({Event::NoteOff, SynthLayer, static_cast<int16_t>(synthNote), 0});
 }
 
 void StagePianoHost::panic() {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
-    m_pianoSampler->allNotesOff();
-    m_synthSampler->allNotesOff();
-    m_droneSampler->allNotesOff();
     m_droneActive.store(false);
-    m_reverb.reset();
-    m_delay.reset();
-    m_chorus.reset();
-    m_pianoEq.reset();
-    m_synthEq.reset();
-    m_equalizer.reset();
+    pushEvent({Event::Panic, 0, 0, 0});
     std::cout << "[StagePianoHost] EMERGENCY PANIC TRIGGERED: All voices, DFD streams & DSP buffers flushed.\n";
 }
 
 void StagePianoHost::setSustainPedal(bool pressed) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
-    m_pianoSampler->setSustainPedal(pressed);
-    m_synthSampler->setSustainPedal(pressed);
+    pushEvent({Event::Sustain, 0, 0, static_cast<int16_t>(pressed ? 1 : 0)});
 }
 
 void StagePianoHost::allNotesOff() {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
-    m_pianoSampler->allNotesOff();
-    m_synthSampler->allNotesOff();
+    pushEvent({Event::AllNotesOff, 0, 0, 0});
     stopDrone();
 }
 
+void StagePianoHost::applyEvent(const Event& e) {
+    Sampler* layers[LayerCount] = {m_pianoSampler.get(), m_synthSampler.get(), m_droneSampler.get()};
+    switch (e.type) {
+        case Event::NoteOn:
+            layers[e.layer]->noteOn(e.note, e.value);
+            break;
+        case Event::NoteOff:
+            layers[e.layer]->noteOff(e.note);
+            break;
+        case Event::Sustain:
+            m_pianoSampler->setSustainPedal(e.value != 0);
+            m_synthSampler->setSustainPedal(e.value != 0);
+            break;
+        case Event::ReleaseLayer:
+            layers[e.layer]->releaseAll(kLayerOffFadeMs);
+            break;
+        case Event::AllNotesOff:
+            m_pianoSampler->releaseAll(kLayerOffFadeMs);
+            m_synthSampler->releaseAll(kLayerOffFadeMs);
+            break;
+        case Event::Panic:
+            m_pianoSampler->allNotesOff();
+            m_synthSampler->allNotesOff();
+            m_droneSampler->allNotesOff();
+            m_reverb.reset();
+            m_delay.reset();
+            m_chorus.reset();
+            m_pianoEq.reset();
+            m_synthEq.reset();
+            m_equalizer.reset();
+            break;
+        case Event::DroneOn:
+            m_droneSampler->noteOn(e.note, e.value, true);
+            break;
+        case Event::DroneOff:
+            m_droneSampler->noteOff(e.note);
+            break;
+    }
+}
+
 void StagePianoHost::render(float* outputBuffer, uint32_t numFrames, uint32_t numChannels) {
-    std::lock_guard<std::recursive_mutex> lock(m_hostMutex);
-
-    std::fill(outputBuffer, outputBuffer + (numFrames * numChannels), 0.0f);
-
-    // 1. Render Slot A (Piano) with Dedicated Slot EQ
-    if (m_pianoEnabled && m_pianoVolume > 0.001f) {
-        std::vector<float> pianoBuf(numFrames * numChannels, 0.0f);
-        m_pianoSampler->render(pianoBuf.data(), numFrames, numChannels);
-        m_pianoEq.process(pianoBuf.data(), numFrames, numChannels);
-        for (uint32_t i = 0; i < numFrames * numChannels; ++i) {
-            outputBuffer[i] += pianoBuf[i] * m_pianoVolume;
-        }
+    if (numChannels == 0 || numChannels > kMaxChannels) {
+        std::fill(outputBuffer, outputBuffer + (numFrames * numChannels), 0.0f);
+        return;
     }
 
-    // 2. Render Slot B (Synth / Pad) with Dedicated Slot EQ
-    if (m_synthEnabled && m_synthVolume > 0.001f) {
-        std::vector<float> synthBuf(numFrames * numChannels, 0.0f);
-        m_synthSampler->render(synthBuf.data(), numFrames, numChannels);
-        m_synthEq.process(synthBuf.data(), numFrames, numChannels);
-        for (uint32_t i = 0; i < numFrames * numChannels; ++i) {
-            outputBuffer[i] += synthBuf[i] * m_synthVolume;
-        }
+    Event e;
+    while (m_events.pop(e)) {
+        applyEvent(e);
     }
 
-    // 3. Render Continuous Drone / Pad Bed
-    if (m_droneActive.load() && m_droneVolume > 0.001f) {
-        std::vector<float> droneBuf(numFrames * numChannels, 0.0f);
-        m_droneSampler->render(droneBuf.data(), numFrames, numChannels);
+    // Process in chunks that fit the preallocated buffers: no allocation on the audio thread
+    const uint32_t maxChunk = static_cast<uint32_t>(m_mixBuffer.size() / numChannels);
+    uint32_t done = 0;
+    while (done < numFrames) {
+        uint32_t chunk = std::min(maxChunk, numFrames - done);
+        renderChunk(outputBuffer + static_cast<size_t>(done) * numChannels, chunk, numChannels);
+        done += chunk;
+    }
+}
 
-        for (uint32_t i = 0; i < numFrames * numChannels; ++i) {
-            outputBuffer[i] += droneBuf[i] * m_droneVolume;
+void StagePianoHost::renderChunk(float* out, uint32_t numFrames, uint32_t numChannels) {
+    const uint32_t totalSamples = numFrames * numChannels;
+    std::fill(out, out + totalSamples, 0.0f);
+
+    Sampler* samplers[LayerCount] = {m_pianoSampler.get(), m_synthSampler.get(), m_droneSampler.get()};
+    Equalizer* layerEq[LayerCount] = {&m_pianoEq, &m_synthEq, nullptr};
+    const float targets[LayerCount] = {m_pianoVolume.load(), m_synthVolume.load(), m_droneVolume.load()};
+    float* layerBuf = m_layerBuffer.data();
+
+    // 1-3. Slot A (Piano), Slot B (Synth) with dedicated EQ, and the continuous Drone bed.
+    // Layers keep rendering while voices fade out, even after being disabled or stopped.
+    for (int l = 0; l < LayerCount; ++l) {
+        std::fill(layerBuf, layerBuf + totalSamples, 0.0f);
+        samplers[l]->render(layerBuf, numFrames, numChannels);
+        if (layerEq[l]) layerEq[l]->process(layerBuf, numFrames, numChannels);
+
+        // Smoothed gain: CC / slider steps ramp over ~20ms instead of zippering
+        float g = m_layerGain[l];
+        const float target = targets[l];
+        for (uint32_t f = 0; f < numFrames; ++f) {
+            g += (target - g) * m_gainSmoothCoeff;
+            for (uint32_t c = 0; c < numChannels; ++c) {
+                out[f * numChannels + c] += layerBuf[f * numChannels + c] * g;
+            }
         }
+        m_layerGain[l] = g;
     }
 
     // 4. Studio 3-Band Equalizer (Grave, Médio, Agudo)
-    m_equalizer.process(outputBuffer, numFrames, numChannels);
+    m_equalizer.process(out, numFrames, numChannels);
 
     // 5. Stereo Dimension Chorus
-    m_chorus.process(outputBuffer, numFrames, numChannels);
+    m_chorus.process(out, numFrames, numChannels);
 
     // 6. Ping-Pong Delay
-    m_delay.process(outputBuffer, numFrames, numChannels);
+    m_delay.process(out, numFrames, numChannels);
 
     // 7. Studio Hall Reverb
-    m_reverb.process(outputBuffer, numFrames, numChannels);
+    m_reverb.process(out, numFrames, numChannels);
 
     // 8. Dynamic Studio Compressor
-    m_compressor.process(outputBuffer, numFrames, numChannels);
+    m_compressor.process(out, numFrames, numChannels);
 
     // 9. Studio Soft-Knee Analog Limiter / Saturator
     // Transparent up to 0.85, smooth asymptotic tanh saturation above, zero discontinuities
-    const uint32_t totalSamples = numFrames * numChannels;
     const float threshold = 0.85f;
     const float headroom = 1.0f - threshold;
     for (uint32_t i = 0; i < totalSamples; ++i) {
-        float s = outputBuffer[i];
+        float s = out[i];
         if (s > threshold) {
-            outputBuffer[i] = threshold + headroom * std::tanh((s - threshold) / headroom);
+            out[i] = threshold + headroom * std::tanh((s - threshold) / headroom);
         } else if (s < -threshold) {
-            outputBuffer[i] = -threshold + headroom * std::tanh((s + threshold) / headroom);
+            out[i] = -threshold + headroom * std::tanh((s + threshold) / headroom);
         }
     }
 }

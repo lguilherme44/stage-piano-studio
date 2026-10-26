@@ -8,10 +8,16 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-Chorus::Chorus(float sampleRate) : m_sampleRate(sampleRate) {
+Chorus::Chorus(float sampleRate) {
+    prepare(sampleRate);
+}
+
+void Chorus::prepare(float sampleRate) {
+    m_sampleRate = sampleRate;
     size_t maxDelay = static_cast<size_t>(m_sampleRate * 0.05f); // 50ms buffer
-    m_delayBufferL.resize(maxDelay, 0.0f);
-    m_delayBufferR.resize(maxDelay, 0.0f);
+    m_delayBufferL.assign(maxDelay, 0.0f);
+    m_delayBufferR.assign(maxDelay, 0.0f);
+    m_writeIdx = 0;
 }
 
 void Chorus::reset() {
@@ -37,6 +43,7 @@ void Chorus::setMix(float mix) {
 void Chorus::process(float* buffer, uint32_t numFrames, uint32_t numChannels) {
     if (!m_enabled || m_mix <= 0.001f || numChannels == 0) return;
 
+    const float mix = m_mix;
     size_t bufSize = m_delayBufferL.size();
     float phaseInc = (m_rate / m_sampleRate);
     float baseDelaySamples = m_depth * 0.001f * m_sampleRate;
@@ -72,10 +79,10 @@ void Chorus::process(float* buffer, uint32_t numFrames, uint32_t numChannels) {
         float wetR = readSample(m_delayBufferR, m_writeIdx, delayR);
 
         if (numChannels >= 2) {
-            buffer[f * numChannels]     = inL * (1.0f - m_mix * 0.5f) + wetL * m_mix;
-            buffer[f * numChannels + 1] = inR * (1.0f - m_mix * 0.5f) + wetR * m_mix;
+            buffer[f * numChannels]     = inL * (1.0f - mix * 0.5f) + wetL * mix;
+            buffer[f * numChannels + 1] = inR * (1.0f - mix * 0.5f) + wetR * mix;
         } else {
-            buffer[f] = inL * (1.0f - m_mix * 0.5f) + (wetL + wetR) * 0.5f * m_mix;
+            buffer[f] = inL * (1.0f - mix * 0.5f) + (wetL + wetR) * 0.5f * mix;
         }
 
         m_writeIdx = (m_writeIdx + 1) % bufSize;

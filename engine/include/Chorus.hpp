@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <atomic>
 #include <cmath>
 #include <cstdint>
 #include <algorithm>
@@ -8,7 +9,8 @@
 class Chorus {
 public:
     Chorus(float sampleRate = 44100.0f);
-    void reset();
+    void prepare(float sampleRate); // not concurrent with process()
+    void reset(); // audio thread only
     void setRate(float rateHz);
     float getRate() const { return m_rate; }
 
@@ -25,10 +27,10 @@ public:
 
 private:
     float m_sampleRate = 44100.0f;
-    bool m_enabled = false;
-    float m_rate = 1.2f;
-    float m_depth = 3.5f;
-    float m_mix = 0.35f;
+    std::atomic<bool> m_enabled{false};
+    std::atomic<float> m_rate{1.2f};
+    std::atomic<float> m_depth{3.5f};
+    std::atomic<float> m_mix{0.35f};
 
     std::vector<float> m_delayBufferL;
     std::vector<float> m_delayBufferR;

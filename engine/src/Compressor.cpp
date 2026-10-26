@@ -5,47 +5,39 @@ Compressor::Compressor(float sampleRate) : m_sampleRate(sampleRate) {
 }
 
 void Compressor::setSampleRate(float sampleRate) {
-    std::lock_guard<std::mutex> lock(m_paramMutex);
     m_sampleRate = sampleRate;
-    updateCoefficients();
+    m_dirty = true;
 }
 
 void Compressor::reset() {
-    std::lock_guard<std::mutex> lock(m_paramMutex);
     m_envelopeGrDb = 0.0f;
     m_currentGrDb.store(0.0f);
 }
 
 void Compressor::setThreshold(float thresholdDb) {
-    std::lock_guard<std::mutex> lock(m_paramMutex);
     m_thresholdDb = std::clamp(thresholdDb, -60.0f, 0.0f);
 }
 
 void Compressor::setRatio(float ratio) {
-    std::lock_guard<std::mutex> lock(m_paramMutex);
     m_ratio = std::clamp(ratio, 1.0f, 30.0f);
 }
 
 void Compressor::setAttack(float attackMs) {
-    std::lock_guard<std::mutex> lock(m_paramMutex);
     m_attackMs = std::clamp(attackMs, 0.1f, 200.0f);
-    updateCoefficients();
+    m_dirty = true;
 }
 
 void Compressor::setRelease(float releaseMs) {
-    std::lock_guard<std::mutex> lock(m_paramMutex);
     m_releaseMs = std::clamp(releaseMs, 5.0f, 2000.0f);
-    updateCoefficients();
+    m_dirty = true;
 }
 
 void Compressor::setMakeupGain(float makeupDb) {
-    std::lock_guard<std::mutex> lock(m_paramMutex);
     m_makeupDb = std::clamp(makeupDb, -12.0f, 24.0f);
-    m_makeupLinear = std::pow(10.0f, m_makeupDb / 20.0f);
+    m_dirty = true;
 }
 
 void Compressor::setKnee(float kneeDb) {
-    std::lock_guard<std::mutex> lock(m_paramMutex);
     m_kneeDb = std::clamp(kneeDb, 0.0f, 18.0f);
 }
 
@@ -53,9 +45,10 @@ void Compressor::updateCoefficients() {
     // Attack/Release 1-pole filter smoothing coefficients
     float attackSec = m_attackMs * 0.001f;
     float releaseSec = m_releaseMs * 0.001f;
+    float sr = m_sampleRate;
 
-    m_attackCoeff = std::exp(-1.0f / (attackSec * m_sampleRate));
-    m_releaseCoeff = std::exp(-1.0f / (releaseSec * m_sampleRate));
+    m_attackCoeff = std::exp(-1.0f / (attackSec * sr));
+    m_releaseCoeff = std::exp(-1.0f / (releaseSec * sr));
     m_makeupLinear = std::pow(10.0f, m_makeupDb / 20.0f);
 }
 
@@ -65,8 +58,15 @@ void Compressor::process(float* buffer, uint32_t numFrames, uint32_t numChannels
         return;
     }
 
-    const float halfKnee = m_kneeDb * 0.5f;
-    const float slope = (m_ratio > 1.0f) ? (1.0f - 1.0f / m_ratio) : 0.0f;
+    if (m_dirty.exchange(false, std::memory_order_acq_rel)) {
+        updateCoefficients();
+    }
+
+    const float thresholdDb = m_thresholdDb;
+    const float ratio = m_ratio;
+    const float kneeDb = m_kneeDb;
+    const float halfKnee = kneeDb * 0.5f;
+    const float slope = (ratio > 1.0f) ? (1.0f - 1.0f / ratio) : 0.0f;
 
     for (uint32_t f = 0; f < numFrames; ++f) {
         float peak = 0.0f;
@@ -82,12 +82,12 @@ void Compressor::process(float* buffer, uint32_t numFrames, uint32_t numChannels
         float overDb = 0.0f;
 
         // Soft-knee computation
-        float diff = inDb - m_thresholdDb;
-        if (m_kneeDb > 0.0f) {
+        float diff = inDb - thresholdDb;
+        if (kneeDb > 0.0f) {
             if (diff < -halfKnee) {
                 overDb = 0.0f;
             } else if (std::abs(diff) <= halfKnee) {
-                overDb = (diff + halfKnee) * (diff + halfKnee) / (2.0f * m_kneeDb);
+                overDb = (diff + halfKnee) * (diff + halfKnee) / (2.0f * kneeDb);
             } else {
                 overDb = diff;
             }

@@ -1,13 +1,15 @@
 #pragma once
 
 #include <vector>
+#include <atomic>
 #include <cstdint>
 #include <algorithm>
 
 class Reverb {
 public:
     Reverb(float sampleRate = 44100.0f);
-    void reset();
+    void prepare(float sampleRate); // not concurrent with process()
+    void reset(); // audio thread only
 
     void setDecay(float decay); // 0.1 to 0.98
     float getDecay() const { return m_decay; }
@@ -50,10 +52,10 @@ private:
     };
 
     float m_sampleRate = 44100.0f;
-    bool m_enabled = true;
-    float m_decay = 0.72f;
-    float m_damp = 0.35f;
-    float m_mix = 0.28f;
+    std::atomic<bool> m_enabled{true};
+    std::atomic<float> m_decay{0.72f};
+    std::atomic<float> m_damp{0.35f};
+    std::atomic<float> m_mix{0.28f};
 
     Comb m_combsL[4];
     Comb m_combsR[4];
