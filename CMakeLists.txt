@@ -53,3 +53,30 @@ target_include_directories(test_engine PRIVATE
 )
 add_test(NAME TestEngine COMMAND test_engine)
 
+# Real-time paced glitch/stress harness: stress_engine <libraryDir> [secondsPerScenario]
+option(STRESS_ASAN "Build stress_engine with AddressSanitizer" OFF)
+add_executable(stress_engine
+    tools/stress_engine.cpp
+    engine/src/StagePianoHost.cpp
+    engine/src/Sampler.cpp
+    engine/src/DiskStreamer.cpp
+    engine/src/Chorus.cpp
+    engine/src/Compressor.cpp
+    engine/src/Delay.cpp
+    engine/src/Equalizer.cpp
+    engine/src/Reverb.cpp
+    engine/src/TimbrePreset.cpp
+)
+target_include_directories(stress_engine PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/engine/include"
+)
+if(STRESS_ASAN)
+    if(MSVC)
+        target_compile_options(stress_engine PRIVATE /fsanitize=address /Zi)
+        target_link_options(stress_engine PRIVATE /INCREMENTAL:NO /DEBUG)
+    else()
+        target_compile_options(stress_engine PRIVATE -fsanitize=address -fno-omit-frame-pointer -g)
+        target_link_options(stress_engine PRIVATE -fsanitize=address)
+    endif()
+endif()
+

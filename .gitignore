@@ -15,6 +15,7 @@ tools/test_importer.exe
 
 # Build Artifacts
 build/
+build-*/
 gui/build/
 engine/bin/
 engine/build/
